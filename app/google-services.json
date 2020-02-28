@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1005402612479",
+    "firebase_url": "https://dpdelivery-5d127.firebaseio.com",
+    "project_id": "dpdelivery-5d127",
+    "storage_bucket": "dpdelivery-5d127.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1005402612479:android:198842c316b070395422ca",
+        "android_client_info": {
+          "package_name": "com.dpdelivery.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1005402612479-46c23816vm0d247o4gcr75nseug9vgr8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dpdelivery.android",
+            "certificate_hash": "019f672862fb246686bd0b03c701a18c9245cc68"
+          }
+        },
+        {
+          "client_id": "1005402612479-proi5jh1nm5unflvs8v7gg0s8q289l0p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsUXoSLVg99OxfGbZE2sUdVY7WxfWvrFg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1005402612479-proi5jh1nm5unflvs8v7gg0s8q289l0p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dimens_8"
+    android:orientation="horizontal">
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/et_search"
+        android:layout_width="@dimen/dimens_150"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimens_10"
+        android:layout_marginStart="@dimen/dimens_10"
+        android:layout_marginEnd="@dimen/dimens_10"
+        android:hint="@string/search"
+        android:inputType="text"
+        android:maxLines="1"
+        android:background="@drawable/bg_note"
+        android:textColor="@color/colorBlack"
+        android:textColorHint="@color/colorBlackOverlay"
+        android:theme="@style/EditTextTheme" />
+
+    <androidx.appcompat.widget.AppCompatSpinner
+        android:id="@+id/sp_mode"
+        style="@style/Widget.AppCompat.Spinner.Underlined"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/dimens_10"
+        android:layout_marginEnd="@dimen/dimens_10"
+        android:gravity="start"
+        android:padding="@dimen/dimens_5"
+        android:spinnerMode="dropdown" />
+
+</LinearLayout>

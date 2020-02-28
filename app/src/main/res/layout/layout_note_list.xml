@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/NotesCardViewStyle">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/btn_close"
+        android:layout_width="@dimen/dimens_25"
+        android:layout_height="@dimen/dimens_25"
+        android:layout_gravity="end"
+        android:src="@drawable/ic_error" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimens_20"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_notes_List"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_semibold"
+            android:text="Notes"
+            android:textColor="@color/colorBlue"
+            android:textSize="@dimen/dimens_16sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_notes_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:scrollbarStyle="outsideOverlay"/>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

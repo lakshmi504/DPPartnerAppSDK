@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+    <androidx.cardview.widget.CardView style="@style/DashboardCardViewStyle">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btn_close"
+            android:layout_width="@dimen/dimens_25"
+            android:layout_height="@dimen/dimens_25"
+            android:layout_gravity="end"
+            android:layout_marginStart="@dimen/minus_dimens_10"
+            android:layout_marginBottom="@dimen/minus_dimens_60"
+            android:src="@drawable/ic_error" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimens_5"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_semibold"
+                android:gravity="center"
+                android:padding="@dimen/dimens_10"
+                android:text="@string/update_appointment"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimens_1"
+                android:layout_marginStart="@dimen/dimens_20"
+                android:layout_marginEnd="@dimen/dimens_20"
+                android:background="@color/colorBlackOverlay" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_20"
+                android:layout_marginTop="@dimen/dimens_10"
+                android:layout_marginEnd="@dimen/dimens_20"
+                android:hint="@string/appointment_date"
+                android:textColorHint="@color/colorBlackOverlay"
+                android:theme="@style/EditTextTheme">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_appointment_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:textColor="@color/colorBlack" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_20"
+                android:layout_marginTop="@dimen/dimens_10"
+                android:layout_marginEnd="@dimen/dimens_20"
+                android:hint="@string/appointment_time"
+                android:textColorHint="@color/colorBlackOverlay"
+                android:theme="@style/EditTextTheme">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_appointment_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:textColor="@color/colorBlack" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <EditText
+                android:id="@+id/et_note"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginStart="@dimen/dimens_20"
+                android:layout_marginTop="@dimen/dimens_10"
+                android:layout_marginEnd="@dimen/dimens_20"
+                android:background="@drawable/bg_note"
+                android:fontFamily="@font/montserrat_regular"
+                android:gravity="top"
+                android:hint="Note"
+                android:inputType="textCapSentences|textMultiLine"
+                android:maxLength="400"
+                android:maxLines="5"
+                android:textCursorDrawable="@null"
+                android:textSize="@dimen/dimens_12sp" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimens_10"
+                android:layout_marginBottom="@dimen/dimens_10"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_reset"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimens_20"
+                    android:layout_marginEnd="@dimen/dimens_20"
+                    android:background="@drawable/btn_grey_bg"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="@string/reset"
+                    android:textColor="@color/colorWhite" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_update"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimens_10"
+                    android:layout_marginEnd="@dimen/dimens_20"
+                    android:background="@drawable/btn_orange_bg"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="@string/update"
+                    android:textColor="@color/colorWhite" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

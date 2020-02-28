@@ -1,0 +1,170 @@
+<resources>
+
+    <style name="AppTheme" parent="AppTheme.Base">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="cardViewStyle">@style/CardView</item>
+
+    </style>
+
+    <style name="noAnimTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="edit_text_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textSize">@dimen/dimens_12sp</item>
+        <item name="android:layout_marginStart">@dimen/dimens_20</item>
+        <item name="android:layout_marginEnd">@dimen/dimens_20</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="android:background">@drawable/bg_edit_text</item>
+        <item name="android:layout_marginTop">@dimen/dimens_10</item>
+        <item name="android:textCursorDrawable">@null</item>
+    </style>
+
+    <style name="DashboardCardViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="cardPreventCornerOverlap">false</item>
+        <item name="cardBackgroundColor">@color/colorWhite</item>
+        <item name="android:layout_margin">@dimen/dimens_8</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="cardCornerRadius">@dimen/dimens_8</item>
+        <item name="cardElevation">@dimen/dimens_4</item>
+    </style>
+
+    <style name="NotesCardViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="cardPreventCornerOverlap">false</item>
+        <item name="cardBackgroundColor">@color/colorWhite</item>
+        <item name="android:layout_margin">@dimen/dimens_8</item>
+        <item name="cardUseCompatPadding">true</item>
+        <item name="cardCornerRadius">@dimen/dimens_8</item>
+        <item name="cardElevation">@dimen/dimens_4</item>
+    </style>
+
+    <style name="CustomDialogThemeLightBg" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@color/colorBlackOverlay</item>
+        <item name="android:gravity">center</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="colorPrimary">@color/colorWhite</item>
+        <item name="colorPrimaryDark">@color/colorWhite</item>
+        <item name="colorAccent">@color/colorWhite</item>
+    </style>
+
+    <style name="EditTextTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorControlNormal">@color/colorBlackOverlay</item>
+        <item name="colorControlActivated">@color/colorBlackOverlay</item>
+        <item name="colorControlHighlight">@color/colorBlackOverlay</item>
+    </style>
+
+    <style name="ProgressBarTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorControlNormal">@color/colorBlue</item>
+        <item name="colorControlActivated">@color/colorBlue</item>
+        <item name="colorControlHighlight">@color/colorBlue</item>
+    </style>
+
+    <style name="MultiStateViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="msv_animateViewChanges">false</item>
+        <item name="msv_emptyView">@layout/empty_view</item>
+        <item name="msv_errorView">@layout/error_view</item>
+        <item name="msv_loadingView">@layout/loading_view</item>
+        <item name="msv_viewState">content</item>
+    </style>
+
+    <style name="button_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/dimens_8</item>
+        <item name="android:layout_marginEnd">@dimen/dimens_20</item>
+        <item name="android:layout_marginLeft">@dimen/dimens_20</item>
+        <item name="android:layout_marginRight">@dimen/dimens_20</item>
+        <item name="android:layout_marginStart">@dimen/dimens_20</item>
+        <item name="android:layout_marginTop">@dimen/dimens_8</item>
+        <item name="android:paddingLeft">@dimen/dimens_5</item>
+        <item name="android:paddingRight">@dimen/dimens_5</item>
+        <item name="android:background">@drawable/btn_background</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textSize">@dimen/dimens_17sp</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="ToolbarStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="layout_scrollFlags">scroll|enterAlways</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+    </style>
+
+    <style name="ToolbarTitleStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:fontFamily">@font/montserrat_semibold</item>
+        <item name="android:text">@string/app_name</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textSize">@dimen/dimens_16sp</item>
+    </style>
+
+    <style name="MyDatePickerDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+
+    <style name="DialogCardView" parent="NotesCardViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">@dimen/dimens_14</item>
+        <item name="android:layout_marginBottom">@dimen/dimens_15</item>
+        <item name="android:layout_marginTop">@dimen/dimens_15</item>
+        <item name="android:layout_marginLeft">@dimen/dimens_14</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="DialogTextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/dimens_4</item>
+        <item name="android:paddingRight">@dimen/dimens_4</item>
+        <item name="android:paddingTop">@dimen/dimens_4</item>
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textSize">@dimen/dimens_16sp</item>
+    </style>
+
+    <style name="DialogTextView_Title">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/dimens_4</item>
+        <item name="android:paddingRight">@dimen/dimens_4</item>
+        <item name="android:paddingTop">@dimen/dimens_4</item>
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textSize">@dimen/dimens_18sp</item>
+    </style>
+</resources>

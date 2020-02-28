@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">DP Delivery</string>
+    <string name="login">Login</string>
+    <string name="enter_user_name">Enter UserName</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="email">Username</string>
+    <string name="password">Password</string>
+    <string name="err_password">Please Enter Password</string>
+    <string name="err_Mobile">Please Enter UserName</string>
+    <string name="error_something_wrong">Error Something went wrong</string>
+    <string name="empty_result">No Data Found</string>
+    <string name="refresh">Refresh</string>
+    <string name="retry">Retry</string>
+    <string name="custphn">Mobile :</string>
+    <string name="alternate_no">Alt Mobile :</string>
+    <string name="cust_email">Mail :</string>
+    <string name="status">Status :</string>
+    <string name="no_jobs_list">No Jobs Found</string>
+    <string name="customer_name">Name :</string>
+    <string name="update_appointment">Update Appointment</string>
+    <string name="appointment_date">Appointment Date</string>
+    <string name="appointment_time">Appointment Time</string>
+    <string name="note">Note</string>
+    <string name="reset">Reset</string>
+    <string name="update">Update</string>
+    <string name="update_delivery_status">Update Status</string>
+    <string name="update_status">Status</string>
+    <string name="search">Search</string>
+    <string name="home">Home</string>
+    <string name="note_list">View Notes</string>
+    <string name="assign_agent">Assign Agent</string>
+    <string name="assigned_to">Assigned To :</string>
+    <string name="appt_time">Appt At :</string>
+    <string name="please_wait">Please wait</string>
+    <string name="pin_location">Pin Location</string>
+    <string name="woops_something_went_wrong">Whoops Something Went Wrong!</string>
+    <string name="unable_to_identify">Unable to identify location?</string>
+    <string name="please_try_again">Please try again.</string>
+    <string name="please_provide_location_permission">Please Provide Location Permission</string>
+    <string name="assign">Assign</string>
+    <string name="re_assign">Re-Assign</string>
+    <string name="area">Area :</string>
+    <string name="upload_images">Upload Images</string>
+    <string name="location">Location</string>
+    <string name="pay_amount">Pay Amount</string>
+
+
+</resources>

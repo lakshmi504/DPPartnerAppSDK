@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/DashboardCardViewStyle"
+    android:layout_gravity="center">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/btn_close"
+        android:layout_width="@dimen/dimens_25"
+        android:layout_height="@dimen/dimens_25"
+        android:layout_gravity="end"
+        android:layout_marginStart="@dimen/minus_dimens_10"
+        android:layout_marginBottom="@dimen/minus_dimens_60"
+        android:src="@drawable/ic_error" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_semibold"
+            android:gravity="center"
+            android:padding="@dimen/dimens_10"
+            android:text="@string/update_delivery_status"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/dimens_16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimens_1"
+            android:layout_marginStart="@dimen/dimens_20"
+            android:layout_marginEnd="@dimen/dimens_20"
+            android:background="@color/colorBlackOverlay" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="@dimen/dimens_20"
+            android:layout_marginTop="@dimen/dimens_10">
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/sp_mode"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:padding="@dimen/dimens_5"
+                android:spinnerMode="dropdown" />
+        </RelativeLayout>
+
+
+        <EditText
+            android:id="@+id/et_status_note"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="@dimen/dimens_20"
+            android:layout_marginTop="@dimen/dimens_10"
+            android:layout_marginEnd="@dimen/dimens_20"
+            android:background="@drawable/bg_note"
+            android:fontFamily="@font/montserrat_regular"
+            android:gravity="top"
+            android:hint="@string/note"
+            android:inputType="textCapSentences|textMultiLine"
+            android:maxLength="400"
+            android:maxLines="5"
+            android:textCursorDrawable="@null"
+            android:textSize="@dimen/dimens_12sp" />
+
+        <RelativeLayout
+            android:id="@+id/rl_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimens_20"
+            android:layout_marginTop="@dimen/dimens_10"
+            android:layout_marginEnd="@dimen/dimens_20"
+            android:background="@drawable/bg_note"
+            android:visibility="gone">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dimens_5"
+                android:gravity="start"
+                android:hint="@string/location" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_location"
+                android:layout_width="@dimen/dimens_25"
+                android:layout_height="@dimen/dimens_25"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/ic_location" />
+
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/et_amount"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="@dimen/dimens_20"
+            android:layout_marginTop="@dimen/dimens_10"
+            android:layout_marginEnd="@dimen/dimens_20"
+            android:background="@drawable/bg_note"
+            android:fontFamily="@font/montserrat_regular"
+            android:gravity="top"
+            android:hint="@string/pay_amount"
+            android:inputType="number"
+            android:textCursorDrawable="@null"
+            android:textSize="@dimen/dimens_12sp"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="@dimen/dimens_20"
+            android:layout_marginTop="@dimen/dimens_10">
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/sp_payment"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:padding="@dimen/dimens_5"
+                android:spinnerMode="dropdown"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btn_upload_images"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dimens_30"
+            android:layout_gravity="start"
+            android:layout_marginStart="@dimen/dimens_20"
+            android:layout_marginTop="@dimen/dimens_10"
+            android:background="@color/colorBlackOverlay"
+            android:drawableEnd="@drawable/ic_upload"
+            android:drawablePadding="@dimen/dimens_10"
+            android:fontFamily="@font/montserrat_regular"
+            android:paddingStart="@dimen/dimens_10"
+            android:paddingEnd="@dimen/dimens_10"
+            android:text="@string/upload_images"
+            android:textAllCaps="true"
+            android:textColor="@color/colorWhite"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_15"
+            android:layout_marginBottom="@dimen/dimens_15"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_status_reset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_20"
+                android:layout_marginEnd="@dimen/dimens_20"
+                android:background="@drawable/btn_grey_bg"
+                android:fontFamily="@font/montserrat_semibold"
+                android:text="@string/reset"
+                android:textColor="@color/colorWhite" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_status_update"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_10"
+                android:layout_marginEnd="@dimen/dimens_20"
+                android:background="@drawable/btn_orange_bg"
+                android:fontFamily="@font/montserrat_semibold"
+                android:text="@string/update"
+                android:textColor="@color/colorWhite" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
