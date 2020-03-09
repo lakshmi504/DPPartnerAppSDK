@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="@dimen/dimens_10"
+        android:layout_marginEnd="@dimen/dimens_10"
+        android:padding="@dimen/dimens_15"
+        android:background="#fff">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="@dimen/dimens_50"
+            android:layout_height="@dimen/dimens_50"
+            android:layout_centerVertical="true"
+            android:layout_margin="7dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/colorBlue"
+            android:indeterminateTintMode="src_atop" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/progressBar"
+            android:text="Image Uploading Please Wait..."
+            android:fontFamily="@font/montserrat_regular"
+            android:textColor="@color/colorBlack" />
+    </RelativeLayout>
+
+</RelativeLayout>

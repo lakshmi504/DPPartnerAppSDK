@@ -130,23 +130,69 @@
                 android:visibility="gone" />
         </RelativeLayout>
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/btn_upload_images"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dimens_30"
-            android:layout_gravity="start"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dimens_20"
             android:layout_marginTop="@dimen/dimens_10"
-            android:background="@color/colorBlackOverlay"
-            android:drawableEnd="@drawable/ic_upload"
-            android:drawablePadding="@dimen/dimens_10"
-            android:fontFamily="@font/montserrat_regular"
-            android:paddingStart="@dimen/dimens_10"
-            android:paddingEnd="@dimen/dimens_10"
-            android:text="@string/upload_images"
-            android:textAllCaps="true"
-            android:textColor="@color/colorWhite"
-            android:visibility="gone" />
+            android:gravity="start"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/btn_upload_trans_image"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dimens_30"
+                android:background="@color/colorBlackOverlay"
+                android:drawablePadding="@dimen/dimens_10"
+                android:fontFamily="@font/montserrat_regular"
+                android:paddingStart="@dimen/dimens_10"
+                android:paddingEnd="@dimen/dimens_10"
+                android:text="@string/upload_images"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/dimens_10sp"
+                android:visibility="gone" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_success"
+                android:layout_width="@dimen/dimens_30"
+                android:layout_height="@dimen/dimens_30"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/dimens_10"
+                android:src="@drawable/ic_success"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimens_20"
+            android:layout_marginTop="@dimen/dimens_10"
+            android:gravity="start"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/btn_upload_purifier_image"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dimens_30"
+                android:background="@color/colorBlackOverlay"
+                android:drawablePadding="@dimen/dimens_10"
+                android:fontFamily="@font/montserrat_regular"
+                android:paddingStart="@dimen/dimens_10"
+                android:paddingEnd="@dimen/dimens_10"
+                android:text="@string/upload_delivered_image"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/dimens_10sp"
+                android:visibility="gone" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_img_success"
+                android:layout_width="@dimen/dimens_30"
+                android:layout_height="@dimen/dimens_30"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/dimens_10"
+                android:src="@drawable/ic_success"
+                android:visibility="gone" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -181,4 +227,5 @@
         </LinearLayout>
 
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>

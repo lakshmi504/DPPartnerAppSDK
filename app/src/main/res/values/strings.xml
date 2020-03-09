@@ -40,9 +40,11 @@
     <string name="assign">Assign</string>
     <string name="re_assign">Re-Assign</string>
     <string name="area">Area :</string>
-    <string name="upload_images">Upload Images</string>
+    <string name="upload_images">Upload Transaction Image</string>
     <string name="location">Location</string>
     <string name="pay_amount">Pay Amount</string>
+    <string name="permission_denied">Permission Denied</string>
+    <string name="upload_delivered_image">Upload Delivered Image</string>
 
 
 </resources>

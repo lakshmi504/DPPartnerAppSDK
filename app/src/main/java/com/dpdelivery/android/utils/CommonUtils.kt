@@ -1,11 +1,18 @@
 package com.dpdelivery.android.utils
 
 import android.app.DatePickerDialog
+import android.app.Dialog
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.Address
 import android.location.Geocoder
 import android.util.Base64
+import android.view.LayoutInflater
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.dpdelivery.android.R
 import com.dpdelivery.android.interfaces.SelectedDateListener
 import java.io.ByteArrayOutputStream
@@ -72,11 +79,34 @@ class CommonUtils {
             return fetchedAddress
         }
 
-        fun convertToBase64(bitmap: Bitmap): String {
-            val baos = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos)
-            val byteArrayImage = baos.toByteArray()
-            return Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
+        fun setUserImagebitmap(mContext: Context, imageView: ImageView, stream: ByteArrayOutputStream) {
+            Glide.with(mContext).load(stream.toByteArray()).apply(RequestOptions.centerCropTransform()).into(imageView)
+        }
+
+        fun progressDialog(context: Context): Dialog {
+            val dialog = Dialog(context)
+            val inflate = LayoutInflater.from(context).inflate(R.layout.progress_dialog, null)
+            dialog.setContentView(inflate)
+            dialog.setCancelable(false)
+            dialog.window!!.setBackgroundDrawable(
+                    ColorDrawable(Color.TRANSPARENT))
+            return dialog
+        }
+
+        fun saveTransactionImageName(string: String?) {
+            SharedPreferenceManager.setPrefVal(SharedPreferenceManager.TRANSACTION_IMAGE, string!!, SharedPreferenceManager.VALUE_TYPE.STRING)
+
+        }
+        fun getTransactionImageName(): String {
+            return SharedPreferenceManager.getPrefVal(SharedPreferenceManager.TRANSACTION_IMAGE, "", SharedPreferenceManager.VALUE_TYPE.STRING) as String
+        }
+
+        fun saveDeliveredImageName(string: String?) {
+            SharedPreferenceManager.setPrefVal(SharedPreferenceManager.DELIVERED_IMAGE, string!!, SharedPreferenceManager.VALUE_TYPE.STRING)
+
+        }
+        fun getDeliveredImageName(): String {
+            return SharedPreferenceManager.getPrefVal(SharedPreferenceManager.DELIVERED_IMAGE, "", SharedPreferenceManager.VALUE_TYPE.STRING) as String
         }
     }
 }

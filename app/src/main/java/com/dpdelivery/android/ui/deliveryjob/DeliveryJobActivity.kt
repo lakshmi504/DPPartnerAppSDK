@@ -39,6 +39,7 @@ import kotlinx.android.synthetic.main.app_bar_base.*
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
 import kotlinx.android.synthetic.main.layout_header.*
+import kotlinx.android.synthetic.main.layout_update_status.*
 import okhttp3.ResponseBody
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -61,6 +62,9 @@ class DeliveryJobActivity : BaseActivity(), View.OnClickListener, DeliveryJobCon
     private var paymentmodeSpin: Spinner? = null
     private var layout_location: RelativeLayout? = null
     private var btn_upload_images: AppCompatTextView? = null
+    private var iv_upload_image: AppCompatImageView? = null
+    private var iv_purifier_images: AppCompatImageView? = null
+    private var btn_upload_purifier_image: AppCompatTextView? = null
     private var mode: String? = null
     private var paymentmode: String? = null
     private var phone: String? = null
@@ -72,6 +76,8 @@ class DeliveryJobActivity : BaseActivity(), View.OnClickListener, DeliveryJobCon
     lateinit var adapterNotesList: BasicAdapter
     private var amount: Double? = null
     internal val LOCATION_REQUEST_CODE = 6
+    internal val PHOTO_REQUEST_CODE = 1
+    internal val PIC_REQUEST_CODE = 2
     private var latitude: Double = 0.toDouble()
     private var longitude: Double = 0.toDouble()
     private var address: String? = null
@@ -82,6 +88,7 @@ class DeliveryJobActivity : BaseActivity(), View.OnClickListener, DeliveryJobCon
     private var selected_id = ArrayList<String>()
     private var agentId: String? = null
     private var TAG = "DeliveryJobActivity"
+    private var isPhotoSet: Boolean = false
     private var note_list: ArrayList<DeliveryJobsResNote?>? = null
     private val statusMode: Array<String> = arrayOf<String>("Select Status", "New", "Assigned", "Picked-Up", "In-Progress", "Delayed", "On-Hold", "Rejected", "Delivered")
     private val paymentMode: Array<String> = arrayOf<String>("Payment Type", "Cash on delivery", "Card on delivery", "Prepaid")
@@ -272,6 +279,8 @@ class DeliveryJobActivity : BaseActivity(), View.OnClickListener, DeliveryJobCon
     override fun showUpdateStatus(responseBody: ResponseBody) {
         if (responseBody.string().isNotEmpty()) {
             toast("Updated Status/Note successfully.")
+            CommonUtils.saveTransactionImageName("")
+            CommonUtils.saveDeliveredImageName("")
         }
     }
 
@@ -315,12 +324,14 @@ class DeliveryJobActivity : BaseActivity(), View.OnClickListener, DeliveryJobCon
                     payamount!!.visibility = View.VISIBLE
                     layout_location!!.visibility = View.VISIBLE
                     btn_upload_images!!.visibility = View.VISIBLE
+                    btn_upload_purifier_image!!.visibility = View.VISIBLE
 
                 } else {
                     paymentmodeSpin!!.visibility = View.GONE
                     payamount!!.visibility = View.GONE
                     layout_location!!.visibility = View.GONE
                     btn_upload_images!!.visibility = View.GONE
+                    btn_upload_purifier_image!!.visibility = View.GONE
 
                 }
             }
@@ -352,16 +363,29 @@ class DeliveryJobActivity : BaseActivity(), View.OnClickListener, DeliveryJobCon
         modeSpin = appointmentDialog!!.findViewById(R.id.sp_mode)
         paymentmodeSpin = appointmentDialog!!.findViewById(R.id.sp_payment)
         layout_location = appointmentDialog!!.findViewById(R.id.rl_location)
-        btn_upload_images = appointmentDialog!!.findViewById(R.id.btn_upload_images)
+        btn_upload_images = appointmentDialog!!.findViewById(R.id.btn_upload_trans_image)
+        iv_upload_image = appointmentDialog!!.findViewById(R.id.iv_success)
+        iv_purifier_images = appointmentDialog!!.findViewById(R.id.iv_img_success)
+        btn_upload_purifier_image = appointmentDialog!!.findViewById(R.id.btn_upload_purifier_image)
         payamount = appointmentDialog!!.findViewById(R.id.et_amount)
         locationTxt = appointmentDialog!!.findViewById(R.id.tv_location)
         (appointmentDialog!!.findViewById(R.id.iv_location) as AppCompatImageView).setOnClickListener {
             val intent = Intent(context, MapLocationActivity::class.java)
             startActivityForResult(intent, LOCATION_REQUEST_CODE)
         }
-        (appointmentDialog!!.findViewById(R.id.btn_upload_images) as AppCompatTextView).setOnClickListener {
+        btn_upload_images!!.setDrawableRight(R.drawable.ic_upload)
+        btn_upload_purifier_image!!.setDrawableRight(R.drawable.ic_upload)
+        btn_upload_images!!.setOnClickListener {
             val intent = Intent(context, PhotosActivity::class.java)
-            startActivityForResult(intent, LOCATION_REQUEST_CODE)
+            intent.putExtra(Constants.ID, job_id)
+            intent.putExtra(Constants.SOURCE, btn_upload_images!!.text)
+            startActivityForResult(intent, PHOTO_REQUEST_CODE)
+        }
+        btn_upload_purifier_image!!.setOnClickListener {
+            val intent = Intent(context, PhotosActivity::class.java)
+            intent.putExtra(Constants.ID, job_id)
+            intent.putExtra(Constants.SOURCE, btn_upload_purifier_image!!.text)
+            startActivityForResult(intent, PIC_REQUEST_CODE)
         }
         loadDefaultSpinner()
         loadPaymentSpinner()
@@ -381,14 +405,24 @@ class DeliveryJobActivity : BaseActivity(), View.OnClickListener, DeliveryJobCon
                 if (locationTxt!!.text.isNotEmpty()) {
                     if (payamount!!.text.isNotEmpty()) {
                         if (paymentmode != "Payment Type") {
-                            presenter.updateStatus(updateStatusIp = UpdateStatusIp(jobId = job_id,
-                                    status = mode,
-                                    note = (appointmentDialog!!.findViewById(R.id.et_status_note) as EditText).text.toString(),
-                                    payAmount = payamount!!.text.toString(),
-                                    payType = paymentmode,
-                                    latLong = "$latitude,$longitude"))
-                            appointmentDialog!!.dismiss()
-                            init()
+                            if (CommonUtils.getTransactionImageName().isNotEmpty()) {
+                                if (CommonUtils.getDeliveredImageName().isNotEmpty()) {
+                                    presenter.updateStatus(updateStatusIp = UpdateStatusIp(jobId = job_id,
+                                            status = mode,
+                                            note = (appointmentDialog!!.findViewById(R.id.et_status_note) as EditText).text.toString(),
+                                            payAmount = payamount!!.text.toString(),
+                                            payType = paymentmode,
+                                            latLong = "$latitude,$longitude",
+                                            payImage = CommonUtils.getTransactionImageName(),
+                                            deliveryImage = CommonUtils.getDeliveredImageName()))
+                                    appointmentDialog!!.dismiss()
+                                    init()
+                                } else {
+                                    toast("Please Upload Delivered Image")
+                                }
+                            } else {
+                                toast("Please Upload Transaction Image")
+                            }
                         } else {
                             toast("Please select payment type")
                         }
@@ -417,7 +451,12 @@ class DeliveryJobActivity : BaseActivity(), View.OnClickListener, DeliveryJobCon
             locationTxt!!.text = address
             locationTxt!!.setTextColor(ContextCompat.getColor(context, R.color.colorBlacklight))
             isLocationSet = true
-
+        } else if (requestCode == PHOTO_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            isPhotoSet = true
+            iv_upload_image!!.visibility = View.VISIBLE
+        } else if (requestCode == PIC_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            isPhotoSet = true
+            iv_purifier_images!!.visibility = View.VISIBLE
         }
     }
 
@@ -553,12 +592,12 @@ class DeliveryJobActivity : BaseActivity(), View.OnClickListener, DeliveryJobCon
     }
 
     override fun setSelectedDate(date: String, s: String) {
-        val appointmentdate = date
+        val appointmentDate = date
         val input = SimpleDateFormat("dd-MM-yyyy", Locale.ROOT)
         val output = SimpleDateFormat("EEE, d-MMM-yyyy", Locale.ROOT)
         var d: Date? = null
         try {
-            d = input.parse(appointmentdate)
+            d = input.parse(appointmentDate)
         } catch (e: ParseException) {
             e.printStackTrace()
         }

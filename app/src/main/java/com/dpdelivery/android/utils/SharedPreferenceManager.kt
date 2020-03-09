@@ -19,6 +19,8 @@ class SharedPreferenceManager {
         val SEARCHED_LONG = "SEARCHED_LONG"
         val SEARCHED_AREA = "SEARCHED_AREA"
         val SEARCHED_CITY = "SEARCHED_CITY"
+        val TRANSACTION_IMAGE= "TRANSACTION_IMAGE"
+        val DELIVERED_IMAGE= "DELIVERED_IMAGE"
 
         fun clearPreferences() {
             getPrefs().edit().clear().apply()

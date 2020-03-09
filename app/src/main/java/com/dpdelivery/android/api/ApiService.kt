@@ -2,6 +2,8 @@ package com.dpdelivery.android.api
 
 import com.dpdelivery.android.model.*
 import io.reactivex.Observable
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*
@@ -34,4 +36,8 @@ interface ApiService {
 
     @PUT(ApiConstants.ASSIGN_JOB)
     fun assignJob(@Header("Authorization") token: String, @Body assignJobsIp: AssignJobsIp): Observable<AssignJobRes>
+
+    @Multipart
+    @PUT(ApiConstants.UPLOAD_PHOTO)
+    fun uploadPhoto(@Header("Authorization") token: String, @Part("jobId") jobId: RequestBody, @Part file: MultipartBody.Part): Observable<UploadPhotoRes>
 }

@@ -12,5 +12,7 @@ class ApiConstants {
         const val SEARCH = "delivery/getJobs"
         const val GET_AGENTS = "delivery/getAgents"
         const val ASSIGN_JOB = "delivery/assignJobs"
+        const val UPLOAD_PHOTO = "delivery/uploadPhoto"
+
     }
 }

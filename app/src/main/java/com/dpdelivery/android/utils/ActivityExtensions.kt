@@ -54,4 +54,8 @@ fun TextView.setDrawableLeft(left: Int) {
     this.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(this.context, left), null, null, null)
 }
 
+fun TextView.setDrawableRight(right: Int) {
+    this.setCompoundDrawablesWithIntrinsicBounds(null, null, AppCompatResources.getDrawable(this.context, right), null)
+}
+
 

@@ -7,13 +7,14 @@
     tools:context=".ui.photo.PhotosActivity">
 
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textdata"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/btn_capture"
         android:layout_marginTop="@dimen/dimens_20"
         android:fontFamily="@font/montserrat_semibold"
         android:gravity="center"
-        android:text="Upload Images"
+        android:text="Upload Transaction Image"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/dimens_14sp" />
 
@@ -36,7 +37,7 @@
         android:layout_centerInParent="true"
         android:layout_margin="@dimen/dimens_30"
         android:background="@drawable/orange_border"
-        android:scaleType="fitXY"/>
+        android:scaleType="fitXY" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_upload"
@@ -49,5 +50,18 @@
         android:text="Upload Image"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/dimens_12sp"
+        android:visibility="gone" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/upload_message"
+        android:layout_width="@dimen/dimens_120"
+        android:layout_height="@dimen/dimens_40"
+        android:layout_below="@id/image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dimens_10"
+        android:gravity="center"
+        android:text="Image Uploaded Successfully"
+        android:textColor="@color/colorGreen"
+        android:textSize="@dimen/dimens_14sp"
         android:visibility="gone" />
 </RelativeLayout>

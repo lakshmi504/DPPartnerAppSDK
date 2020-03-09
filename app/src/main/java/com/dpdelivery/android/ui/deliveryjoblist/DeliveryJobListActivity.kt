@@ -1,5 +1,6 @@
 package com.dpdelivery.android.ui.deliveryjoblist
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -50,9 +51,10 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
     private var modeSpin: Spinner? = null
     private val statusMode: Array<String> = arrayOf<String>("Status Filter", "New", "Assigned", "Picked-Up", "In-Progress", "Delayed", "On-Hold", "Rejected", "Delivered")
 
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         LayoutInflater.from(baseContext).inflate(R.layout.activity_delivery_job_list, layout_container)
         init()
     }
