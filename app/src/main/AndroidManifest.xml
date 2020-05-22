@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.dpdelivery.android">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -32,9 +33,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.photo.PhotosActivity"/>
-        <activity android:name=".ui.location.MapLocationActivity" />
-        <activity android:name=".ui.location.LocationActivity" />
+        <activity android:name=".technicianui.photo.ImageActivity"></activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -53,8 +52,6 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".ui.deliveryjob.DeliveryJobActivity" />
-        <activity android:name=".ui.deliveryjoblist.DeliveryJobListActivity" />
         <activity
             android:name=".ui.login.LoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -74,6 +71,64 @@
         <activity
             android:name=".ui.base.BaseActivity"
             android:theme="@style/AppTheme" />
+        <activity android:name=".ui.deliveryjob.DeliveryJobActivity" />
+        <activity
+            android:name=".ui.deliveryjoblist.DeliveryJobListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/noAnimTheme"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ui.dashboard.DashBoardActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/noAnimTheme"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ui.deliveryjob.ImagesActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ui.photo.PhotosActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ui.location.MapLocationActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ui.location.LocationActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".technicianui.base.TechBaseActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".technicianui.jobdetails.TechJobDetailsActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".technicianui.techjobslist.TechJobsListActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".technicianui.scanner.ScannerActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".technicianui.finish.FinishJobActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
     </application>
 
 </manifest>

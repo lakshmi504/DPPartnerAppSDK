@@ -2,7 +2,6 @@ package com.dpdelivery.android.ui.deliveryjoblist
 
 import android.content.Context
 import com.dpdelivery.android.api.ApiService
-import com.dpdelivery.android.model.AssignJobsIp
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.schedulers.BaseScheduler
 import io.reactivex.disposables.CompositeDisposable

@@ -19,7 +19,7 @@ data class Data(
         val deliveredAt: Any?,
         val extOrderId: String?,
         val id: Int?,
-        val notes: ArrayList<Note?>?,
+        val notes: ArrayList<DeliNote?>?,
         val orderId: Int?,
         val payAmount: Double?,
         val payType: PayTypeList?,
@@ -34,7 +34,7 @@ data class AssignedTo(
         val name: String?
 )
 
-data class Note(
+data class DeliNote(
         val createdBy: CreatedBy?,
         val createdOn: String?,
         val id: Int?,

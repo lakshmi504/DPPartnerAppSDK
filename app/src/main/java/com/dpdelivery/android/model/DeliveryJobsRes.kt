@@ -13,8 +13,10 @@ data class DeliveryJobsRes(
         val customerId: Int?,
         val deliveredAt: Any?,
         val extOrderId: String?,
+        val payImage: String?,
+        val deliveryImage: String?,
         val id: Int?,
-        val notes: ArrayList<DeliveryJobsResNote?>?,
+        val notes: ArrayList<Note?>?,
         val orderId: Int?,
         val payAmount: Double?,
         val payType: PayType?,
@@ -23,7 +25,7 @@ data class DeliveryJobsRes(
         val type: Any?
 )
 
-data class DeliveryJobsResNote(
+data class Note(
         val createdBy: JobCreatedBy?,
         val createdOn: String?,
         val id: Int?,
@@ -34,10 +36,12 @@ data class JobCreatedBy(
         val id: Int?,
         val name: String?
 )
+
 data class AssignedToJob(
         val id: Int?,
         val name: String?
 )
+
 data class PayType(
         val code: String?,
         val description: String?,

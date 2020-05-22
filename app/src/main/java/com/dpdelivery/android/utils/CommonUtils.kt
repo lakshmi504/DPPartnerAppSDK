@@ -14,6 +14,7 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.dpdelivery.android.R
+import com.dpdelivery.android.api.ApiConstants
 import com.dpdelivery.android.interfaces.SelectedDateListener
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -78,7 +79,11 @@ class CommonUtils {
             }
             return fetchedAddress
         }
-
+        fun setImage(mContext: Context, imageView: ImageView, photo: String?) {
+            Glide.with(mContext).load(ApiConstants.BASE_IMAGE_URL + photo)
+                    .apply(RequestOptions.centerInsideTransform())
+                    .into(imageView)
+        }
         fun setUserImagebitmap(mContext: Context, imageView: ImageView, stream: ByteArrayOutputStream) {
             Glide.with(mContext).load(stream.toByteArray()).apply(RequestOptions.centerCropTransform()).into(imageView)
         }

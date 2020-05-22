@@ -9,7 +9,7 @@
     <dimen name="nav_drawer_width">@dimen/dimens_165</dimen>
 
     <!-- Dimens -->
-    <dimen name="dimens_0.5">1.20dp</dimen>
+    <dimen name="dimens_0.5" >1.20dp</dimen>
     <dimen name="dimens_1">2.40dp</dimen>
     <dimen name="dimens_1.5">3.60dp</dimen>
     <dimen name="dimens_2">4.80dp</dimen>

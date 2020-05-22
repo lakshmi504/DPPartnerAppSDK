@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView style="@style/DashboardCardViewStyle">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/dimens_8"
+                android:paddingEnd="@dimen/dimens_8">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.2"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dimens_5"
+                            android:fontFamily="@font/montserrat_semibold"
+                            android:text="@string/job_id"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/dimens_12sp" />
+
+                        <TextView
+                            android:id="@+id/tv_job_id"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dimens_5"
+                            android:fontFamily="@font/montserrat_regular"
+                            android:textSize="@dimen/dimens_14sp" />
+
+                    </LinearLayout>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_add_note"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dimens_30"
+                        android:layout_weight="0.8"
+                        android:layout_margin="@dimen/dimens_10"
+                        android:text="@string/add_note"
+                        android:textAllCaps="false"
+                        android:fontFamily="@font/montserrat_regular"
+                        android:textSize="@dimen/dimens_12sp"
+                        android:textColor="@color/colorWhite"
+                        android:background="@drawable/btn_background"/>
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimens_5"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="@string/job_type"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/dimens_12sp" />
+
+                <TextView
+                    android:id="@+id/tv_job_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimens_5"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:textSize="@dimen/dimens_14sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimens_10"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="@string/customer_name"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/dimens_12sp" />
+
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimens_5"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:textSize="@dimen/dimens_14sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimens_10"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="@string/custphn"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/dimens_12sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/iv_call"
+                        android:fontFamily="@font/montserrat_regular"
+                        android:textSize="@dimen/dimens_14sp" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/iv_call"
+                        android:layout_width="@dimen/dimens_20"
+                        android:layout_height="@dimen/dimens_20"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/dimens_20"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:src="@drawable/ic_call" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimens_10"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="@string/alternate_no"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/dimens_12sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_alt_phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/iv_alt_call"
+                        android:fontFamily="@font/montserrat_regular"
+                        android:textSize="@dimen/dimens_14sp" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/iv_alt_call"
+                        android:layout_width="@dimen/dimens_20"
+                        android:layout_height="@dimen/dimens_20"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/dimens_20"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:src="@drawable/ic_call" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimens_10"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="@string/address"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/dimens_12sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="fill_vertical"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:id="@+id/tv_address"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="@dimen/dimens_5"
+                        android:layout_weight="1.5"
+                        android:fontFamily="@font/montserrat_regular"
+                        android:textSize="@dimen/dimens_14sp" />
+
+                    <FrameLayout
+                        android:id="@+id/imageButton"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dimens_40"
+                        android:layout_weight="0.5"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/location" />
+                    </FrameLayout>
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimens_10"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="@string/appt_start_date"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/dimens_12sp" />
+
+                <TextView
+                    android:id="@+id/tv_appt_start"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimens_5"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:textSize="@dimen/dimens_14sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimens_10"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="@string/appt_end_date"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/dimens_12sp" />
+
+                <TextView
+                    android:id="@+id/tv_appt_end"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimens_5"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:textSize="@dimen/dimens_14sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimens_10"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text="@string/job_description"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/dimens_12sp" />
+
+                <TextView
+                    android:id="@+id/tv_job_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimens_5"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:textSize="@dimen/dimens_14sp" />
+
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_start_job"
+                    android:layout_width="@dimen/dimens_150"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/dimens_10"
+                    android:background="@drawable/btn_orange_bg"
+                    android:gravity="center"
+                    android:paddingStart="@dimen/dimens_15"
+                    android:paddingEnd="@dimen/dimens_15"
+                    android:text="@string/start_job"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/dimens_12sp"
+                    android:visibility="visible" />
+
+                <include
+                    android:id="@+id/layout_ins"
+                    layout="@layout/layout_type_installation"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+</ScrollView>

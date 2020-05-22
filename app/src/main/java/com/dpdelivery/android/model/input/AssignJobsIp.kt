@@ -1,4 +1,4 @@
-package com.dpdelivery.android.model
+package com.dpdelivery.android.model.input
 
 data class AssignJobsIp(
     val assignTo: String?,

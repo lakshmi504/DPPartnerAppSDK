@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import com.dpdelivery.android.commonadapter.BaseViewholder
 import com.dpdelivery.android.interfaces.IAdapterClickListener
-import com.dpdelivery.android.model.DeliveryJobsResNote
+import com.dpdelivery.android.model.Note
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_notes_list.*
 import java.text.ParseException
@@ -14,7 +14,7 @@ import java.util.*
 class NotesListViewHolder(override val containerView: View?, var context: Context, private var adapterClickListener: IAdapterClickListener) : BaseViewholder(containerView), LayoutContainer {
 
     override fun bind(context: Context, item: Any, pos: Int) {
-        if (item is DeliveryJobsResNote) {
+        if (item is Note) {
             tv_note.text = item.note
 
             val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ROOT)

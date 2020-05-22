@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dpdelivery.android.R
 import com.dpdelivery.android.interfaces.IAdapterClickListener
-import com.dpdelivery.android.interfaces.IAdapterLongClickListener
+import com.dpdelivery.android.technicianui.techjobslist.viewholder.TechJobsListViewHolder
 import com.dpdelivery.android.ui.deliveryjob.viewholder.NotesListViewHolder
 import com.dpdelivery.android.ui.deliveryjoblist.viewholder.DeliveryJobsListViewHolder
 import com.dpdelivery.android.utils.inflate
@@ -27,6 +27,13 @@ class BasicAdapter(var context: Context, var type: Int, var adapterType: String 
         when (type) {
             R.layout.item_delivery_jobs_list -> holder = DeliveryJobsListViewHolder(view, context, adapterClickListener!!)
             R.layout.item_notes_list -> holder = NotesListViewHolder(view, context, adapterClickListener!!)
+
+
+            //techapp
+
+            R.layout.item_asg_jobs_list -> holder = TechJobsListViewHolder(view, context, adapterClickListener!!)
+
+
         }
         return holder
     }

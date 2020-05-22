@@ -2,7 +2,7 @@ package com.dpdelivery.android.ui.login
 
 import com.dpdelivery.android.BasePresenter
 import com.dpdelivery.android.BaseView
-import com.dpdelivery.android.model.LoginIp
+import com.dpdelivery.android.model.input.LoginIp
 import okhttp3.Headers
 
 interface LoginContract {

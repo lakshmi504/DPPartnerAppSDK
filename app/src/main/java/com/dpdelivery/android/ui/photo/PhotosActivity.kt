@@ -48,6 +48,7 @@ class PhotosActivity : BaseActivity(), View.OnClickListener, PhotoContract.View 
     private val PHOTO_FILE_NAME = UUID.randomUUID().toString() + ".jpeg"
     private var imgpath: String = ""
     private val CAMERA_REQUEST = 0
+
     @Inject
     lateinit var presenter: PhotoPresenter
     private var job_id: Int? = 0
@@ -64,7 +65,7 @@ class PhotosActivity : BaseActivity(), View.OnClickListener, PhotoContract.View 
 
     override fun init() {
         mContext = this
-        btn_capture.setOnClickListener(this)
+        setUpBottomNavView(false)
         if (intent != null) {
             job_id = intent.getIntExtra(Constants.ID, 0)
             source = intent.getStringExtra(Constants.SOURCE)
@@ -72,16 +73,9 @@ class PhotosActivity : BaseActivity(), View.OnClickListener, PhotoContract.View 
         showBack()
         textdata.text = source
         dialog = CommonUtils.progressDialog(context)
-        btn_upload.setOnClickListener {
-            if (imgpath.isNotEmpty()) {
-                dialog.show()
-                val file = File(imgpath)
-                presenter.uploadPhoto(job_id!!, file)
-            }
-        }
-        error_button.setOnClickListener {
-            init()
-        }
+        btn_capture.setOnClickListener(this)
+        btn_upload.setOnClickListener(this)
+        error_button.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -101,6 +95,17 @@ class PhotosActivity : BaseActivity(), View.OnClickListener, PhotoContract.View 
                     Toast.makeText(baseContext, getString(R.string.permission_denied), Toast.LENGTH_LONG).show()
                 }
             }
+            R.id.btn_upload -> {
+                if (imgpath.isNotEmpty()) {
+                    dialog.show()
+                    val file = File(imgpath)
+                    presenter.uploadPhoto(job_id!!, file)
+                }
+            }
+            R.id.error_button -> {
+                init()
+            }
+
         }
     }
 
@@ -130,7 +135,7 @@ class PhotosActivity : BaseActivity(), View.OnClickListener, PhotoContract.View 
             var dir = File(f, "DPDelivery/Image")
             if (!dir.exists())
                 dir.mkdirs()
-            for (temp in dir.listFiles()) {
+            for (temp in dir.listFiles()!!) {
                 if (temp.name == PHOTO_FILE_NAME) {
                     dir = temp
                     imgpath = dir.absolutePath.toString()

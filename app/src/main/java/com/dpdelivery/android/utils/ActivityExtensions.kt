@@ -11,7 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.dpdelivery.android.BuildConfig
+import com.facebook.stetho.BuildConfig
 
 
 fun ViewGroup.inflate(layoutRes: Int): View {
@@ -56,6 +56,12 @@ fun TextView.setDrawableLeft(left: Int) {
 
 fun TextView.setDrawableRight(right: Int) {
     this.setCompoundDrawablesWithIntrinsicBounds(null, null, AppCompatResources.getDrawable(this.context, right), null)
+}
+fun View.makeVisible(isVisible: Boolean) {
+    if (isVisible)
+        this.visibility = View.VISIBLE
+    else
+        this.visibility = View.GONE
 }
 
 

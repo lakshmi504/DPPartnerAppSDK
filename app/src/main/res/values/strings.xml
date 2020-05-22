@@ -40,11 +40,31 @@
     <string name="assign">Assign</string>
     <string name="re_assign">Re-Assign</string>
     <string name="area">Area :</string>
-    <string name="upload_images">Upload Transaction Image</string>
+    <string name="upload_images">Payment Image</string>
     <string name="location">Location</string>
-    <string name="pay_amount">Pay Amount</string>
+    <string name="pay_amount">Amount Collected</string>
     <string name="permission_denied">Permission Denied</string>
-    <string name="upload_delivered_image">Upload Delivered Image</string>
+    <string name="upload_delivered_image">Delivery Image</string>
 
+    <string name="assigned_jobs">Assigned Jobs</string>
+    <string name="working_jobs">Working Jobs</string>
+    <string name="summary">Summary</string>
+    <string name="job_type">Job Type :</string>
+    <string name="callbutton">Call</string>
+    <string name="detailsbutton">Details</string>
+    <string name="appt_date">Appt Date :</string>
+    <string name="appmt_time">Appt Time :</string>
+    <string name="pid">Purifier ID :</string>
+    <string name="address">Address :</string>
+    <string name="appointment_at">Appointment At :</string>
+    <string name="job_description">Job Description :</string>
+    <string name="start_job">Start Job</string>
+    <string name="appt_start_date">Appointment Start Date :</string>
+    <string name="appt_end_date">Appointment End Date :</string>
+    <string name="finish_job">Finish Job</string>
+    <string name="job_id">Job ID :</string>
+    <string name="add_note">Add Note</string>
+    <string name="uploaded_photo">Photo Uploaded Successfully</string>
+    <string name="activate">Activate</string>
 
 </resources>

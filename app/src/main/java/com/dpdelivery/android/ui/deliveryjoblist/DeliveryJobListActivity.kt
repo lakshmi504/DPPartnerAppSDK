@@ -22,6 +22,7 @@ import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.model.Data
 import com.dpdelivery.android.model.DeliveryJobsListRes
 import com.dpdelivery.android.ui.base.BaseActivity
+import com.dpdelivery.android.ui.dashboard.DashBoardActivity
 import com.dpdelivery.android.ui.deliveryjob.DeliveryJobActivity
 import com.dpdelivery.android.utils.setDrawableRight
 import com.dpdelivery.android.utils.toast
@@ -62,6 +63,7 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
     override fun init() {
         mContext = this
         setTitle("Delivery Jobs List")
+        setUpBottomNavView(true)
         empty_button.setOnClickListener(this)
         error_button.setOnClickListener(this)
         et_search.setDrawableRight(R.drawable.ic_search)
@@ -180,6 +182,7 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
     override fun onResume() {
         super.onResume()
         presenter.takeView(this)
+        bottom_navigation.selectedItemId = R.id.action_jobs_list
         getDeliveryJobsList()
     }
 
@@ -219,25 +222,10 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
 
     }
 
-    /*override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.agent_menu, menu)
-        val item = menu.findItem(R.id.action_agent)
-        item.isVisible = CommonUtils.getRole() != ("ROLE_DeliveryPerson")
-        //item.isEnabled = selected.isNotEmpty()
-        return true
+    override fun onBackPressed() {
+        super.onBackPressed()
+        startActivity(Intent(this, DashBoardActivity::class.java))
+        finish()
     }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_agent -> {
-                showAgentsList()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-*/
-
 
 }

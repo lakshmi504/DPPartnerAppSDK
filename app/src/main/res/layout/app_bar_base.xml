@@ -26,9 +26,22 @@
 
     </LinearLayout>
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:background="@color/colorWhite"
+        app:itemIconTint="@drawable/bottom_nav_item_color_state"
+        app:labelVisibilityMode="labeled"
+        app:layout_behavior="com.dpdelivery.android.commonviews.BottomNavigationBehavior"
+        app:menu="@menu/bottom_navigation_items" />
+
     <com.dpdelivery.android.commonviews.MultiStateView
         android:id="@+id/multistateview"
         style="@style/MultiStateViewStyle"
+        android:layout_above="@id/bottom_navigation"
         android:layout_below="@id/coordinator">
 
         <LinearLayout

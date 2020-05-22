@@ -280,6 +280,21 @@
                         android:fontFamily="@font/montserrat_regular"
                         android:textSize="@dimen/dimens_14sp" />
 
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_view_images"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="@dimen/dimens_10"
+                        android:background="@drawable/btn_orange_bg"
+                        android:gravity="center"
+                        android:paddingStart="@dimen/dimens_15"
+                        android:paddingEnd="@dimen/dimens_15"
+                        android:text="View Images Uploaded At Delivery"
+                        android:textAllCaps="false"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/dimens_12sp" />
+
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
@@ -385,6 +400,7 @@
                 android:background="@color/colorBlack" />
 
             <LinearLayout
+                android:id="@+id/ll_status"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -411,6 +427,7 @@
                 android:background="@color/colorBlack" />
 
             <LinearLayout
+                android:id="@+id/ll_appt"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

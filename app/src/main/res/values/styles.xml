@@ -66,13 +66,10 @@
     </style>
 
     <style name="CustomDialogThemeLightBg" parent="Theme.AppCompat.Light.Dialog">
-        <item name="android:windowBackground">@color/colorBlackOverlay</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:gravity">center</item>
         <item name="android:windowIsFloating">false</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="colorPrimary">@color/colorWhite</item>
-        <item name="colorPrimaryDark">@color/colorWhite</item>
-        <item name="colorAccent">@color/colorWhite</item>
+        <item name="colorPrimaryDark">@color/light_orange</item>
     </style>
 
     <style name="EditTextTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -166,5 +163,18 @@
         <item name="android:paddingTop">@dimen/dimens_4</item>
         <item name="android:textColor">@color/colorBlack</item>
         <item name="android:textSize">@dimen/dimens_18sp</item>
+    </style>
+
+    <style name="finish_buttons_style">
+        <item name="android:layout_width">@dimen/dimens_130</item>
+        <item name="android:layout_height">@dimen/dimens_30</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textSize">@dimen/dimens_12sp</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:background">@drawable/btn_grey_bg</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_margin">2dp</item>
+
     </style>
 </resources>

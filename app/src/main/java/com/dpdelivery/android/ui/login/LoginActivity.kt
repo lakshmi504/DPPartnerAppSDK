@@ -1,17 +1,17 @@
 package com.dpdelivery.android.ui.login
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.text.method.HideReturnsTransformationMethod
-import android.text.method.PasswordTransformationMethod
-import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import com.auth0.android.jwt.JWT
 import com.dpdelivery.android.R
-import com.dpdelivery.android.model.LoginIp
-import com.dpdelivery.android.ui.deliveryjoblist.DeliveryJobListActivity
+import com.dpdelivery.android.model.input.LoginIp
+import com.dpdelivery.android.technicianui.techjobslist.TechJobsListActivity
+import com.dpdelivery.android.ui.dashboard.DashBoardActivity
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.toast
 import dagger.android.support.DaggerAppCompatActivity
@@ -22,6 +22,7 @@ import javax.inject.Inject
 class LoginActivity : DaggerAppCompatActivity(), View.OnClickListener, LoginContract.View {
 
     lateinit var mContext: Context
+
     @Inject
     lateinit var presenter: LoginPresenter
 
@@ -31,8 +32,10 @@ class LoginActivity : DaggerAppCompatActivity(), View.OnClickListener, LoginCont
         }
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(R.layout.activity_login)
         init()
     }
@@ -80,9 +83,19 @@ class LoginActivity : DaggerAppCompatActivity(), View.OnClickListener, LoginCont
                 val jwt = JWT(data)
                 val aud = jwt.audience?.get(0)
                 CommonUtils.saveRole(aud.toString())
-                val intent = Intent(this, DeliveryJobListActivity::class.java)
-                startActivity(intent)
-                finish()
+                if (aud.equals("ROLE_Administrator")) {
+                    val intent = Intent(this, TechJobsListActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else if (aud.equals("ROLE_Technician")) {
+                    val intent = Intent(this, TechJobsListActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    val intent = Intent(this, DashBoardActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
             }
         } else {
             toast("Invalid Credentials")
@@ -99,7 +112,7 @@ class LoginActivity : DaggerAppCompatActivity(), View.OnClickListener, LoginCont
     }
 
     override fun showErrorMsg(throwable: Throwable, apiType: String) {
-        toast("Invalid Credentials")
+        toast(throwable.message!!)
     }
 
     override fun onDestroy() {

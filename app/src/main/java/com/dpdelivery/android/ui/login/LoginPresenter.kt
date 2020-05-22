@@ -3,7 +3,7 @@ package com.dpdelivery.android.ui.login
 import android.content.Context
 import com.dpdelivery.android.R
 import com.dpdelivery.android.api.ApiService
-import com.dpdelivery.android.model.LoginIp
+import com.dpdelivery.android.model.input.LoginIp
 import com.dpdelivery.android.utils.schedulers.BaseScheduler
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject

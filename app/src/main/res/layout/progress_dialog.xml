@@ -15,8 +15,8 @@
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyle"
-            android:layout_width="@dimen/dimens_50"
-            android:layout_height="@dimen/dimens_50"
+            android:layout_width="@dimen/dimens_40"
+            android:layout_height="@dimen/dimens_40"
             android:layout_centerVertical="true"
             android:layout_margin="7dp"
             android:indeterminate="true"
@@ -24,6 +24,7 @@
             android:indeterminateTintMode="src_atop" />
 
         <TextView
+            android:id="@+id/loading_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"

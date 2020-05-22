@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_semibold"
+            android:text="@string/pid"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/dimens_12sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimens_10"
+            android:gravity="center">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_purifierid"
+                style="@style/edit_text_style"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/dimens_10"
+                android:layout_marginEnd="@dimen/dimens_10"
+                android:layout_toStartOf="@id/ivqrcodescan"
+                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+                android:gravity="center"
+                android:layout_centerVertical="true"
+                android:inputType="textCapCharacters"
+                android:maxLength="10"
+                android:textSize="@dimen/dimens_14sp" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivqrcodescan"
+                android:layout_width="@dimen/dimens_30"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/dimens_10"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/qr" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_activate"
+        android:layout_width="@dimen/dimens_100"
+        android:layout_height="@dimen/dimens_30"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/btn_orange_bg"
+        android:fontFamily="@font/montserrat_regular"
+        android:text="@string/activate"
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_marginTop="@dimen/dimens_10"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_semibold"
+            android:text="@string/status"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/dimens_12sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/dimens_10"
+                android:layout_toStartOf="@id/iv_refresh"
+                android:background="@drawable/bg_edit_text"
+                android:gravity="center"
+                android:textSize="@dimen/dimens_14sp" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_refresh"
+                android:layout_width="@dimen/dimens_30"
+                android:layout_height="@dimen/dimens_30"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/dimens_10"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_refresh" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_finish_job"
+        android:layout_width="@dimen/dimens_150"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dimens_20"
+        android:layout_marginBottom="@dimen/dimens_20"
+        android:background="@drawable/btn_orange_bg"
+        android:fontFamily="@font/montserrat_regular"
+        android:text="@string/finish_job"
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite" />
+
+</LinearLayout>

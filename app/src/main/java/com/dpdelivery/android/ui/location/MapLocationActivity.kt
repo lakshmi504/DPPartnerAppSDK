@@ -74,7 +74,7 @@ class MapLocationActivity : DaggerAppCompatActivity(), View.OnClickListener, OnM
     private val LOCATION_INTERVAL = 60000
     private val LOCATION_FAST_INTERVAL = 30000
     private val LOCATION_DISTANCE = 0f
-    open var subscription = CompositeDisposable()
+    var subscription = CompositeDisposable()
     lateinit var rxPermissions: RxPermissions
     private var REQUEST_CHECK_SETTINGS: Int = 0x1
 
