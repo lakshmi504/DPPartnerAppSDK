@@ -180,7 +180,7 @@ class PhotosActivity : BaseActivity(), View.OnClickListener, PhotoContract.View 
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
 
                 val stream = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
                 image.setImageBitmap(bitmap)
                 if (imgpath.isNotEmpty()) {
                     btn_upload.visibility = View.VISIBLE
@@ -226,6 +226,9 @@ class PhotosActivity : BaseActivity(), View.OnClickListener, PhotoContract.View 
     override fun showErrorMsg(throwable: Throwable, apiType: String) {
         showViewState(MultiStateView.VIEW_STATE_ERROR)
         error_textView.text = throwable.message ?: getString(R.string.error_something_wrong)
+        if (dialog.isShowing) {
+            dialog.dismiss()
+        }
     }
 
     override fun showViewState(state: Int) {

@@ -66,5 +66,12 @@
     <string name="add_note">Add Note</string>
     <string name="uploaded_photo">Photo Uploaded Successfully</string>
     <string name="activate">Activate</string>
+    <string name="enter_customer_happy_code">Enter Customer Happy Code</string>
+    <string name="happy_code">Happy Code</string>
+    <string name="submit">Submit</string>
+    <string name="output_tds">Output TDS</string>
+    <string name="input_tds">Input TDS</string>
+    <string name="add_parts">Add Parts</string>
+    <string name="no_images_uploaded">No Images Uploaded</string>
 
 </resources>

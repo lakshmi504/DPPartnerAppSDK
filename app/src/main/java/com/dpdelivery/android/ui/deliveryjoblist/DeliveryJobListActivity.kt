@@ -22,7 +22,6 @@ import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.model.Data
 import com.dpdelivery.android.model.DeliveryJobsListRes
 import com.dpdelivery.android.ui.base.BaseActivity
-import com.dpdelivery.android.ui.dashboard.DashBoardActivity
 import com.dpdelivery.android.ui.deliveryjob.DeliveryJobActivity
 import com.dpdelivery.android.utils.setDrawableRight
 import com.dpdelivery.android.utils.toast
@@ -39,6 +38,7 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
 
     lateinit var mContext: Context
     lateinit var jobsList: ArrayList<Data?>
+
     @Inject
     lateinit var presenter: DeliveryJobsListPresenter
     lateinit var adapterJobsList: BasicAdapter
@@ -224,8 +224,7 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
 
     override fun onBackPressed() {
         super.onBackPressed()
-        startActivity(Intent(this, DashBoardActivity::class.java))
-        finish()
+        finishAffinity()
     }
 
 }

@@ -44,7 +44,7 @@ class LoginPresenter @Inject constructor(
                                     if (res.isSuccessful) {
                                         view?.setLoginRes(res.headers())
                                     } else
-                                        view?.showErrorMsg(Throwable(res.message()))
+                                        view?.showErrorMsg(Throwable("Username and Password is not found"))
                                 },
                                 { throwable ->
                                     view?.hideProgress()

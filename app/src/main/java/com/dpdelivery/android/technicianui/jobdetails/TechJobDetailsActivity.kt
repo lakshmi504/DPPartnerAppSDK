@@ -25,10 +25,9 @@ import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.model.Note
 import com.dpdelivery.android.model.input.UpdateStatusIp
 import com.dpdelivery.android.model.techinp.StartJobIP
+import com.dpdelivery.android.model.techinp.SubmitPidIp
 import com.dpdelivery.android.model.techinp.UpdateJobIp
-import com.dpdelivery.android.model.techres.ActivatePidRes
-import com.dpdelivery.android.model.techres.Job
-import com.dpdelivery.android.model.techres.StartJobRes
+import com.dpdelivery.android.model.techres.*
 import com.dpdelivery.android.technicianui.base.TechBaseActivity
 import com.dpdelivery.android.technicianui.finish.FinishJobActivity
 import com.dpdelivery.android.technicianui.scanner.ScannerActivity
@@ -59,10 +58,12 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
     private var phone: String? = null
     private var altPhone: String? = null
     private var statusCode: String? = null
-    private var noteList: ArrayList<Note?>? = null
+    private var noteList: ArrayList<TechNote?>? = null
     private var dialog: Dialog? = null
     lateinit var manager: LinearLayoutManager
     lateinit var adapterNotesList: BasicAdapter
+    private var deviceCode: String? = null
+    private var isSuccess: Boolean = false
 
     @Inject
     lateinit var detailsPresenter: TechJobDetailsPresenter
@@ -93,7 +94,6 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         iv_refresh.setOnClickListener(this)
         tv_view_notes.setOnClickListener(this)
         btn_add_note.setOnClickListener(this)
-
     }
 
     private fun getAssignedJob() {
@@ -136,7 +136,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
                 }
             }
             R.id.btn_activate -> {
-                activatePid()
+                submitPid()
             }
             R.id.btn_start_job -> {
                 if (btn_start_job.text == "Start Job") {
@@ -144,6 +144,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
                 } else if ((btn_start_job.text == getString(R.string.finish_job))) {
                     val intent = Intent(this, FinishJobActivity::class.java)
                     intent.putExtra(Constants.ID, jobId)
+                    intent.putExtra(Constants.DEVICE_CODE, deviceCode)
                     startActivity(intent)
                 }
             }
@@ -160,10 +161,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
                         iv_refresh!!.isEnabled = false
                     }
                     else -> {
-                        val params = HashMap<String, String>()
-                        params["jobid"] = jobId.toString()
-                        params["purifierid"] = et_purifierid.text.toString()
-                        detailsPresenter.refreshPidStatus(params)
+                        val purifierId = et_purifierid.text.toString()
+                        detailsPresenter.refreshPidStatus(purifierId)
                     }
                 }
             }
@@ -189,7 +188,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         detailsPresenter.startJob(jobId!!, startJobIP = StartJobIP(jobStartTime = jobStartTime, status = "INP"))
     }
 
-    private fun activatePid() {
+    private fun submitPid() {
         when {
             et_purifierid!!.text.toString().trim { it <= ' ' }.isEmpty() -> {
                 toast("Purifier Id is required")
@@ -199,14 +198,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
                 iv_refresh!!.isEnabled = false
             }
             else -> {
-                iv_refresh!!.isEnabled = true
-                btn_activate!!.isEnabled = false
-                et_purifierid!!.isEnabled = false
-                iv_refresh!!.isEnabled = true
-                val params = HashMap<String, String>()
-                params["jobid"] = jobId.toString()
-                params["purifierid"] = "091d6a0048"
-                detailsPresenter.activatePid(params)
+                detailsPresenter.submitPid(submitPidIp = SubmitPidIp(deviceCode = et_purifierid.text.toString(), jobId = jobId!!))
             }
         }
     }
@@ -223,7 +215,6 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
             if ((dialog!!.findViewById(R.id.et_note) as EditText).text!!.isNotEmpty()) {
                 detailsPresenter.addNote(jobId!!, updateJobIp = UpdateJobIp(note = (dialog!!.findViewById(R.id.et_note) as EditText).text!!.toString()))
                 dialog!!.dismiss()
-                init()
             } else {
                 toast("Note Should not be empty")
             }
@@ -235,9 +226,10 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         if (et_purifierid!!.text.toString().isNotEmpty() && tv_status!!.text.toString() == "ACTIVE") {
             val intent = Intent(this, FinishJobActivity::class.java)
             intent.putExtra(Constants.ID, jobId)
+            intent.putExtra(Constants.DEVICE_CODE, et_purifierid.text.toString())
             startActivity(intent)
         } else {
-            toast("Please verify fields before complete job.")
+            toast("Please verify fields before finish job.")
         }
     }
 
@@ -250,7 +242,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         }
         manager = LinearLayoutManager(this)
         (dialog!!.findViewById(R.id.rv_notes_list) as RecyclerView).layoutManager = manager
-        adapterNotesList = BasicAdapter(this, R.layout.item_notes_list, adapterClickListener = this)
+        adapterNotesList = BasicAdapter(this, R.layout.tech_item_notes_list, adapterClickListener = this)
         (dialog!!.findViewById(R.id.rv_notes_list) as RecyclerView).apply {
             adapter = adapterNotesList
             noteList.withNotNullNorEmpty {
@@ -261,53 +253,66 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
     }
 
     override fun showAssignedJobRes(res: Job) {
-        if (res != null) {
-            showViewState(MultiStateView.VIEW_STATE_CONTENT)
-            tv_job_id.text = res.id.toString()
-            tv_job_type.text = res.type!!.description
-            tv_name.text = res.customerName
-            phone = res.customerPhone
-            tv_phone.text = phone
-            altPhone = res.customerAltPhone
-            tv_alt_phone.text = altPhone
-            statusCode = res.status!!.code
-            noteList = res.notes
-            tv_view_notes.visibility = View.VISIBLE
-            if (res.customerAddresses!!.isNotEmpty()) {
-                val address = "${res.customerAddresses[0]!!.line1},${res.customerAddresses[0]!!.line2},${res.customerAddresses[0]!!.city},${res.customerAddresses[0]!!.state},${res.customerAddresses[0]!!.zip}"
-                tv_address.text = address
-            }
-            tv_job_desc.text = res.description
+        showViewState(MultiStateView.VIEW_STATE_CONTENT)
+        tv_job_id.text = res.id.toString()
+        tv_job_type.text = res.type!!.description
+        tv_name.text = res.customerName
+        phone = res.customerPhone
+        tv_phone.text = phone
+        altPhone = res.customerAltPhone
+        tv_alt_phone.text = altPhone
+        statusCode = res.status!!.code
+        noteList = res.notes
+        tv_view_notes.visibility = View.VISIBLE
+        if (res.customerAddress != null) {
+            val address = "${res.customerAddress.line1},${res.customerAddress.line2},${res.customerAddress.area!!.description},${res.customerAddress.area.state},${res.customerAddress.area.zipCode},${res.customerAddress.city},${res.customerAddress.state},${res.customerAddress.zip}"
+            tv_address.text = address
+        }
+        tv_job_desc.text = res.description
 
-            if (res.type.code.equals("ISU") && (res.status.code.equals("INP"))) {
-                btn_start_job.text = getString(R.string.finish_job)
-            } else if (res.type.code.equals("INS") && (res.status.code.equals("INP"))) {
-                btn_start_job.visibility = View.GONE
-                layout_ins.visibility = View.VISIBLE
-            } else {
-                btn_start_job.text = getString(R.string.start_job)
-            }
+        if (res.type.code.equals("ISU") && (res.status.code.equals("INP"))) {
+            btn_start_job.text = getString(R.string.finish_job)
+        } else if (res.type.code.equals("INS") && (res.status.code.equals("INP"))) {
+            btn_start_job.visibility = View.GONE
+            layout_ins.visibility = View.VISIBLE
+        } else if (res.type.code.equals("ISU") && (res.status.code.equals("ASG"))) {
+            btn_start_job.text = getString(R.string.start_job)
+        } else if (res.type.code.equals("INS") && (res.status.code.equals("ASG"))) {
+            btn_start_job.text = getString(R.string.start_job)
+        } else {
+            btn_start_job.visibility = View.GONE
+        }
 
-            if (!res.appointmentStartTime.isNullOrEmpty() || !res.appointmentEndTime.isNullOrEmpty()) {
-                val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ROOT)
-                val output = SimpleDateFormat("EEE, d-MMM-yyyy hh:mm:ss a", Locale.ROOT)
-                input.timeZone = TimeZone.getTimeZone("IST")
-                var d: Date? = null
-                var d1: Date? = null
-                try {
-                    d = input.parse(res.appointmentStartTime!!)
-                    d1 = input.parse(res.appointmentEndTime!!)
-                } catch (e: ParseException) {
-                    e.printStackTrace()
-                }
-                val formattedStartTime = output.format(d!!)
-                val formattedEndTime = output.format(d1!!)
-                tv_appt_start.text = formattedStartTime
-                tv_appt_end.text = formattedEndTime
-            } else {
-                tv_appt_start.text = res.appointmentStartTime
-                tv_appt_end.text = res.appointmentEndTime
+        if (!res.appointmentStartTime.isNullOrEmpty() || !res.appointmentEndTime.isNullOrEmpty()) {
+            val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ROOT)
+            val output = SimpleDateFormat("EEE, d-MMM-yyyy hh:mm:ss a", Locale.ROOT)
+            input.timeZone = TimeZone.getTimeZone("IST")
+            var d: Date? = null
+            var d1: Date? = null
+            try {
+                d = input.parse(res.appointmentStartTime!!)
+                d1 = input.parse(res.appointmentEndTime!!)
+            } catch (e: ParseException) {
+                e.printStackTrace()
             }
+            val formattedStartTime = output.format(d!!)
+            val formattedEndTime = output.format(d1!!)
+            tv_appt_start.text = formattedStartTime
+            tv_appt_end.text = formattedEndTime
+        } else {
+            tv_appt_start.text = res.appointmentStartTime
+            tv_appt_end.text = res.appointmentEndTime
+        }
+        if (!res.installation?.deviceCode!!.isNullOrEmpty()) {
+            et_purifierid.setText(res.installation.deviceCode)
+            deviceCode = res.installation.deviceCode
+        } else {
+            et_purifierid.setText("")
+        }
+        if (!res.installation.deviceStatus.isNullOrEmpty()) {
+            tv_status.text = res.installation.deviceStatus
+        } else {
+            tv_status.text = ""
         }
     }
 
@@ -319,43 +324,44 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         }
     }
 
-    override fun showActivatedPidRes(activatePidRes: ActivatePidRes) {
-        if (activatePidRes.result!!.status.equals("OK")) {
-            try {
-                tv_status!!.filters = arrayOf<InputFilter>(InputFilter.AllCaps())
-                tv_status!!.text = activatePidRes.result.purifierstatus
-                tv_status!!.setTextColor(Color.RED)
-                iv_refresh!!.isClickable = true
-                btn_activate!!.isClickable = false
-                et_purifierid!!.isEnabled = false
-                toast("Purifier Id submitted successfully")
-            } catch (e: JSONException) {
-                e.printStackTrace()
-            }
-        } else if (activatePidRes.result.status.equals("Error")) {
-            toast("Purifier Id submission Failed")
+    override fun showAddNoteRes(res: StartJobRes) {
+        if (res.success!!) {
+            showViewState(MultiStateView.VIEW_STATE_CONTENT)
+            toast("Note Added Successfully")
+            init()
         }
     }
 
-    override fun showRefreshPidRes(res: ActivatePidRes) {
-        if (res.result!!.status.equals("OK")) {
+    override fun showSubmittedPidRes(submiPidRes: SubmiPidRes) {
+        if (submiPidRes.success) {
             try {
-                tv_status!!.filters = arrayOf<InputFilter>(InputFilter.AllCaps())
-                tv_status!!.text = res.result.purifierstatus
-                tv_status!!.setTextColor(Color.RED)
-
-                toast("Purifier Id submitted successfully")
+                btn_activate!!.isEnabled = false
+                et_purifierid!!.isEnabled = false
+                iv_refresh!!.isEnabled = true
+                toast(submiPidRes.message)
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
-        } else if (res.result.status.equals("Error")) {
-            toast("Something went wrong in fetching the purifier ID")
+        } else if (!submiPidRes.success) {
+            toast(submiPidRes.message)
+            isSuccess = submiPidRes.success
+            iv_refresh!!.isEnabled = false
+        }
+    }
+
+    override fun showRefreshPidRes(res: PIdStatusRes) {
+        try {
+            tv_status!!.filters = arrayOf<InputFilter>(InputFilter.AllCaps())
+            tv_status!!.text = res.description
+            tv_status!!.setTextColor(Color.RED)
+        } catch (e: JSONException) {
+            e.printStackTrace()
         }
     }
 
     override fun showErrorMsg(throwable: Throwable, apiType: String) {
-        toast(throwable.message ?: getString(R.string.error_something_wrong))
-        showViewState(MultiStateView.VIEW_STATE_ERROR)
+        //toast(throwable.toString() ?: getString(R.string.error_something_wrong))
+        showViewState(MultiStateView.VIEW_STATE_CONTENT)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

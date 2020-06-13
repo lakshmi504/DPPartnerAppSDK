@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/dimens_30">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dimens_5"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textSize="@dimen/dimens_12sp"
+        android:hint="@string/enter_customer_happy_code"
+        android:padding="@dimen/dimens_10"
+        android:fontFamily="@font/montserrat_regular"
+        android:textColorHint="@color/colorBlack" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/output_otp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_5"
+        android:layout_marginTop="@dimen/dimens_10"
+        android:layout_weight="1"
+        android:textSize="@dimen/dimens_12sp"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="@string/happy_code"
+        android:textColor="@color/colorBlack"
+        android:inputType="number"
+        android:background="@drawable/bg_orange_stroke"
+        android:maxLength="6"
+        android:padding="@dimen/dimens_10"
+        android:fontFamily="@font/montserrat_regular"
+        android:textColorHint="@color/colorBlackOverlay" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/submitotpbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dimens_15"
+        android:background="@drawable/btn_orange_bg"
+        android:padding="@dimen/dimens_10"
+        android:textSize="@dimen/dimens_12sp"
+        android:text="@string/submit"
+        android:textColor="#fff" />
+
+</LinearLayout>

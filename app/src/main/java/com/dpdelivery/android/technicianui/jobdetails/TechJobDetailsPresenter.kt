@@ -3,6 +3,7 @@ package com.dpdelivery.android.technicianui.jobdetails
 import android.content.Context
 import com.dpdelivery.android.api.ApiService
 import com.dpdelivery.android.model.techinp.StartJobIP
+import com.dpdelivery.android.model.techinp.SubmitPidIp
 import com.dpdelivery.android.model.techinp.UpdateJobIp
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.schedulers.BaseScheduler
@@ -23,17 +24,23 @@ class TechJobDetailsPresenter @Inject constructor(
 
     override fun getAssignedJob(jobId: Int) {
         view?.showProgress()
-        subscription.add(
-                apiService.getAssignedJobById(CommonUtils.getLoginToken(), jobId = jobId)
-                        .subscribeOn(baseScheduler.io())
-                        .observeOn(baseScheduler.ui())
-                        .subscribe(
-                                { res ->
-                                    view?.showAssignedJobRes(res)
-                                },
-                                { throwable ->
-                                    view?.showErrorMsg(throwable)
-                                }))
+        try {
+            subscription.add(
+                    apiService.getAssignedJobById(CommonUtils.getLoginToken(), jobId = jobId)
+                            .subscribeOn(baseScheduler.io())
+                            .observeOn(baseScheduler.ui())
+                            .subscribe(
+                                    { res ->
+                                        view?.hideProgress()
+                                        view?.showAssignedJobRes(res)
+                                    },
+                                    { throwable ->
+                                        view?.hideProgress()
+                                        view?.showErrorMsg(throwable)
+                                    }))
+        }catch (e:KotlinNullPointerException){
+
+        }
     }
 
     override fun startJob(jobId: Int, startJobIP: StartJobIP) {
@@ -51,25 +58,25 @@ class TechJobDetailsPresenter @Inject constructor(
                                 }))
     }
 
-    override fun activatePid(hashMap: HashMap<String, String>) {
+    override fun submitPid(submitPidIp: SubmitPidIp) {
         view?.showProgress()
         subscription.add(
-                apiService.activatePid(hashMap)
+                apiService.submitPid(CommonUtils.getLoginToken(), submitPidIp)
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(
                                 { res ->
-                                    view?.showActivatedPidRes(res)
+                                    view?.showSubmittedPidRes(res)
                                 },
                                 { throwable ->
                                     view?.showErrorMsg(throwable)
                                 }))
     }
 
-    override fun refreshPidStatus(hashMap: HashMap<String, String>) {
+    override fun refreshPidStatus(purifierId:String) {
         view?.showProgress()
         subscription.add(
-                apiService.refreshPisStatus(hashMap)
+                apiService.refreshPidStatus(CommonUtils.getLoginToken(),deviceId = purifierId)
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(
@@ -89,7 +96,7 @@ class TechJobDetailsPresenter @Inject constructor(
                         .observeOn(baseScheduler.ui())
                         .subscribe(
                                 { res ->
-                                    view?.showStartJobRes(res)
+                                    view?.showAddNoteRes(res)
                                 },
                                 { throwable ->
                                     view?.showErrorMsg(throwable)

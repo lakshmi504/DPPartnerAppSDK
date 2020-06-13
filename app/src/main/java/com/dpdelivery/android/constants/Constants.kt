@@ -11,5 +11,9 @@ class Constants {
 
         //techapp
         const val ASSIGN_JOB_DETAILS = "ASSIGN_JOB_DETAILS"
+        const val OBJECT = "OBJECT"
+        const val SPARE_PARTS = "SPARE_PARTS"
+        const val PARTS = "PARTS"
+        const val DEVICE_CODE = "DEVICE_CODE"
     }
 }

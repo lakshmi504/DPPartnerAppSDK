@@ -340,7 +340,7 @@ class DeliveryJobActivity : BaseActivity(), View.OnClickListener, DeliveryJobCon
                                     toast("Please Upload Delivered Image")
                                 }
                             } else {
-                                toast("Please Upload Transaction Image")
+                                toast("Please Upload Payment Image")
                             }
                         } else {
                             toast("Please select payment type")
@@ -369,7 +369,7 @@ class DeliveryJobActivity : BaseActivity(), View.OnClickListener, DeliveryJobCon
                                 toast("Please Upload Delivered Image")
                             }
                         } else {
-                            toast("Please Upload Transaction Image")
+                            toast("Please Upload Payment Image")
                         }
                     } else {
                         toast("Please select Amount")
@@ -590,15 +590,25 @@ class DeliveryJobActivity : BaseActivity(), View.OnClickListener, DeliveryJobCon
                 btn_update_status.setTextColor(ContextCompat.getColor(mContext, R.color.grey))
                 btn_update_status.isEnabled = false
                 btn_update_appointment.setDrawableLeft(R.drawable.ic_appointment_light)
+
             } else {
                 btn_update_appointment.isEnabled = true
                 btn_update_status.isEnabled = true
             }
+            if (res.payImage.isNullOrBlank() && res.deliveryImage.isNullOrBlank()) {
+                btn_view_images.visibility = View.GONE
+            } else {
+                btn_view_images.visibility = View.VISIBLE
+            }
             btn_view_images.setOnClickListener {
-                val intent = Intent(this, ImagesActivity::class.java)
-                intent.putExtra(Constants.PAYMENT_IMAGE, res.payImage)
-                intent.putExtra(Constants.DELIVERED_IMAGE, res.deliveryImage)
-                startActivity(intent)
+                if (!res.payImage.isNullOrBlank() && !res.deliveryImage.isNullOrBlank()) {
+                    val intent = Intent(this, ImagesActivity::class.java)
+                    intent.putExtra(Constants.PAYMENT_IMAGE, res.payImage)
+                    intent.putExtra(Constants.DELIVERED_IMAGE, res.deliveryImage)
+                    startActivity(intent)
+                } else {
+                    toast("No Images Found")
+                }
             }
             if (!res.appointmentAt.isNullOrEmpty()) {
                 val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ROOT)

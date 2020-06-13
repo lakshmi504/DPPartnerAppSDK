@@ -13,6 +13,7 @@ import javax.inject.Singleton
     NetworkModule::class,
     AppModule::class,
     MyActivityBuilder::class,
+    MyFragmentBuilder::class,
     BaseSchedulerModule::class])
 interface AppComponent : AndroidInjector<MyApplication> {
     @Component.Builder

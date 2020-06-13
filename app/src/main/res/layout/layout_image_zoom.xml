@@ -17,7 +17,7 @@
     <com.dpdelivery.android.commonviews.ZoomageView
         android:id="@+id/iv_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/btn_close"
         android:layout_margin="@dimen/dimens_10"
         android:src="@mipmap/dp_delivery"

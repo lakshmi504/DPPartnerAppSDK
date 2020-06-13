@@ -1,10 +1,3 @@
-/*
- *  Created by Teja on 26/12/18 6:48 PM
- *  FugenX Texhnologies, Bengaluru
- *  Copyright (c) 2018 . All rights reserved.
- *  Last modified 26/12/18 6:46 PM
- *
- */
 
 package com.dpdelivery.android.commonviews
 

@@ -25,7 +25,7 @@ import java.io.IOException
 class DashBoardActivity : BaseActivity() {
 
     lateinit var mContext: Context
-    lateinit var dialog: Dialog
+    //lateinit var dialog: Dialog
     private var loading_text: TextView? = null
 
     @SuppressLint("SourceLockedOrientationActivity")
@@ -39,10 +39,10 @@ class DashBoardActivity : BaseActivity() {
     private fun init() {
         mContext = this
         setTitle("DP Delivery")
-        dialog = showProgress(context)
+        //dialog = showProgress(context)
         setUpBottomNavView(true)
 
-        webView.visibility = WebView.INVISIBLE
+       /* webView.visibility = WebView.INVISIBLE
         webView.settings.javaScriptEnabled = true
         webView.settings.allowFileAccess = true
         webView.settings.setSupportZoom(false)
@@ -83,7 +83,7 @@ class DashBoardActivity : BaseActivity() {
                 super.onReceivedError(view, request, error)
                 Log.v("onReceivedError", "onReceivedError")
             }
-            /*override fun shouldInterceptRequest(view: WebView, url: String): WebResourceResponse? {
+            *//*override fun shouldInterceptRequest(view: WebView, url: String): WebResourceResponse? {
                 try {
                     val httpClient = OkHttpClient()
                     val request = Request.Builder()
@@ -100,13 +100,13 @@ class DashBoardActivity : BaseActivity() {
                     //return null to tell WebView we failed to fetch it WebView should try again.
                     return null
                 }
-            }*/
+            }*//*
         }
 
         val myPdfUrl = "http://staging.waterwalaprime.in/app/operation/dashboard"
-        /*  val headerMap = HashMap<String, String>()
-          headerMap["Authorization"] = CommonUtils.getLoginToken()*/
-        webView.loadUrl(myPdfUrl)
+          val headerMap = HashMap<String, String>()
+          headerMap["Authorization"] = CommonUtils.getLoginToken()
+        webView.loadUrl(myPdfUrl)*/
     }
 
     private fun showProgress(context: Context): Dialog {
@@ -128,6 +128,6 @@ class DashBoardActivity : BaseActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        finishAffinity()
+        finish()
     }
 }

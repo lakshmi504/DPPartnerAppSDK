@@ -6,12 +6,14 @@
         android:id="@+id/action_home"
         android:enabled="true"
         android:title="Home"
+        android:icon="@drawable/ic_dashboard"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/action_jobs_list"
         android:enabled="true"
         android:title="Jobs List"
+        android:icon="@drawable/ic_jobs_list"
         app:showAsAction="always" />
 
 </menu>

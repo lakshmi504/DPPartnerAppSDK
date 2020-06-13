@@ -23,13 +23,8 @@ class TechJobsListViewHolder(override val containerView: View?, var context: Con
         if (item is Job) {
             tv_jobtypevalue.text = item.type?.description
             tv_namevalue.text = item.customerName
-            try {
-                if (item.customerAddresses?.get(pos)!!.area!!.code!!.isNotEmpty()) {
-                    tv_areavalue.text = item.customerAddresses[pos]!!.area?.description.toString()
-                }
-            } catch (e: IndexOutOfBoundsException) {
+            tv_areavalue.text = item.customerAddress?.area?.description.toString()
 
-            }
             if (!item.appointmentStartTime.isNullOrEmpty()) {
                 val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ROOT)
                 val output = SimpleDateFormat("d-MMM-yyyy", Locale.ROOT)

@@ -12,6 +12,7 @@ import com.dpdelivery.android.R
 import com.dpdelivery.android.model.input.LoginIp
 import com.dpdelivery.android.technicianui.techjobslist.TechJobsListActivity
 import com.dpdelivery.android.ui.dashboard.DashBoardActivity
+import com.dpdelivery.android.ui.deliveryjoblist.DeliveryJobListActivity
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.toast
 import dagger.android.support.DaggerAppCompatActivity
@@ -83,16 +84,12 @@ class LoginActivity : DaggerAppCompatActivity(), View.OnClickListener, LoginCont
                 val jwt = JWT(data)
                 val aud = jwt.audience?.get(0)
                 CommonUtils.saveRole(aud.toString())
-                if (aud.equals("ROLE_Administrator")) {
-                    val intent = Intent(this, TechJobsListActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                } else if (aud.equals("ROLE_Technician")) {
+                if (aud.equals("ROLE_Technician")) {
                     val intent = Intent(this, TechJobsListActivity::class.java)
                     startActivity(intent)
                     finish()
                 } else {
-                    val intent = Intent(this, DashBoardActivity::class.java)
+                    val intent = Intent(this, DeliveryJobListActivity::class.java)
                     startActivity(intent)
                     finish()
                 }
@@ -112,7 +109,7 @@ class LoginActivity : DaggerAppCompatActivity(), View.OnClickListener, LoginCont
     }
 
     override fun showErrorMsg(throwable: Throwable, apiType: String) {
-        toast(throwable.message!!)
+        toast(throwable.toString())
     }
 
     override fun onDestroy() {

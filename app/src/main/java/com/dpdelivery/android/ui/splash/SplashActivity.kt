@@ -12,6 +12,7 @@ import com.auth0.android.jwt.JWT
 import com.dpdelivery.android.R
 import com.dpdelivery.android.technicianui.techjobslist.TechJobsListActivity
 import com.dpdelivery.android.ui.dashboard.DashBoardActivity
+import com.dpdelivery.android.ui.deliveryjoblist.DeliveryJobListActivity
 import com.dpdelivery.android.ui.login.LoginActivity
 import com.dpdelivery.android.utils.CommonUtils
 import java.util.*
@@ -48,16 +49,12 @@ class SplashActivity : AppCompatActivity() {
                     val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
                     finish()
-                } else if (current_time < expiry && CommonUtils.getRole() == "ROLE_Administrator") {
-                    val intent = Intent(this, TechJobsListActivity::class.java)
-                    startActivity(intent)
-                    finish()
                 } else if (current_time < expiry && CommonUtils.getRole() == "ROLE_Technician") {
                     val intent = Intent(this, TechJobsListActivity::class.java)
                     startActivity(intent)
                     finish()
                 } else {
-                    val intent = Intent(this, DashBoardActivity::class.java)
+                    val intent = Intent(this, DeliveryJobListActivity::class.java)
                     startActivity(intent)
                     finish()
                 }

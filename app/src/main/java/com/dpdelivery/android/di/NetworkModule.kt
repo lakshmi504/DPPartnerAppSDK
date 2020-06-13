@@ -9,10 +9,11 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
-class NetworkModule  {
+class NetworkModule {
 
     @Singleton
     @Provides
@@ -31,6 +32,9 @@ class NetworkModule  {
     @Provides
     fun provideOkhttpBuilder(networkMonitor: NetworkMonitor): OkHttpClient.Builder {
         val okHttpBuilder = OkHttpClient.Builder()
+        okHttpBuilder.connectTimeout(180, TimeUnit.SECONDS)
+                .writeTimeout(180, TimeUnit.SECONDS)
+                .readTimeout(180, TimeUnit.SECONDS)
         okHttpBuilder.addNetworkInterceptor(StethoInterceptor())
         okHttpBuilder.addInterceptor { chain ->
             if (networkMonitor.isConnected())

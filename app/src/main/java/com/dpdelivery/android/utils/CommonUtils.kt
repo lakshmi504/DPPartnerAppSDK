@@ -79,11 +79,13 @@ class CommonUtils {
             }
             return fetchedAddress
         }
+
         fun setImage(mContext: Context, imageView: ImageView, photo: String?) {
-            Glide.with(mContext).load(ApiConstants.BASE_IMAGE_URL + photo)
-                    .apply(RequestOptions.centerInsideTransform())
+            Glide.with(mContext).load(photo)
+                    .apply(RequestOptions.centerInsideTransform().placeholder(R.drawable.placeholder))
                     .into(imageView)
         }
+
         fun setUserImagebitmap(mContext: Context, imageView: ImageView, stream: ByteArrayOutputStream) {
             Glide.with(mContext).load(stream.toByteArray()).apply(RequestOptions.centerCropTransform()).into(imageView)
         }
@@ -102,6 +104,7 @@ class CommonUtils {
             SharedPreferenceManager.setPrefVal(SharedPreferenceManager.TRANSACTION_IMAGE, string!!, SharedPreferenceManager.VALUE_TYPE.STRING)
 
         }
+
         fun getTransactionImageName(): String {
             return SharedPreferenceManager.getPrefVal(SharedPreferenceManager.TRANSACTION_IMAGE, "", SharedPreferenceManager.VALUE_TYPE.STRING) as String
         }
@@ -110,6 +113,7 @@ class CommonUtils {
             SharedPreferenceManager.setPrefVal(SharedPreferenceManager.DELIVERED_IMAGE, string!!, SharedPreferenceManager.VALUE_TYPE.STRING)
 
         }
+
         fun getDeliveredImageName(): String {
             return SharedPreferenceManager.getPrefVal(SharedPreferenceManager.DELIVERED_IMAGE, "", SharedPreferenceManager.VALUE_TYPE.STRING) as String
         }

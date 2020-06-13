@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/dimens_30">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/input_tds"
+            style="@style/layout_edit_text"
+            android:hint="@string/input_tds" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/output_tds"
+            style="@style/layout_edit_text"
+            android:hint="@string/output_tds" />
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/submittdsbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/btn_orange_bg"
+        android:padding="@dimen/dimens_10"
+        android:text="@string/submit"
+        android:textColor="@color/colorWhite" />
+
+</LinearLayout>

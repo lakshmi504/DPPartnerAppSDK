@@ -44,7 +44,10 @@ class ImagesActivity : BaseActivity() {
             payImage = intent.getStringExtra(Constants.PAYMENT_IMAGE)
             deliveryImage = intent.getStringExtra(Constants.DELIVERED_IMAGE)
         }
+        showImages()
+    }
 
+    private fun showImages() {
         if (payImage!!.isNotEmpty()) {
             CommonUtils.setImage(mContext, iv_payment, payImage)
             iv_payment.setOnClickListener {
@@ -58,6 +61,8 @@ class ImagesActivity : BaseActivity() {
                 image = (dialog!!.findViewById(R.id.iv_image) as? ZoomageView)
                 CommonUtils.setImage(mContext, image!!, payImage)
             }
+        } else {
+            iv_payment.visibility = View.INVISIBLE
         }
         if (deliveryImage!!.isNotEmpty()) {
             CommonUtils.setImage(mContext, iv_delivery, deliveryImage)
@@ -72,6 +77,8 @@ class ImagesActivity : BaseActivity() {
                 CommonUtils.setImage(mContext, image!!, deliveryImage)
                 dialog!!.show()
             }
+        } else {
+            iv_delivery.visibility = View.INVISIBLE
         }
         if (payImage!!.isEmpty() && deliveryImage!!.isEmpty()) {
             iv_payment.visibility = View.GONE

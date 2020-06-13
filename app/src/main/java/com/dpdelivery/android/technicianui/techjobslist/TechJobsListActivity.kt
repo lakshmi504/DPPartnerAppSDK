@@ -133,7 +133,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
     }
 
     override fun showErrorMsg(throwable: Throwable, apiType: String) {
-        toast(throwable.message ?: getString(R.string.error_something_wrong))
+        toast(throwable.toString() ?: getString(R.string.error_something_wrong))
         showViewState(MultiStateView.VIEW_STATE_ERROR)
     }
 
@@ -151,5 +151,10 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
                 }
             }
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finishAffinity()
     }
 }

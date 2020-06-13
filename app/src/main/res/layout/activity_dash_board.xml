@@ -6,6 +6,17 @@
     <WebView
         android:id="@+id/webView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Coming Soon..."
+        android:gravity="center"
+        android:textColor="@color/colorBlack"
+        android:fontFamily="@font/avenirnextltpro_bold"
+        android:textSize="@dimen/dimens_14sp"/>
 
 </RelativeLayout>

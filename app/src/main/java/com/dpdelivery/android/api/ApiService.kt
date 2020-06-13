@@ -5,12 +5,11 @@ import com.dpdelivery.android.model.input.AssignJobsIp
 import com.dpdelivery.android.model.input.LoginIp
 import com.dpdelivery.android.model.input.UpdateAppointmentIp
 import com.dpdelivery.android.model.input.UpdateStatusIp
+import com.dpdelivery.android.model.techinp.FinishJobIp
 import com.dpdelivery.android.model.techinp.StartJobIP
 import com.dpdelivery.android.model.techinp.UpdateJobIp
-import com.dpdelivery.android.model.techres.ASGListRes
-import com.dpdelivery.android.model.techres.ActivatePidRes
-import com.dpdelivery.android.model.techres.Job
-import com.dpdelivery.android.model.techres.StartJobRes
+import com.dpdelivery.android.model.techinp.SubmitPidIp
+import com.dpdelivery.android.model.techres.*
 import io.reactivex.Observable
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -67,13 +66,11 @@ interface ApiService {
     @PUT(ApiConstants.JOB_BY_ID + "{jobId}")
     fun startJob(@Header("Authorization") token: String, @Path("jobId", encoded = true) jobId: Int, @Body startJobIP: StartJobIP): Observable<StartJobRes>
 
-    @FormUrlEncoded
-    @POST(ApiConstants.ACTIVATE_PID)
-    fun activatePid(@FieldMap data: HashMap<String, String>): Observable<ActivatePidRes>
+    @POST(ApiConstants.SUBMIT_PID)
+    fun submitPid(@Header("Authorization") token: String, @Body submitPidIp: SubmitPidIp): Observable<SubmiPidRes>
 
-    @FormUrlEncoded
-    @POST(ApiConstants.PURIFIER_STATUS)
-    fun refreshPisStatus(@FieldMap data: HashMap<String, String>): Observable<ActivatePidRes>
+    @GET(ApiConstants.PURIFIER_STATUS + "{deviceId}" + "/status")
+    fun refreshPidStatus(@Header("Authorization") token: String, @Path("deviceId", encoded = true) deviceId: String): Observable<PIdStatusRes>
 
     @PUT(ApiConstants.JOB_BY_ID + "{jobId}")
     fun addNote(@Header("Authorization") token: String, @Path("jobId", encoded = true) jobId: Int, @Body updateJobIp: UpdateJobIp): Observable<StartJobRes>
@@ -82,5 +79,9 @@ interface ApiService {
     @POST(ApiConstants.JOB_BY_ID + "{jobId}" + "/uploadDevicePhoto")
     fun uploadDevicePhoto(@Header("Authorization") token: String, @Path("jobId", encoded = true) jobId: Int, @Part file: MultipartBody.Part): Observable<UploadPhotoRes>
 
+    @GET(ApiConstants.SPARE_PARTS)
+    fun getSpareParts(@Header("Authorization") token: String): Observable<ArrayList<SparePartsData>>
 
+    @PUT(ApiConstants.FINISH_JOB + "{jobId}")
+    fun finishJob(@Header("Authorization") token: String, @Path("jobId", encoded = true) jobId: Int, @Body finishJobIp: FinishJobIp): Observable<SubmiPidRes>
 }
