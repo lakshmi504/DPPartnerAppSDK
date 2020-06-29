@@ -21,6 +21,7 @@ class DeliveryJobsListViewHolder(override val containerView: View?, var context:
 
     override fun bind(context: Context, item: Any, pos: Int) {
         if (item is Data) {
+            tv_job_id.text = item.id.toString()
             tv_customer_name.text = item.custName
             tv_cust_phn.text = item.custPhone
             val phone = item.custPhone

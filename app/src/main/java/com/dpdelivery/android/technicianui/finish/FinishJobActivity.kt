@@ -328,8 +328,11 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         outputTds = sharedPreferencestds.getInt("output_tds", 0)
 
         val amount = et_amount.text.toString()
-        amountCollected = amount.toFloat()
-
+        if (amount.isNotEmpty()) {
+            amountCollected = amount.toFloat()
+        } else {
+            toast("Please check all the fields before submitting")
+        }
         if (isLocationSet && isPhotoSet && isTDSSet && isOTPSet && amountCollected == 0f) {
             showViewState(MultiStateView.VIEW_STATE_LOADING)
             val finishJobIp = FinishJobIp(status = "COM",
@@ -365,8 +368,8 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
 
     override fun showFinishJobRes(res: SubmiPidRes) {
         if (res.success) {
-            clearPreferences()
             startActivity(Intent(this, TechJobsListActivity::class.java))
+            clearPreferences()
             finish()
         } else {
             toast(res.message)
@@ -375,7 +378,7 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
     }
 
     override fun showErrorMsg(throwable: Throwable, apiType: String) {
-        toast(throwable.message ?: getString(R.string.error_something_wrong))
+        toast(throwable.toString())
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (dialog.isShowing) {
             dialog.dismiss()
@@ -488,8 +491,6 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         val tdsEditor = sharedPreferencesTds.edit()
         tdsEditor.clear()
         tdsEditor.apply()
-
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

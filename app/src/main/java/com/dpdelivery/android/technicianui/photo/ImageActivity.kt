@@ -30,12 +30,9 @@ import com.dpdelivery.android.model.UploadPhotoRes
 import com.dpdelivery.android.technicianui.base.TechBaseActivity
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.toast
-import kotlinx.android.synthetic.main.activity_image.btn_capture
-import kotlinx.android.synthetic.main.activity_image.btn_upload
-import kotlinx.android.synthetic.main.activity_image.image
-import kotlinx.android.synthetic.main.activity_image.upload_message
+import id.zelory.compressor.Compressor
+import kotlinx.android.synthetic.main.activity_image.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
-import kotlinx.android.synthetic.main.app_bar_tech_base.multistateview
 import kotlinx.android.synthetic.main.error_view.*
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -96,7 +93,8 @@ class ImageActivity : TechBaseActivity(), View.OnClickListener, ImageContract.Vi
                 if (imgpath.isNotEmpty()) {
                     dialog.show()
                     val file = File(imgpath)
-                    presenter.uploadPhoto(jobId, file)
+                    val compressedImgFile: File = Compressor(this).compressToFile(file)
+                    presenter.uploadPhoto(jobId, compressedImgFile)
                 }
             }
         }
@@ -111,7 +109,7 @@ class ImageActivity : TechBaseActivity(), View.OnClickListener, ImageContract.Vi
         val intent = Intent(
                 MediaStore.ACTION_IMAGE_CAPTURE)
         val path = mContext.getExternalFilesDir(null)!!.absolutePath
-        val dir = File(path, "DPDelivery/Image")
+        val dir = File(path, "DP Partner 2.0/Image")
         if (!dir.exists())
             dir.mkdirs()
         val photoURI = FileProvider.getUriForFile(context, "com.dpdelivery.android.provider",
@@ -125,7 +123,7 @@ class ImageActivity : TechBaseActivity(), View.OnClickListener, ImageContract.Vi
         if (resultCode == Activity.RESULT_OK && requestCode == CAMERA_REQUEST) {
 
             var f = File(mContext.getExternalFilesDir(null)!!.absolutePath)
-            var dir = File(f, "DPDelivery/Image")
+            var dir = File(f, "DP Partner 2.0/Image")
             if (!dir.exists())
                 dir.mkdirs()
             for (temp in dir.listFiles()!!) {

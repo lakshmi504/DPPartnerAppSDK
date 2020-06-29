@@ -36,6 +36,23 @@ class DeliveryJobsListPresenter @Inject constructor(
                                 }))
     }
 
+    override fun getMoreDeliveryJobsList(page: Int) {
+        view?.showProgress()
+        subscription.add(
+                apiService.moreDeliveryJobsList(CommonUtils.getLoginToken(), pageSize = 10, page = page)
+                        .subscribeOn(baseScheduler.io())
+                        .observeOn(baseScheduler.ui())
+                        .subscribe(
+                                { res ->
+                                    view?.hideProgress()
+                                    view?.showDeliveryJobsListRes(res)
+                                },
+                                { throwable ->
+                                    view?.hideProgress()
+                                    view?.showErrorMsg(throwable)
+                                }))
+    }
+
     override fun getSearchJobsList(search: String) {
         view?.showProgress()
         subscription.add(
@@ -69,6 +86,7 @@ class DeliveryJobsListPresenter @Inject constructor(
                                     view?.showErrorMsg(throwable)
                                 }))
     }
+
     override fun dropView() {
         subscription.clear()
         this.view = null

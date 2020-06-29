@@ -93,7 +93,7 @@ class DeliveryJobActivity : BaseActivity(), View.OnClickListener, DeliveryJobCon
     private var TAG = "DeliveryJobActivity"
     private var note_list: ArrayList<Note?>? = null
     private val statusMode: Array<String> = arrayOf<String>("Select Status", "New", "Assigned", "Picked-Up", "In-Progress", "Delayed", "On-Hold", "Rejected", "Delivered")
-    private val paymentMode: Array<String> = arrayOf<String>("Payment Type", "Cash", "Card", "PayTM", "InstaMojo", "App", "EazyPay-Paytm", "EazyPay-GPay", "EazyPay-PhonePay", "BankTransfer", "Cheque", "Other")
+    private val paymentMode: Array<String> = arrayOf<String>("Payment Type", "Cash", "Card", "QR Scan-GPay", "QR Scan-PhonePe", "QR Scan-PayTm", "QR Scan-BHIM UPI", "Payment Link", "Cheque")
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -490,32 +490,23 @@ class DeliveryJobActivity : BaseActivity(), View.OnClickListener, DeliveryJobCon
                     "Card" -> {
                         paymentmode = "CRD"
                     }
-                    "PayTM" -> {
-                        paymentmode = "PTM"
+                    "QR Scan-GPay" -> {
+                        paymentmode = "QGP"
                     }
-                    "InstaMojo" -> {
-                        paymentmode = "INM"
+                    "QR Scan-PhonePe" -> {
+                        paymentmode = "QPP"
                     }
-                    "App" -> {
-                        paymentmode = "APP"
+                    "QR Scan-PayTm" -> {
+                        paymentmode = "QPM"
                     }
-                    "EazyPay-Paytm" -> {
-                        paymentmode = "EPT"
+                    "QR Scan-BHIM UPI" -> {
+                        paymentmode = "QBH"
                     }
-                    "EazyPay-GPay" -> {
-                        paymentmode = "EGP"
-                    }
-                    "EazyPay-PhonePay" -> {
-                        paymentmode = "EPP"
-                    }
-                    "BankTransfer" -> {
-                        paymentmode = "BNK"
+                    "Payment Link" -> {
+                        paymentmode = "LNK"
                     }
                     "Cheque" -> {
-                        paymentmode = "CHQ"
-                    }
-                    "Other" -> {
-                        paymentmode = "OTH"
+                        paymentmode = "CHK"
                     }
                 }
             }
@@ -571,6 +562,7 @@ class DeliveryJobActivity : BaseActivity(), View.OnClickListener, DeliveryJobCon
         if (res != null) {
             showViewState(MultiStateView.VIEW_STATE_CONTENT)
             tv_job_id.text = res.id.toString()
+            tv_job_type.text = res.type!!.description
             tv_name.text = res.custName
             tv_phone.text = res.custPhone
             phone = res.custPhone

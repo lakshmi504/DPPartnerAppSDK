@@ -22,7 +22,7 @@ data class DeliveryJobsRes(
         val payType: PayType?,
         val pickedUpAt: Any?,
         val status: DeliveryJobsResStatus?,
-        val type: Any?
+        val type: PayType?
 )
 
 data class Note(

@@ -1,6 +1,5 @@
 package com.dpdelivery.android.technicianui.finish
 
-import android.R.attr.name
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
@@ -108,7 +107,7 @@ class SparePartsFragment : DialogFragment(), IAdapterClickListener {
                 Constants.SPARE_PARTS -> {
                     for (i in partsList!!) {
                         if (any.selected && i!!.itemid == any.itemid) {
-                            type.iv_msg.setImageResource(R.drawable.ic_radio_on)
+                            type.iv_msg.setImageResource(R.drawable.ic_checkbox_on)
                             val selectedId = any.itemid
                             any.selected = false
                             selectedPartsList.add(selectedId)
@@ -120,7 +119,7 @@ class SparePartsFragment : DialogFragment(), IAdapterClickListener {
                             selectedPartsListName.remove(any.itemname)
                             partId = selectedPartsList.toString()
                             partName = selectedPartsListName.toString()
-                            type.iv_msg.setImageResource(R.drawable.ic_radio_off)
+                            type.iv_msg.setImageResource(R.drawable.ic_checkbox)
                             any.selected = true
                         }
                     }

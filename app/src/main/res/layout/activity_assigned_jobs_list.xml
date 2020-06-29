@@ -11,11 +11,18 @@
         android:id="@+id/search_filter"
         layout="@layout/layout_search_filter" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_asg_jobs_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbarStyle="outsideOverlay"
-        android:scrollbars="vertical" />
+    <com.dpdelivery.android.commonviews.MultiStateView
+        android:id="@+id/multistateview1"
+        style="@style/MultiStateViewStyle">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_asg_jobs_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbarStyle="insideOverlay"
+            android:layout_marginTop="@dimen/dimens_8"
+            android:scrollbars="vertical" />
+
+    </com.dpdelivery.android.commonviews.MultiStateView>
 
 </LinearLayout>

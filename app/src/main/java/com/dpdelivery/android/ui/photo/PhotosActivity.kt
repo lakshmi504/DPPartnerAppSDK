@@ -32,6 +32,7 @@ import com.dpdelivery.android.model.UploadPhotoRes
 import com.dpdelivery.android.ui.base.BaseActivity
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.toast
+import id.zelory.compressor.Compressor
 import kotlinx.android.synthetic.main.activity_photos.*
 import kotlinx.android.synthetic.main.app_bar_base.*
 import kotlinx.android.synthetic.main.error_view.*
@@ -99,7 +100,8 @@ class PhotosActivity : BaseActivity(), View.OnClickListener, PhotoContract.View 
                 if (imgpath.isNotEmpty()) {
                     dialog.show()
                     val file = File(imgpath)
-                    presenter.uploadPhoto(job_id!!, file)
+                    val compressedImgFile: File = Compressor(this).compressToFile(file)
+                    presenter.uploadPhoto(job_id!!, compressedImgFile)
                 }
             }
             R.id.error_button -> {
@@ -113,7 +115,7 @@ class PhotosActivity : BaseActivity(), View.OnClickListener, PhotoContract.View 
         val intent = Intent(
                 MediaStore.ACTION_IMAGE_CAPTURE)
         val path = mContext.getExternalFilesDir(null)!!.absolutePath
-        val dir = File(path, "DPDelivery/Image")
+        val dir = File(path, "DP Partner 2.0/Image")
         if (!dir.exists())
             dir.mkdirs()
         val photoURI = FileProvider.getUriForFile(context, "com.dpdelivery.android.provider",
@@ -132,7 +134,7 @@ class PhotosActivity : BaseActivity(), View.OnClickListener, PhotoContract.View 
         if (resultCode == Activity.RESULT_OK && requestCode == CAMERA_REQUEST) {
 
             var f = File(mContext.getExternalFilesDir(null)!!.absolutePath)
-            var dir = File(f, "DPDelivery/Image")
+            var dir = File(f, "DP Partner 2.0/Image")
             if (!dir.exists())
                 dir.mkdirs()
             for (temp in dir.listFiles()!!) {

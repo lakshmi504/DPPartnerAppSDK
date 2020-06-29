@@ -1,28 +1,29 @@
-package com.dpdelivery.android.technicianui.techjobslist
+package com.dpdelivery.android.technicianui.jobslist
 
 import android.content.Context
 import com.dpdelivery.android.api.ApiService
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.schedulers.BaseScheduler
 import io.reactivex.disposables.CompositeDisposable
+import retrofit2.http.Query
 import javax.inject.Inject
 
-class TechJobsListPresenter @Inject constructor(
+class JobsListPresenter @Inject constructor(
         var apiService: ApiService,
         var context: Context,
-        var baseScheduler: BaseScheduler) : TechJobsListContract.Presenter {
+        var baseScheduler: BaseScheduler) : JobsListContract.Presenter {
 
-    var view: TechJobsListContract.View? = null
+    var view: JobsListContract.View? = null
     private val subscription = CompositeDisposable()
 
-    override fun takeView(view: TechJobsListContract.View?) {
+    override fun takeView(view: JobsListContract.View?) {
         this.view = view
     }
 
-    override fun getFilterJobsList(status: String) {
+    override fun getAssignedJobsList(status: String) {
         view?.showProgress()
         subscription.add(
-                apiService.getFilterJobs(CommonUtils.getLoginToken(), status, orderDir = "asc", orderBy = "appointmentStartTime")
+                apiService.getAssignedJobs(CommonUtils.getLoginToken(), status, pageSize = 10, page = 1, orderDir = "asc", orderBy = "appointmentStartTime")
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(
@@ -36,16 +37,16 @@ class TechJobsListPresenter @Inject constructor(
                                 }))
     }
 
-    override fun getSearchJobsList(search: String) {
+    override fun getMoreJobsList(page: Int, status: String) {
         view?.showProgress()
         subscription.add(
-                apiService.searchTechJobsList(CommonUtils.getLoginToken(), search = search, orderDir = "asc", orderBy = "appointmentStartTime")
+                apiService.getMoreJobsList(CommonUtils.getLoginToken(), status, pageSize = 10, page = page, orderDir = "asc", orderBy = "appointmentStartTime")
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(
                                 { res ->
                                     view?.hideProgress()
-                                    view?.showAsgJobsListRes(res)
+                                    view?.showMoreAsgJobsListRes(res)
                                 },
                                 { throwable ->
                                     view?.hideProgress()

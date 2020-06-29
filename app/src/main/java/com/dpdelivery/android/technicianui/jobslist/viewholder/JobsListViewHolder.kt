@@ -1,6 +1,5 @@
-package com.dpdelivery.android.technicianui.techjobslist.viewholder
+package com.dpdelivery.android.technicianui.jobslist.viewholder
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Paint
@@ -8,28 +7,26 @@ import android.net.Uri
 import android.view.View
 import com.dpdelivery.android.commonadapter.BaseViewholder
 import com.dpdelivery.android.constants.Constants
-import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.model.techres.Job
-import kotlinx.android.extensions.LayoutContainer
+import com.dpdelivery.android.technicianui.jobdetails.TechJobDetailsActivity
 import kotlinx.android.synthetic.main.item_asg_jobs_list.*
+import kotlinx.android.synthetic.main.item_asg_jobs_list.view.*
+import kotlinx.android.synthetic.main.item_asg_jobs_list.view.tv_jobidvalue
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TechJobsListViewHolder(override val containerView: View?, var context: Context, private var adapterClickListener: IAdapterClickListener) : BaseViewholder(containerView), LayoutContainer {
-
-    @SuppressLint("SetTextI18n")
+class JobsListViewHolder(var view: View) : BaseViewholder(view) {
     override fun bind(context: Context, item: Any, pos: Int) {
         if (item is Job) {
-            tv_jobtypevalue.text = item.type?.description
-            tv_jobidvalue.text = item.id.toString()
-            tv_namevalue.text = item.customerName
+            view.tv_jobtypevalue.text = item.type?.description
+            view.tv_jobidvalue.text = item.id.toString()
+            view.tv_namevalue.text = item.customerName
             if (item.customerAddress?.area?.description.isNullOrEmpty()) {
-                tv_areavalue.text = " "
+                view.tv_areavalue.text = " "
             }else{
-                tv_areavalue.text = item.customerAddress?.area?.description.toString()
+                view.tv_areavalue.text = item.customerAddress?.area?.description.toString()
             }
-
             if (!item.appointmentStartTime.isNullOrEmpty()) {
                 val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ROOT)
                 val output = SimpleDateFormat("d-MMM-yyyy", Locale.ROOT)
@@ -46,16 +43,16 @@ class TechJobsListViewHolder(override val containerView: View?, var context: Con
                 val formatted = output.format(d!!)
                 val startTime = time.format(d)
                 val endTime = time.format(d1!!)
-                tv_appointmentdate.text = formatted
-                appointmenttimevalue.text = "$startTime - $endTime"
+                view.tv_appointmentdate.text = formatted
+                view.appointmenttimevalue.text = "$startTime - $endTime"
             } else {
-                tv_appointmentdate.text = item.appointmentStartTime
+                view.tv_appointmentdate.text = item.appointmentStartTime
             }
-            tv_statusvalue.text = item.status?.description
-            tv_cust_phn.text = item.customerPhone
-            tv_cust_phn.paintFlags = tv_cust_phn.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+            view.tv_statusvalue.text = item.status?.description
+            view.tv_cust_phn.text = item.customerPhone
+            view.tv_cust_phn.paintFlags = view.tv_cust_phn.paintFlags or Paint.UNDERLINE_TEXT_FLAG
             if (item.customerPhone!!.isNotEmpty()) {
-                tv_cust_phn.setOnClickListener {
+                view.tv_cust_phn.setOnClickListener {
                     val url = "tel:${item.customerPhone}"
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
                     intent.putExtra("finish", true)
@@ -65,15 +62,15 @@ class TechJobsListViewHolder(override val containerView: View?, var context: Con
             }
 
             if (item.customerAltPhone.isNullOrEmpty()) {
-                tv_alternate_no.visibility = View.GONE
-                alternate_no.visibility = View.GONE
+                view.tv_alternate_no.visibility = View.GONE
+                view.alternate_no.visibility = View.GONE
             } else {
-                tv_alternate_no.text = item.customerAltPhone
+                view.tv_alternate_no.text = item.customerAltPhone
                 val altPhone = item.customerAltPhone
-                tv_alternate_no.paintFlags = tv_cust_phn.paintFlags or Paint.UNDERLINE_TEXT_FLAG
-                tv_alternate_no.visibility = View.VISIBLE
-                alternate_no.visibility = View.VISIBLE
-                tv_alternate_no.setOnClickListener {
+                view.tv_alternate_no.paintFlags = view.tv_cust_phn.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+                view.tv_alternate_no.visibility = View.VISIBLE
+                view.alternate_no.visibility = View.VISIBLE
+                view.tv_alternate_no.setOnClickListener {
                     val url = "tel:$altPhone"
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
                     intent.putExtra("finish", true)
@@ -81,10 +78,11 @@ class TechJobsListViewHolder(override val containerView: View?, var context: Con
                     context.startActivity(intent)
                 }
             }
-            ll_bg.setOnClickListener {
-                adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.ASSIGN_JOB_DETAILS)
+            view.ll_bg.setOnClickListener {
+                context.startActivity(Intent(context, TechJobDetailsActivity::class.java).putExtra(Constants.ID, item.id))
             }
 
         }
+
     }
 }

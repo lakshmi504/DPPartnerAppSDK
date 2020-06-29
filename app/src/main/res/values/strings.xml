@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DP Delivery</string>
+    <string name="app_name">DP Partner 2.0</string>
     <string name="login">Login</string>
     <string name="enter_user_name">Enter UserName</string>
     <string name="enter_password">Enter Password</string>
@@ -47,8 +47,8 @@
     <string name="upload_delivered_image">Delivery Image</string>
 
     <string name="assigned_jobs">Assigned Jobs</string>
-    <string name="working_jobs">Working Jobs</string>
-    <string name="summary">Summary</string>
+    <string name="in_progress_jobs">In-Progress Jobs</string>
+    <string name="completed_jobs">Completed Jobs</string>
     <string name="job_type">Job Type :</string>
     <string name="callbutton">Call</string>
     <string name="detailsbutton">Details</string>
@@ -73,5 +73,6 @@
     <string name="input_tds">Input TDS</string>
     <string name="add_parts">Add Parts</string>
     <string name="no_images_uploaded">No Images Uploaded</string>
+    <string name="search_for_job_id_name">Search for Job Id/Name</string>
 
 </resources>

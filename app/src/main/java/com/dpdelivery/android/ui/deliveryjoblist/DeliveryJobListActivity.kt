@@ -6,14 +6,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.AbsListView
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.dpdelivery.android.R
 import com.dpdelivery.android.commonadapter.BasicAdapter
 import com.dpdelivery.android.commonviews.MultiStateView
@@ -50,6 +53,7 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
     private var mode: String? = null
     private var dialog: Dialog? = null
     private var modeSpin: Spinner? = null
+    private var page: Int = 0
     private val statusMode: Array<String> = arrayOf<String>("Status Filter", "New", "Assigned", "Picked-Up", "In-Progress", "Delayed", "On-Hold", "Rejected", "Delivered")
 
     @SuppressLint("SourceLockedOrientationActivity")
@@ -68,7 +72,6 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
         error_button.setOnClickListener(this)
         et_search.setDrawableRight(R.drawable.ic_search)
         loadDefaultSpinner()
-        getDeliveryJobsList()
         et_search!!.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable?) {
                 presenter.getSearchJobsList(search = et_search.text.toString())
@@ -110,9 +113,8 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
                     mode = "DEL"
                 }
                 if (mode != "Status Filter") {
+                    showViewState(MultiStateView.VIEW_STATE_LOADING)
                     presenter.getFilterJobsList(status = mode.toString())
-                } else if ((mode == "Status Filter")) {
-                    presenter.getDeliveryJobsList()
                 }
             }
         }
@@ -121,10 +123,10 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.error_button -> {
-                init()
+                getDeliveryJobsList()
             }
             R.id.empty_button -> {
-                init()
+                getDeliveryJobsList()
             }
         }
     }
@@ -146,43 +148,14 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
             adapter = adapterJobsList
             adapter!!.notifyDataSetChanged()
         }
-        /* rv_jobs_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                 super.onScrollStateChanged(recyclerView, newState)
-                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                     isScrolling = true
-                 }
-             }
-
-             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                 super.onScrolled(recyclerView, dx, dy)
-                 currentItems = manager.childCount
-                 totalItems = manager.itemCount
-                 scrollOutItems = manager.findFirstVisibleItemPosition()
-                 if (isScrolling && (currentItems + scrollOutItems >= totalItems && scrollOutItems >= 0)) {
-                     isScrolling = false
-                     fetchData()
-
-                 }
-             }
-         })*/
     }
-
-    /* private fun fetchData() {
-         progressbar.visibility = View.VISIBLE
-         Handler().postDelayed(Runnable {
-             for (i in 0..2) {
-                 adapterJobsList.addList(jobsList)
-                 adapterJobsList.notifyDataSetChanged()
-                 progressbar.visibility = View.GONE
-             }
-         }, 2000)
-     }*/
 
     override fun onResume() {
         super.onResume()
         presenter.takeView(this)
         bottom_navigation.selectedItemId = R.id.action_jobs_list
+        loadDefaultSpinner()
+        et_search.text?.clear()
         getDeliveryJobsList()
     }
 

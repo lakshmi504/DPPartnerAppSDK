@@ -27,6 +27,10 @@ interface ApiService {
     @GET(ApiConstants.DELIVERY_JOBS_LIST)
     fun deliveryJobsList(@Header("Authorization") token: String): Observable<DeliveryJobsListRes>
 
+    @GET(ApiConstants.DELIVERY_JOBS_LIST)
+    fun moreDeliveryJobsList(@Header("Authorization") token: String, @Query("PageSize") pageSize: Int, @Query("page") page: Int): Observable<DeliveryJobsListRes>
+
+
     @GET(ApiConstants.DELIVERY_JOB)
     fun deliveryJobData(@Header("Authorization") token: String, @Query("jobId") jobId: Int): Observable<DeliveryJobsRes>
 
@@ -55,10 +59,19 @@ interface ApiService {
     //Technician App
 
     @GET(ApiConstants.JOBS_LIST)
-    fun getAssignedJobs(@Header("Authorization") token: String): Observable<ASGListRes>
+    fun getAssignedJobs(@Header("Authorization") token: String, @Query("orderDir") orderDir: String, @Query("orderBy") orderBy: String): Observable<ASGListRes>
 
     @GET(ApiConstants.JOBS_LIST)
-    fun getFilterJobs(@Header("Authorization") token: String, @Query("status") status: String): Observable<ASGListRes>
+    fun getAssignedJobs(@Header("Authorization") token: String,@Query("status") status: String, @Query("orderDir") orderDir: String, @Query("orderBy") orderBy: String , @Query("pageSize") pageSize: Int, @Query("page") page: Int): Observable<ASGListRes>
+
+    @GET(ApiConstants.JOBS_LIST)
+    fun getMoreJobsList(@Header("Authorization") token: String, @Query("status") status: String, @Query("orderDir") orderDir: String, @Query("orderBy") orderBy: String ,@Query("pageSize") pageSize: Int, @Query("page") page: Int): Observable<ASGListRes>
+
+    @GET(ApiConstants.JOBS_LIST)
+    fun getFilterJobs(@Header("Authorization") token: String, @Query("status") status: String, @Query("orderDir") orderDir: String, @Query("orderBy") orderBy: String): Observable<ASGListRes>
+
+    @GET(ApiConstants.JOBS_LIST)
+    fun searchTechJobsList(@Header("Authorization") token: String, @Query("search") search: String, @Query("orderDir") orderDir: String, @Query("orderBy") orderBy: String): Observable<ASGListRes>
 
     @GET(ApiConstants.JOB_BY_ID + "{jobId}")
     fun getAssignedJobById(@Header("Authorization") token: String, @Path("jobId", encoded = true) jobId: Int): Observable<Job>

@@ -1,10 +1,12 @@
 package com.dpdelivery.android.di
 
+import com.dpdelivery.android.technicianui.jobslist.JobsListActivity
 import com.dpdelivery.android.technicianui.base.TechBaseActivity
 import com.dpdelivery.android.technicianui.finish.FinishJobActivity
 import com.dpdelivery.android.technicianui.jobdetails.TechJobDetailsActivity
 import com.dpdelivery.android.technicianui.photo.ImageActivity
 import com.dpdelivery.android.technicianui.scanner.ScannerActivity
+import com.dpdelivery.android.technicianui.search.SearchActivity
 import com.dpdelivery.android.technicianui.techjobslist.TechJobsListActivity
 import com.dpdelivery.android.ui.dashboard.DashBoardActivity
 import com.dpdelivery.android.ui.base.BaseActivity
@@ -69,5 +71,11 @@ abstract class MyActivityBuilder {
 
     @ContributesAndroidInjector()
     internal abstract fun imageActivity(): ImageActivity
+
+    @ContributesAndroidInjector()
+    internal abstract fun jobsListActivity(): JobsListActivity
+
+    @ContributesAndroidInjector()
+    internal abstract fun searchActivity(): SearchActivity
 
 }

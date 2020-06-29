@@ -6,11 +6,11 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_msg"
-        android:layout_width="@dimen/dimens_25"
-        android:layout_height="@dimen/dimens_25"
+        android:layout_width="@dimen/dimens_20"
+        android:layout_height="@dimen/dimens_20"
         android:layout_margin="@dimen/dimens_8"
         android:layout_alignParentEnd="true"
-        app:srcCompat="@drawable/ic_radio_off" />
+        app:srcCompat="@drawable/ic_checkbox" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_spare_name"

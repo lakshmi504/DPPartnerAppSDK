@@ -15,9 +15,9 @@ data class Job(
         val customerId: Int?,
         val customerName: String?,
         val customerPhone: String?,
-        val deliveryStatus: Any?,
+        val deliveryStatus: String?,
         val description: String?,
-        val deviceStatus: Any?,
+        val deviceStatus: String?,
         val financial: Any?,
         val id: Int?,
         val installation: Installation?,
@@ -38,17 +38,13 @@ data class CustomerAddress(
         val line1: String?,
         val line2: String?,
         val state: String?,
-        val zip: String?
+        val zip: String?,
+        val leadId: String?
 )
 
 data class Area(
-        val description: Any?,
-        val id: Int?,
-        val code: String?,
-        val status: Any?,
-        val zipCode: String?,
-        val state: String?,
-        val city: City?
+        val description: String?,
+        val code: String?
 )
 
 data class AssignedTo(
@@ -84,12 +80,6 @@ data class CreatedBy(
 
 
 data class Priority(
-        val code: String?,
-        val description: String?,
-        val id: Int?
-)
-
-data class City(
         val code: String?,
         val description: String?,
         val id: Int?

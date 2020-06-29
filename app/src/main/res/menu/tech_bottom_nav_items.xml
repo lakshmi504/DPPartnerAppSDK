@@ -6,19 +6,19 @@
         android:enabled="true"
         android:icon="@drawable/ic_assianged_task"
         android:title="@string/assigned_jobs"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_working"
         android:enabled="true"
         android:icon="@drawable/ic_working_jobs"
-        android:title="@string/working_jobs"
-        app:showAsAction="always" />
+        android:title="@string/in_progress_jobs"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_summary"
         android:enabled="true"
         android:icon="@drawable/summary"
-        android:title="@string/summary"
-        app:showAsAction="always" />
+        android:title="@string/completed_jobs"
+        app:showAsAction="ifRoom" />
 
 </menu>

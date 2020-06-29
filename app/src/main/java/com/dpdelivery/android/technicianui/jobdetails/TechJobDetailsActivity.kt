@@ -31,6 +31,7 @@ import com.dpdelivery.android.model.techres.*
 import com.dpdelivery.android.technicianui.base.TechBaseActivity
 import com.dpdelivery.android.technicianui.finish.FinishJobActivity
 import com.dpdelivery.android.technicianui.scanner.ScannerActivity
+import com.dpdelivery.android.technicianui.techjobslist.TechJobsListActivity
 import com.dpdelivery.android.utils.toast
 import com.dpdelivery.android.utils.withNotNullNorEmpty
 import com.google.zxing.integration.android.IntentIntegrator
@@ -43,7 +44,9 @@ import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.tv_view_notes
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
+import kotlinx.android.synthetic.main.item_asg_jobs_list.*
 import kotlinx.android.synthetic.main.layout_type_installation.*
+import kotlinx.android.synthetic.main.layout_type_installation.tv_status
 import org.json.JSONException
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -64,6 +67,11 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
     lateinit var adapterNotesList: BasicAdapter
     private var deviceCode: String? = null
     private var isSuccess: Boolean = false
+    private var line1: String = ""
+    private var line2: String = ""
+    private var city: String = ""
+    private var state: String = ""
+    private var zipcode: String = ""
 
     @Inject
     lateinit var detailsPresenter: TechJobDetailsPresenter
@@ -94,6 +102,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         iv_refresh.setOnClickListener(this)
         tv_view_notes.setOnClickListener(this)
         btn_add_note.setOnClickListener(this)
+        finish_job.setOnClickListener(this)
     }
 
     private fun getAssignedJob() {
@@ -139,14 +148,13 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
                 submitPid()
             }
             R.id.btn_start_job -> {
-                if (btn_start_job.text == "Start Job") {
-                    startJob()
-                } else if ((btn_start_job.text == getString(R.string.finish_job))) {
-                    val intent = Intent(this, FinishJobActivity::class.java)
-                    intent.putExtra(Constants.ID, jobId)
-                    intent.putExtra(Constants.DEVICE_CODE, deviceCode)
-                    startActivity(intent)
-                }
+                startJob()
+            }
+            R.id.finish_job -> {
+                val intent = Intent(this, FinishJobActivity::class.java)
+                intent.putExtra(Constants.ID, jobId)
+                intent.putExtra(Constants.DEVICE_CODE, deviceCode)
+                startActivity(intent)
             }
             R.id.btn_finish_job -> {
                 finishJob()
@@ -264,21 +272,38 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         statusCode = res.status!!.code
         noteList = res.notes
         tv_view_notes.visibility = View.VISIBLE
-        if (res.customerAddress != null) {
-            val address = "${res.customerAddress.line1},${res.customerAddress.line2},${res.customerAddress.area!!.description},${res.customerAddress.area.state},${res.customerAddress.area.zipCode},${res.customerAddress.city},${res.customerAddress.state},${res.customerAddress.zip}"
-            tv_address.text = address
+
+        //address
+        if (!res.customerAddress?.line1.isNullOrEmpty()) {
+            line1 = res.customerAddress?.line1.toString()
         }
+        if (!res.customerAddress?.line2.isNullOrEmpty()) {
+            line2 = ",${res.customerAddress?.line2.toString()}"
+        }
+        if (!res.customerAddress?.city.isNullOrEmpty()) {
+            city = ",${res.customerAddress?.city}"
+        }
+        if (!res.customerAddress?.state.isNullOrEmpty()) {
+            state = ",${res.customerAddress?.state}"
+        }
+        if (!res.customerAddress?.zip.isNullOrEmpty()) {
+            zipcode = ",${res.customerAddress?.zip}"
+        }
+
+        val address = "$line1$line2$city$state$zipcode"
+        tv_address.text = address
         tv_job_desc.text = res.description
 
         if (res.type.code.equals("ISU") && (res.status.code.equals("INP"))) {
-            btn_start_job.text = getString(R.string.finish_job)
+            btn_start_job.visibility = View.GONE
+            finish_job.visibility = View.VISIBLE
         } else if (res.type.code.equals("INS") && (res.status.code.equals("INP"))) {
             btn_start_job.visibility = View.GONE
             layout_ins.visibility = View.VISIBLE
         } else if (res.type.code.equals("ISU") && (res.status.code.equals("ASG"))) {
-            btn_start_job.text = getString(R.string.start_job)
+            btn_start_job.visibility = View.VISIBLE
         } else if (res.type.code.equals("INS") && (res.status.code.equals("ASG"))) {
-            btn_start_job.text = getString(R.string.start_job)
+            btn_start_job.visibility = View.VISIBLE
         } else {
             btn_start_job.visibility = View.GONE
         }
@@ -303,23 +328,14 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
             tv_appt_start.text = res.appointmentStartTime
             tv_appt_end.text = res.appointmentEndTime
         }
-        if (!res.installation?.deviceCode!!.isNullOrEmpty()) {
-            et_purifierid.setText(res.installation.deviceCode)
-            deviceCode = res.installation.deviceCode
-        } else {
-            et_purifierid.setText("")
-        }
-        if (!res.installation.deviceStatus.isNullOrEmpty()) {
-            tv_status.text = res.installation.deviceStatus
-        } else {
-            tv_status.text = ""
-        }
+        deviceCode = res.installation?.deviceCode
+        et_purifierid.setText(res.installation?.deviceCode)
     }
 
     override fun showStartJobRes(startJobRes: StartJobRes) {
         if (startJobRes.success!!) {
             showViewState(MultiStateView.VIEW_STATE_CONTENT)
-            toast("Job Started")
+            toast("Job Started Successfully")
             init()
         }
     }
@@ -360,7 +376,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
     }
 
     override fun showErrorMsg(throwable: Throwable, apiType: String) {
-        //toast(throwable.toString() ?: getString(R.string.error_something_wrong))
+        toast(throwable.toString())
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
     }
 

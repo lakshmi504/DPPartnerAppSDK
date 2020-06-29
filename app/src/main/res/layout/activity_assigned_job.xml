@@ -264,6 +264,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimens_5"
+                    android:layout_marginBottom="@dimen/dimens_5"
                     android:fontFamily="@font/montserrat_regular"
                     android:textSize="@dimen/dimens_14sp" />
 
@@ -283,6 +284,22 @@
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/dimens_12sp"
                     android:visibility="visible" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/finish_job"
+                    android:layout_width="@dimen/dimens_150"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/dimens_10"
+                    android:background="@drawable/btn_orange_bg"
+                    android:gravity="center"
+                    android:paddingStart="@dimen/dimens_15"
+                    android:paddingEnd="@dimen/dimens_15"
+                    android:text="@string/finish_job"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/dimens_12sp"
+                    android:visibility="gone" />
 
                 <include
                     android:id="@+id/layout_ins"
