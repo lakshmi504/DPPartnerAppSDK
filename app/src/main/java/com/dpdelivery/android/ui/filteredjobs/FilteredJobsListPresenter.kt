@@ -1,4 +1,4 @@
-package com.dpdelivery.android.technicianui.jobslist
+package com.dpdelivery.android.ui.filteredjobs
 
 import android.content.Context
 import com.dpdelivery.android.api.ApiService
@@ -7,28 +7,28 @@ import com.dpdelivery.android.utils.schedulers.BaseScheduler
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
-class JobsListPresenter @Inject constructor(
+class FilteredJobsListPresenter @Inject constructor(
         var apiService: ApiService,
         var context: Context,
-        var baseScheduler: BaseScheduler) : JobsListContract.Presenter {
+        var baseScheduler: BaseScheduler) : FilteredJobsListContract.Presenter {
 
-    var view: JobsListContract.View? = null
+    var view: FilteredJobsListContract.View? = null
     private val subscription = CompositeDisposable()
 
-    override fun takeView(view: JobsListContract.View?) {
+    override fun takeView(view: FilteredJobsListContract.View?) {
         this.view = view
     }
 
-    override fun getAssignedJobsList(status: String) {
+    override fun getDeliveryJobsList(status: String) {
         view?.showProgress()
         subscription.add(
-                apiService.getAssignedJobs(CommonUtils.getLoginToken(), status, pageSize = 10, page = 1, orderBy = "appointmentStartTime")
+                apiService.getDeliveryJobs(CommonUtils.getLoginToken(), status, pageSize = 10, page = 1)
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(
                                 { res ->
                                     view?.hideProgress()
-                                    view?.showAsgJobsListRes(res)
+                                    view?.showDeliveryJobsListRes(res)
                                 },
                                 { throwable ->
                                     view?.hideProgress()
@@ -36,16 +36,16 @@ class JobsListPresenter @Inject constructor(
                                 }))
     }
 
-    override fun getMoreJobsList(page: Int, status: String) {
+    override fun getMoreDeliveryJobsList(page: Int, status: String) {
         view?.showProgress()
         subscription.add(
-                apiService.getMoreJobsList(CommonUtils.getLoginToken(), status, pageSize = 10, page = page, orderBy = "appointmentStartTime")
+                apiService.moreDeliveryJobsList(CommonUtils.getLoginToken(), status, pageSize = 10, page = page)
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(
                                 { res ->
                                     view?.hideProgress()
-                                    view?.showMoreAsgJobsListRes(res)
+                                    view?.showMoreDeliveryJobsListRes(res)
                                 },
                                 { throwable ->
                                     view?.hideProgress()

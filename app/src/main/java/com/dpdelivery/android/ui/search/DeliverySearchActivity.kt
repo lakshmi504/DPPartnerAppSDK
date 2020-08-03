@@ -1,4 +1,4 @@
-package com.dpdelivery.android.technicianui.search
+package com.dpdelivery.android.ui.search
 
 import android.content.Context
 import android.content.Intent
@@ -13,34 +13,35 @@ import com.dpdelivery.android.commonadapter.BasicAdapter
 import com.dpdelivery.android.commonviews.MultiStateView
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
-import com.dpdelivery.android.model.techres.ASGListRes
+import com.dpdelivery.android.model.Data
+import com.dpdelivery.android.model.DeliveryJobsListRes
 import com.dpdelivery.android.model.techres.Job
-import com.dpdelivery.android.technicianui.jobdetails.TechJobDetailsActivity
-import com.dpdelivery.android.technicianui.techjobslist.TechJobsListContract
-import com.dpdelivery.android.technicianui.techjobslist.TechJobsListPresenter
+import com.dpdelivery.android.ui.deliveryjob.DeliveryJobActivity
+import com.dpdelivery.android.ui.deliveryjoblist.DeliveryJobsListContract
+import com.dpdelivery.android.ui.deliveryjoblist.DeliveryJobsListPresenter
 import com.dpdelivery.android.utils.toast
 import com.dpdelivery.android.utils.withNotNullNorEmpty
 import dagger.android.support.DaggerAppCompatActivity
-import kotlinx.android.synthetic.main.activity_search.*
+import kotlinx.android.synthetic.main.activity_delivery_search.*
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
 import kotlinx.android.synthetic.main.layout_header_search.*
 import javax.inject.Inject
 
-class SearchActivity : DaggerAppCompatActivity(), TechJobsListContract.View, IAdapterClickListener, View.OnClickListener {
+class DeliverySearchActivity : DaggerAppCompatActivity(), DeliveryJobsListContract.View, IAdapterClickListener, View.OnClickListener {
 
     lateinit var mContext: Context
     lateinit var manager: LinearLayoutManager
-    lateinit var adapterAsgJobsList: BasicAdapter
-    lateinit var jobsList: ArrayList<Job?>
+    lateinit var adapterJobsList: BasicAdapter
+    lateinit var jobsList: ArrayList<Data?>
     var toolbar: Toolbar? = null
 
     @Inject
-    lateinit var presenter: TechJobsListPresenter
+    lateinit var presenter: DeliveryJobsListPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
+        setContentView(R.layout.activity_delivery_search)
         init()
     }
 
@@ -56,9 +57,9 @@ class SearchActivity : DaggerAppCompatActivity(), TechJobsListContract.View, IAd
         iv_back.setOnClickListener(this)
         manager = LinearLayoutManager(this)
         rv_search_jobs_list.layoutManager = manager
-        adapterAsgJobsList = BasicAdapter(this, R.layout.item_asg_jobs_list, adapterClickListener = this)
+        adapterJobsList = BasicAdapter(this, R.layout.item_delivery_jobs_list, adapterClickListener = this)
         rv_search_jobs_list.apply {
-            adapter = adapterAsgJobsList
+            adapter = adapterJobsList
             adapter!!.notifyDataSetChanged()
         }
         et_search!!.addTextChangedListener(object : TextWatcher {
@@ -87,31 +88,11 @@ class SearchActivity : DaggerAppCompatActivity(), TechJobsListContract.View, IAd
         presenter.takeView(this)
     }
 
-    override fun showAsgJobsListRes(res: ASGListRes) {
-        if (res.jobs!!.isNotEmpty()) {
-            multistateview2.viewState = MultiStateView.VIEW_STATE_CONTENT
-            res.jobs.withNotNullNorEmpty {
-                jobsList = res.jobs
-                rv_search_jobs_list.visibility = View.VISIBLE
-                adapterAsgJobsList.addList(jobsList)
-            }
-        } else {
-            multistateview2.viewState = MultiStateView.VIEW_STATE_EMPTY
-            empty_textView.text = "No Jobs Found"
-            empty_button.text = "Back to list"
-        }
-    }
-
-    override fun showErrorMsg(throwable: Throwable, apiType: String) {
-        toast(throwable.message.toString())
-        multistateview2.viewState = MultiStateView.VIEW_STATE_ERROR
-    }
-
     override fun onclick(any: Any, pos: Int, type: Any, op: String) {
         if (any is Job && type is View) {
             when (op) {
-                Constants.ASSIGN_JOB_DETAILS -> {
-                    val intent = Intent(this, TechJobDetailsActivity::class.java)
+                Constants.JOB_DETAILS -> {
+                    val intent = Intent(this, DeliveryJobActivity::class.java)
                     intent.putExtra(Constants.ID, any.id)
                     startActivity(intent)
                 }
@@ -136,4 +117,23 @@ class SearchActivity : DaggerAppCompatActivity(), TechJobsListContract.View, IAd
         }
     }
 
+    override fun showDeliveryJobsListRes(res: DeliveryJobsListRes) {
+        if (res.data!!.isNotEmpty()) {
+            multistateview2.viewState = MultiStateView.VIEW_STATE_CONTENT
+            res.data.withNotNullNorEmpty {
+                jobsList = res.data
+                rv_search_jobs_list.visibility = View.VISIBLE
+                adapterJobsList.addList(jobsList)
+            }
+        } else {
+            multistateview2.viewState = MultiStateView.VIEW_STATE_EMPTY
+            empty_textView.text = "No Jobs Found"
+            empty_button.text = "Back to list"
+        }
+    }
+
+    override fun showErrorMsg(throwable: Throwable, apiType: String) {
+        toast(throwable.toString())
+        multistateview2.viewState = MultiStateView.VIEW_STATE_ERROR
+    }
 }

@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
@@ -23,14 +21,13 @@ import com.dpdelivery.android.technicianui.base.TechBaseActivity
 import com.dpdelivery.android.technicianui.jobdetails.TechJobDetailsActivity
 import com.dpdelivery.android.technicianui.jobslist.JobsListActivity
 import com.dpdelivery.android.technicianui.search.SearchActivity
-import com.dpdelivery.android.utils.setDrawableRight
 import com.dpdelivery.android.utils.toast
 import com.dpdelivery.android.utils.withNotNullNorEmpty
 import kotlinx.android.synthetic.main.activity_assigned_jobs_list.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
-import kotlinx.android.synthetic.main.layout_search_filter.*
+import java.util.*
 import javax.inject.Inject
 
 class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAdapterClickListener, View.OnClickListener,
@@ -60,28 +57,14 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         loadDefaultSpinner()
         search_filter.visibility = View.GONE
         tv_search.setOnClickListener(this)
-        et_search.setDrawableRight(R.drawable.ic_search)
         error_button.setOnClickListener(this)
         empty_button.setOnClickListener(this)
         tv_search.visibility = View.VISIBLE
         sp_filter.visibility = View.VISIBLE
-        et_search!!.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(editable: Editable?) {
-                presenter.getSearchJobsList(search = et_search.text.toString())
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
-        })
     }
 
     private fun getAssignedJobsList() {
-        multistateview1.viewState = MultiStateView.VIEW_STATE_LOADING
+        showViewState(MultiStateView.VIEW_STATE_LOADING)
         manager = LinearLayoutManager(this)
         rv_asg_jobs_list.layoutManager = manager
         adapterAsgJobsList = BasicAdapter(this, R.layout.item_asg_jobs_list, adapterClickListener = this)
@@ -118,7 +101,6 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         super.onResume()
         presenter.takeView(this)
         loadDefaultSpinner()
-        et_search.text?.clear()
         getAssignedJobsList()
     }
 
@@ -155,21 +137,22 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
 
     override fun showAsgJobsListRes(res: ASGListRes) {
         if (res.jobs!!.isNotEmpty()) {
-            multistateview1.viewState = MultiStateView.VIEW_STATE_CONTENT
+            showViewState(MultiStateView.VIEW_STATE_CONTENT)
             res.jobs.withNotNullNorEmpty {
                 jobsList = res.jobs
+                jobsList.sortWith(Comparator { listItem, t1 -> t1?.appointmentStartTime?.let { listItem?.appointmentStartTime?.compareTo(it) }!! })
                 adapterAsgJobsList.addList(jobsList)
             }
         } else {
-            multistateview1.viewState = MultiStateView.VIEW_STATE_EMPTY
+            showViewState(MultiStateView.VIEW_STATE_EMPTY)
             empty_textView.text = "No Jobs Found"
             empty_button.text = "Back to list"
         }
     }
 
     override fun showErrorMsg(throwable: Throwable, apiType: String) {
-        toast(throwable.toString())
-        multistateview1.viewState = MultiStateView.VIEW_STATE_CONTENT
+        toast(throwable.message.toString())
+        showViewState(MultiStateView.VIEW_STATE_ERROR)
     }
 
     override fun onclick(any: Any, pos: Int, type: Any, op: String) {
@@ -183,7 +166,9 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
             }
         }
     }
-
+    override fun showViewState(state: Int) {
+        multistateview.viewState = state
+    }
     override fun onBackPressed() {
         super.onBackPressed()
         finishAffinity()

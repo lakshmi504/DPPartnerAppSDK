@@ -14,25 +14,29 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/search_filter"
-        android:layout_above="@id/progressbar"
         android:orientation="vertical">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_jobs_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="vertical"
-            android:scrollbarStyle="outsideOverlay"/>
+            android:layout_marginTop="@dimen/dimens_8"
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbars="vertical" />
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/progressbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:theme="@style/ProgressBarTheme"
-        android:visibility="gone" />
-
+    <!-- <com.google.android.material.floatingactionbutton.FloatingActionButton
+         android:id="@+id/fb_datePicker"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentEnd="true"
+         android:layout_alignParentBottom="true"
+         android:layout_margin="@dimen/dimens_10"
+         android:src="@drawable/ic_date_range"
+         android:visibility="visible"
+         app:backgroundTint="@color/colorPrimary"
+         app:fabSize="mini"
+         app:tint="@color/colorWhite" />
+ -->
 
 </RelativeLayout>

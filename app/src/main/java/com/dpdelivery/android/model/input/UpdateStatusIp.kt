@@ -1,5 +1,8 @@
 package com.dpdelivery.android.model.input
 
+import androidx.annotation.Keep
+
+@Keep
 data class UpdateStatusIp(
         val jobId: Int?,
         val status: String?,

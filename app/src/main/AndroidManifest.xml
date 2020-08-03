@@ -33,7 +33,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".technicianui.search.SearchActivity"></activity>
+        <activity android:name=".ui.search.DeliverySearchActivity"></activity>
+        <activity android:name=".ui.filteredjobs.FilteredJobsListActivity" />
+        <activity android:name=".technicianui.search.SearchActivity" />
         <activity android:name=".technicianui.jobslist.JobsListActivity" />
         <activity android:name=".technicianui.photo.ImageActivity" />
 

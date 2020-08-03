@@ -7,8 +7,8 @@ import com.dpdelivery.android.model.input.UpdateAppointmentIp
 import com.dpdelivery.android.model.input.UpdateStatusIp
 import com.dpdelivery.android.model.techinp.FinishJobIp
 import com.dpdelivery.android.model.techinp.StartJobIP
-import com.dpdelivery.android.model.techinp.UpdateJobIp
 import com.dpdelivery.android.model.techinp.SubmitPidIp
+import com.dpdelivery.android.model.techinp.UpdateJobIp
 import com.dpdelivery.android.model.techres.*
 import io.reactivex.Observable
 import okhttp3.MultipartBody
@@ -28,7 +28,14 @@ interface ApiService {
     fun deliveryJobsList(@Header("Authorization") token: String): Observable<DeliveryJobsListRes>
 
     @GET(ApiConstants.DELIVERY_JOBS_LIST)
-    fun moreDeliveryJobsList(@Header("Authorization") token: String, @Query("PageSize") pageSize: Int, @Query("page") page: Int): Observable<DeliveryJobsListRes>
+    fun deliveryJobsListByDate(@Header("Authorization") token: String, @Query("startDate") startDate: String, @Query("endDate") endDate: String): Observable<DeliveryJobsListRes>
+
+
+    @GET(ApiConstants.DELIVERY_JOBS_LIST)
+    fun getDeliveryJobs(@Header("Authorization") token: String, @Query("status") status: String, @Query("pageSize") pageSize: Int, @Query("page") page: Int): Observable<DeliveryJobsListRes>
+
+    @GET(ApiConstants.DELIVERY_JOBS_LIST)
+    fun moreDeliveryJobsList(@Header("Authorization") token: String, @Query("status") status: String, @Query("PageSize") pageSize: Int, @Query("page") page: Int): Observable<DeliveryJobsListRes>
 
 
     @GET(ApiConstants.DELIVERY_JOB)
@@ -62,16 +69,16 @@ interface ApiService {
     fun getAssignedJobs(@Header("Authorization") token: String, @Query("orderDir") orderDir: String, @Query("orderBy") orderBy: String): Observable<ASGListRes>
 
     @GET(ApiConstants.JOBS_LIST)
-    fun getAssignedJobs(@Header("Authorization") token: String,@Query("status") status: String, @Query("orderDir") orderDir: String, @Query("orderBy") orderBy: String , @Query("pageSize") pageSize: Int, @Query("page") page: Int): Observable<ASGListRes>
+    fun getAssignedJobs(@Header("Authorization") token: String, @Query("status") status: String, @Query("orderBy") orderBy: String, @Query("pageSize") pageSize: Int, @Query("page") page: Int): Observable<ASGListRes>
 
     @GET(ApiConstants.JOBS_LIST)
-    fun getMoreJobsList(@Header("Authorization") token: String, @Query("status") status: String, @Query("orderDir") orderDir: String, @Query("orderBy") orderBy: String ,@Query("pageSize") pageSize: Int, @Query("page") page: Int): Observable<ASGListRes>
+    fun getMoreJobsList(@Header("Authorization") token: String, @Query("status") status: String, @Query("orderBy") orderBy: String, @Query("pageSize") pageSize: Int, @Query("page") page: Int): Observable<ASGListRes>
 
     @GET(ApiConstants.JOBS_LIST)
-    fun getFilterJobs(@Header("Authorization") token: String, @Query("status") status: String, @Query("orderDir") orderDir: String, @Query("orderBy") orderBy: String): Observable<ASGListRes>
+    fun getFilterJobs(@Header("Authorization") token: String, @Query("status") status: String, @Query("orderBy") orderBy: String): Observable<ASGListRes>
 
     @GET(ApiConstants.JOBS_LIST)
-    fun searchTechJobsList(@Header("Authorization") token: String, @Query("search") search: String, @Query("orderDir") orderDir: String, @Query("orderBy") orderBy: String): Observable<ASGListRes>
+    fun searchTechJobsList(@Header("Authorization") token: String, @Query("search") search: String, @Query("orderBy") orderBy: String): Observable<ASGListRes>
 
     @GET(ApiConstants.JOB_BY_ID + "{jobId}")
     fun getAssignedJobById(@Header("Authorization") token: String, @Path("jobId", encoded = true) jobId: Int): Observable<Job>

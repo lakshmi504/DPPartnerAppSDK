@@ -43,7 +43,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_marginEnd="@dimen/dimens_10"
-                            android:layout_toLeftOf="@id/sp_filter"
+                            android:layout_toStartOf="@id/sp_filter"
                             android:fontFamily="@font/montserrat_regular"
                             android:text="Search"
                             android:textColor="@color/colorWhite"

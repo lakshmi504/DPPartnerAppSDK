@@ -1,5 +1,8 @@
 package com.dpdelivery.android.model.techinp
 
+import androidx.annotation.Keep
+
+@Keep
 data class FinishJobIp(
         val amountCollected: Float,
         val deviceCode: String,

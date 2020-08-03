@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
 
     <LinearLayout
         android:id="@+id/coordinator"
@@ -55,4 +56,16 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     </com.dpdelivery.android.commonviews.MultiStateView>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fb_datePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottom_navigation"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="@dimen/dimens_10"
+        android:src="@drawable/ic_date_range"
+        android:visibility="gone"
+        app:backgroundTint="@color/colorPrimary"
+        app:fabSize="mini"
+        app:tint="@color/colorWhite" />
 </RelativeLayout>

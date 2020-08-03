@@ -4,7 +4,7 @@ class ApiConstants {
     companion object {
 
         //const val BASE_URL = "http://ec2-13-127-87-159.ap-south-1.compute.amazonaws.com:8080/"
-        const val BASE_URL = "http://dev.waterwalaprime.in:8080/"
+        const val BASE_URL = "http://staging.waterwalaprime.in:8080/"
         const val PRD_BASE_URL = "http://prd.waterwalaprime.in:8090/"
 
         // Delivery App Apis

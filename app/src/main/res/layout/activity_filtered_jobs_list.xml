@@ -3,21 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite"
-    android:orientation="vertical"
-    tools:context=".technicianui.techjobslist.TechJobsListActivity">
-
-    <include
-        android:id="@+id/search_filter"
-        layout="@layout/layout_search_filter" />
-
+    tools:context=".ui.filteredjobs.FilteredJobsListActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_asg_jobs_list"
+        android:id="@+id/rv_filtered_jobs_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="@dimen/dimens_8"
-        android:scrollbarStyle="insideOverlay"
+        android:scrollbarStyle="outsideOverlay"
         android:scrollbars="vertical" />
-
 </LinearLayout>

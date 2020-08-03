@@ -19,6 +19,30 @@
                 android:text="DP Delivery" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/dimens_10"
+                android:layout_toStartOf="@id/sp_filter"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="Search"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/dimens_12sp"
+                android:visibility="gone" />
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/sp_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/dimens_10"
+                android:textAlignment="center"
+                android:visibility="gone" />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_view_notes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

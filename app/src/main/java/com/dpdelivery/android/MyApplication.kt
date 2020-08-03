@@ -43,13 +43,15 @@ class MyApplication : DaggerApplication(), Application.ActivityLifecycleCallback
         super.onCreate()
         myApplication = this
         context = this
-        Stetho.initializeWithDefaults(this)
-        StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
-                .detectDiskReads()
-                .detectDiskWrites()
-                .detectNetwork()
-                .penaltyLog()
-                .build())
+        if (BuildConfig.DEBUG) {
+            Stetho.initializeWithDefaults(this)
+            StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
+                    .detectDiskReads()
+                    .detectDiskWrites()
+                    .detectNetwork()
+                    .penaltyLog()
+                    .build())
+        }
         registerActivityLifecycleCallbacks(this)
     }
 

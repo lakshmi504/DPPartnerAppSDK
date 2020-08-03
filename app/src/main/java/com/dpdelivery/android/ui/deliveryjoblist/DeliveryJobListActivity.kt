@@ -1,22 +1,19 @@
 package com.dpdelivery.android.ui.deliveryjoblist
 
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.AbsListView
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.dpdelivery.android.R
 import com.dpdelivery.android.commonadapter.BasicAdapter
 import com.dpdelivery.android.commonviews.MultiStateView
@@ -26,14 +23,18 @@ import com.dpdelivery.android.model.Data
 import com.dpdelivery.android.model.DeliveryJobsListRes
 import com.dpdelivery.android.ui.base.BaseActivity
 import com.dpdelivery.android.ui.deliveryjob.DeliveryJobActivity
-import com.dpdelivery.android.utils.setDrawableRight
+import com.dpdelivery.android.ui.filteredjobs.FilteredJobsListActivity
+import com.dpdelivery.android.ui.search.DeliverySearchActivity
 import com.dpdelivery.android.utils.toast
 import com.dpdelivery.android.utils.withNotNullNorEmpty
+import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.android.synthetic.main.activity_delivery_job_list.*
 import kotlinx.android.synthetic.main.app_bar_base.*
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
-import kotlinx.android.synthetic.main.layout_search_filter.*
+import kotlinx.android.synthetic.main.layout_header.*
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, View.OnClickListener,
@@ -45,15 +46,8 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
     @Inject
     lateinit var presenter: DeliveryJobsListPresenter
     lateinit var adapterJobsList: BasicAdapter
-    private var isScrolling: Boolean = false
-    private var currentItems: Int = 0
-    private var totalItems: Int = 0
-    private var scrollOutItems: Int = 0
     lateinit var manager: LinearLayoutManager
     private var mode: String? = null
-    private var dialog: Dialog? = null
-    private var modeSpin: Spinner? = null
-    private var page: Int = 0
     private val statusMode: Array<String> = arrayOf<String>("Status Filter", "New", "Assigned", "Picked-Up", "In-Progress", "Delayed", "On-Hold", "Rejected", "Delivered")
 
     @SuppressLint("SourceLockedOrientationActivity")
@@ -66,35 +60,30 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
 
     override fun init() {
         mContext = this
-        setTitle("Delivery Jobs List")
+        setTitle("Jobs List")
         setUpBottomNavView(true)
+        search_filter.visibility = View.GONE
         empty_button.setOnClickListener(this)
         error_button.setOnClickListener(this)
-        et_search.setDrawableRight(R.drawable.ic_search)
+        fb_datePicker.setOnClickListener(this)
+        tv_search.visibility = View.VISIBLE
+        sp_filter.visibility = View.VISIBLE
+        fb_datePicker.visibility = View.VISIBLE
+        tv_search.setOnClickListener(this)
         loadDefaultSpinner()
-        et_search!!.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(editable: Editable?) {
-                presenter.getSearchJobsList(search = et_search.text.toString())
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
-        })
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.ECLAIR)
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         when (parent!!.id) {
-            R.id.sp_mode -> {
-                mode = sp_mode!!.selectedItem.toString()
+            R.id.sp_filter -> {
+                (parent.getChildAt(0) as TextView).setTextColor(Color.WHITE)
+                (parent.getChildAt(0) as TextView).textSize = 14f
+                mode = sp_filter!!.selectedItem.toString()
                 if (mode == "New") {
                     mode = "NEW"
                 } else if (mode == "In-Progress") {
@@ -113,8 +102,10 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
                     mode = "DEL"
                 }
                 if (mode != "Status Filter") {
-                    showViewState(MultiStateView.VIEW_STATE_LOADING)
-                    presenter.getFilterJobsList(status = mode.toString())
+                    /*showViewState(MultiStateView.VIEW_STATE_LOADING)
+                    presenter.getFilterJobsList(status = mode.toString())*/
+                    startActivity(Intent(this, FilteredJobsListActivity::class.java).putExtra("filter", mode))
+                    overridePendingTransition(0, 0)
                 }
             }
         }
@@ -123,10 +114,33 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.error_button -> {
+                loadDefaultSpinner()
                 getDeliveryJobsList()
             }
             R.id.empty_button -> {
+                loadDefaultSpinner()
                 getDeliveryJobsList()
+            }
+            R.id.tv_search -> {
+                startActivity(Intent(this, DeliverySearchActivity::class.java))
+            }
+            R.id.fb_datePicker -> {
+                val builder = MaterialDatePicker.Builder.dateRangePicker().setTheme(R.style.ThemeOverlay_MaterialComponents_MaterialCalendar)
+                val now = Calendar.getInstance()
+                builder.setSelection(androidx.core.util.Pair(now.timeInMillis, now.timeInMillis))
+                val picker = builder.build()
+                picker.show(supportFragmentManager, picker.toString())
+                picker.addOnNegativeButtonClickListener {
+                    picker.dismiss()
+                }
+                picker.addOnPositiveButtonClickListener {
+                    // toast("${it.first}:: to :: ${it.second}")
+                    val formatter = SimpleDateFormat("ddMMMyyyy")
+                    val startDateString = formatter.format(Date(it.first!!))
+                    val endDateString = formatter.format(Date(it.second!!))
+                    showViewState(MultiStateView.VIEW_STATE_LOADING)
+                    presenter.getDeliveryJobsListByDate(startDateString, endDateString)
+                }
             }
         }
     }
@@ -134,8 +148,8 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
     private fun loadDefaultSpinner() {
         val adapterMode = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, statusMode)
         adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        sp_mode!!.adapter = adapterMode
-        sp_mode.onItemSelectedListener = this
+        sp_filter!!.adapter = adapterMode
+        sp_filter.onItemSelectedListener = this
     }
 
     private fun getDeliveryJobsList() {
@@ -155,7 +169,7 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
         presenter.takeView(this)
         bottom_navigation.selectedItemId = R.id.action_jobs_list
         loadDefaultSpinner()
-        et_search.text?.clear()
+        //et_search.text?.clear()
         getDeliveryJobsList()
     }
 

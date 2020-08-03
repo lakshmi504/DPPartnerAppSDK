@@ -1,7 +1,6 @@
-package com.dpdelivery.android.technicianui.jobslist
+package com.dpdelivery.android.ui.filteredjobs
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -11,28 +10,25 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dpdelivery.android.R
 import com.dpdelivery.android.commonviews.MultiStateView
-import com.dpdelivery.android.constants.Constants
-import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.interfaces.PaginationScrollListener
-import com.dpdelivery.android.model.techres.ASGListRes
-import com.dpdelivery.android.model.techres.Job
-import com.dpdelivery.android.technicianui.base.TechBaseActivity
-import com.dpdelivery.android.technicianui.jobdetails.TechJobDetailsActivity
+import com.dpdelivery.android.model.Data
+import com.dpdelivery.android.model.DeliveryJobsListRes
+import com.dpdelivery.android.ui.base.BaseActivity
 import com.dpdelivery.android.utils.toast
 import com.dpdelivery.android.utils.withNotNullNorEmpty
-import kotlinx.android.synthetic.main.activity_assigned_jobs_list.*
-import kotlinx.android.synthetic.main.app_bar_tech_base.*
+import kotlinx.android.synthetic.main.activity_filtered_jobs_list.*
+import kotlinx.android.synthetic.main.app_bar_base.*
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
 import javax.inject.Inject
 import kotlin.math.ceil
 
-class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClickListener{
+class FilteredJobsListActivity : BaseActivity(), FilteredJobsListContract.View, View.OnClickListener {
 
     lateinit var mContext: Context
     lateinit var manager: LinearLayoutManager
-    lateinit var adapterAsgJobsList: JobListAdapter
-    lateinit var jobsList: ArrayList<Job?>
+    lateinit var adapterAsgJobsList: FilteredJobListAdapter
+    lateinit var jobsList: ArrayList<Data?>
     private var isLastPage = false
     private var isLoading = false
     private val PAGE_START = 1
@@ -41,36 +37,54 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
     private var data: String? = null
 
     @Inject
-    lateinit var presenter: JobsListPresenter
+    lateinit var presenter: FilteredJobsListPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LayoutInflater.from(baseContext).inflate(R.layout.activity_assigned_jobs_list, tech_layout_container)
+        LayoutInflater.from(baseContext).inflate(R.layout.activity_filtered_jobs_list, layout_container)
         init()
     }
 
     override fun init() {
         mContext = this
         setUpBottomNavView(false)
-        search_filter.visibility = View.GONE
         error_button.setOnClickListener(this)
         empty_button.setOnClickListener(this)
         manager = LinearLayoutManager(this)
         if (intent != null)
             data = intent.getStringExtra("filter")
-        if (data.equals("ASG")) {
-            setTitle("Assigned Jobs List")
-        } else if (data.equals("INP")) {
-            setTitle("In-Progress Jobs List")
-        } else if (data.equals("COM")) {
-            setTitle("Completed Jobs List")
+        when {
+            data.equals("NEW") -> {
+                setTitle("New Jobs List")
+            }
+            data.equals("INP") -> {
+                setTitle("In-Progress Jobs List")
+            }
+            data.equals("HLD") -> {
+                setTitle("On-Hold Jobs List")
+            }
+            data.equals("ASG") -> {
+                setTitle("Assigned Jobs List")
+            }
+            data.equals("PKU") -> {
+                setTitle("Picked-Up Jobs List")
+            }
+            data.equals("DLY") -> {
+                setTitle("Delayed Jobs List")
+            }
+            data.equals("REJ") -> {
+                setTitle("Rejected Jobs List")
+            }
+            data.equals("DEL") -> {
+                setTitle("Delivered Jobs List")
+            }
         }
         showBack()
-        rv_asg_jobs_list.layoutManager = manager
-        rv_asg_jobs_list.itemAnimator = DefaultItemAnimator()
-        adapterAsgJobsList = JobListAdapter(this)
-        rv_asg_jobs_list.adapter = adapterAsgJobsList
-        rv_asg_jobs_list.addOnScrollListener(object : PaginationScrollListener(manager) {
+        rv_filtered_jobs_list.layoutManager = manager
+        rv_filtered_jobs_list.itemAnimator = DefaultItemAnimator()
+        adapterAsgJobsList = FilteredJobListAdapter(this)
+        rv_filtered_jobs_list.adapter = adapterAsgJobsList
+        rv_filtered_jobs_list.addOnScrollListener(object : PaginationScrollListener(manager) {
             override val totalPageCount: Int
                 get() = TOTAL_PAGES
 
@@ -89,16 +103,17 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
                 Handler().postDelayed({ getMoreResults() }, 1000)
             }
         })
-        getAssignedJobsList(data!!)
+        getFilteredJobsList(data!!)
     }
 
-    private fun getAssignedJobsList(data: String) {
+
+    private fun getFilteredJobsList(data: String) {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
-        presenter.getAssignedJobsList(status = data)
+        presenter.getDeliveryJobsList(status = data)
     }
 
     private fun getMoreResults() {
-        presenter.getMoreJobsList(currentPage, data!!)
+        presenter.getMoreDeliveryJobsList(currentPage, data!!)
     }
 
     override fun onClick(v: View?) {
@@ -117,12 +132,11 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
         presenter.takeView(this)
     }
 
-    override fun showAsgJobsListRes(res: ASGListRes) {
-        if (res.jobs!!.isNotEmpty()) {
+    override fun showDeliveryJobsListRes(res: DeliveryJobsListRes) {
+        if (res.data!!.isNotEmpty()) {
             showViewState(MultiStateView.VIEW_STATE_CONTENT)
-            res.jobs.withNotNullNorEmpty {
-                jobsList = res.jobs
-                jobsList.sortWith(Comparator { listItem, t1 -> t1?.appointmentStartTime?.let { listItem?.appointmentStartTime?.compareTo(it) }!! })
+            res.data.withNotNullNorEmpty {
+                jobsList = res.data
                 TOTAL_PAGES = ceil(res.total?.toDouble()?.div(10.toDouble())!!.toDouble()).toInt()
                 adapterAsgJobsList.addAll(jobsList)
                 if (currentPage < TOTAL_PAGES) adapterAsgJobsList.addLoadingFooter()
@@ -135,12 +149,11 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
         }
     }
 
-    override fun showMoreAsgJobsListRes(res: ASGListRes) {
-        if (res.jobs!!.isNotEmpty()) {
+    override fun showMoreDeliveryJobsListRes(res: DeliveryJobsListRes) {
+        if (res.data!!.isNotEmpty()) {
             showViewState(MultiStateView.VIEW_STATE_CONTENT)
-            res.jobs.withNotNullNorEmpty {
-                jobsList = res.jobs
-                jobsList.sortWith(Comparator { listItem, t1 -> t1?.appointmentStartTime?.let { listItem?.appointmentStartTime?.compareTo(it) }!! })
+            res.data.withNotNullNorEmpty {
+                jobsList = res.data
                 adapterAsgJobsList.removeLoadingFooter()
                 isLoading = false
                 TOTAL_PAGES = ceil(res.total?.div(10)!!.toDouble()).toInt()
@@ -178,4 +191,5 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
         overridePendingTransition(0, 0)
         finish()
     }
+
 }

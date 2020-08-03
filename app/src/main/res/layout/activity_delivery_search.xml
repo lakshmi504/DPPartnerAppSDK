@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical"
+    tools:context=".ui.search.DeliverySearchActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <include
+            android:id="@+id/search_filter"
+            layout="@layout/layout_header_search" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.dpdelivery.android.commonviews.MultiStateView
+        android:id="@+id/multistateview2"
+        style="@style/MultiStateViewStyle">
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_search_jobs_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_8"
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbars="vertical"
+            android:visibility="gone" />
+    </com.dpdelivery.android.commonviews.MultiStateView>
+
+</LinearLayout>

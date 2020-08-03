@@ -12,8 +12,8 @@ interface DeliveryJobsListContract {
 
     interface Presenter : BasePresenter<View> {
         fun getDeliveryJobsList()
-        fun getMoreDeliveryJobsList(page: Int)
         fun getSearchJobsList(search: String)
         fun getFilterJobsList(status: String)
+        fun getDeliveryJobsListByDate(startDate: String, endDate: String)
     }
 }

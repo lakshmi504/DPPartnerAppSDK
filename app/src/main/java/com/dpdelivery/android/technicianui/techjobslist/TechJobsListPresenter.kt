@@ -22,7 +22,7 @@ class TechJobsListPresenter @Inject constructor(
     override fun getFilterJobsList(status: String) {
         view?.showProgress()
         subscription.add(
-                apiService.getFilterJobs(CommonUtils.getLoginToken(), status, orderDir = "asc", orderBy = "appointmentStartTime")
+                apiService.getFilterJobs(CommonUtils.getLoginToken(), status, orderBy = "appointmentStartTime")
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(
@@ -39,7 +39,7 @@ class TechJobsListPresenter @Inject constructor(
     override fun getSearchJobsList(search: String) {
         view?.showProgress()
         subscription.add(
-                apiService.searchTechJobsList(CommonUtils.getLoginToken(), search = search, orderDir = "asc", orderBy = "appointmentStartTime")
+                apiService.searchTechJobsList(CommonUtils.getLoginToken(), search = search, orderBy = "appointmentStartTime")
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(

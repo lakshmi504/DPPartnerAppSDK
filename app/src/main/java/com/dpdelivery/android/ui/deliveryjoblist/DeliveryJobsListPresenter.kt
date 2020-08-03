@@ -36,10 +36,10 @@ class DeliveryJobsListPresenter @Inject constructor(
                                 }))
     }
 
-    override fun getMoreDeliveryJobsList(page: Int) {
+    override fun getDeliveryJobsListByDate(startDate: String, endDate: String) {
         view?.showProgress()
         subscription.add(
-                apiService.moreDeliveryJobsList(CommonUtils.getLoginToken(), pageSize = 10, page = page)
+                apiService.deliveryJobsListByDate(CommonUtils.getLoginToken(), startDate = startDate, endDate = endDate)
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(

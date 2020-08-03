@@ -376,7 +376,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
     }
 
     override fun showErrorMsg(throwable: Throwable, apiType: String) {
-        toast(throwable.toString())
+        toast(throwable.message.toString())
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
     }
 

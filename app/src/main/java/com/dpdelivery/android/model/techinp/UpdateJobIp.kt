@@ -1,5 +1,8 @@
 package com.dpdelivery.android.model.techinp
 
+import androidx.annotation.Keep
+
+@Keep
 data class UpdateJobIp(
         val appointmentEndTime: String? = null,
         val appointmentStartTime: String? = null,
