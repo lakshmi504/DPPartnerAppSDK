@@ -16,7 +16,7 @@ class SparePartsViewHolder(override val containerView: View?, var context: Conte
             tv_spare_name.text = item.itemname
             item.selected = true
             itemView.setOnClickListener {
-                adapterClickListener.onclick(any = item, pos = pos, type = itemView, op = Constants.SPARE_PARTS)
+                adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.SPARE_PARTS)
             }
         }
     }

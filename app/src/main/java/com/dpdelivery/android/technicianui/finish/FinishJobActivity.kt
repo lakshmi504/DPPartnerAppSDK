@@ -8,17 +8,19 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.Window
 import android.widget.*
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.DialogFragment
 import com.dpdelivery.android.R
 import com.dpdelivery.android.commonviews.MultiStateView
 import com.dpdelivery.android.constants.Constants
@@ -35,6 +37,7 @@ import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.error_view.*
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -57,8 +60,15 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
     private var outputTds: Int = 0
     private var jobEndTime: String? = null
     lateinit var dialog: Dialog
-    private var sparePartsIdList: List<String>? = null
     private var partsIdList: ArrayList<Int>? = null
+    private var temp: String? = ""
+    private var tempid: String? = ""
+    private var selectedItem: String? = null
+    private var selectedItemid: String? = null
+    private var items: String? = null
+    private var itemsid: String? = null
+    private var selectedItems = ArrayList<String>()
+    private var selectedItemsid = ArrayList<String>()
 
     @Inject
     lateinit var presenter: FinishJobPresenter
@@ -233,15 +243,42 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
 
     }
 
+    companion object {
+        private const val FORMAT = "%02d:%02d:%02d"
+    }
+
     private fun showOtp() {
         val mBuilder = AlertDialog.Builder(this)
         val mView = layoutInflater.inflate(R.layout.layout_otp, null)
         val otp = mView.findViewById<AppCompatEditText>(R.id.output_otp)
         val submitBtn = mView.findViewById<AppCompatButton>(R.id.submitotpbutton)
+        val time = mView.findViewById<AppCompatTextView>(R.id.tv_time)
+        val resendCode = mView.findViewById<AppCompatTextView>(R.id.tv_resend)
+
+        object : CountDownTimer(60000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                time.text = ("" + String.format(FORMAT,
+                        TimeUnit.MILLISECONDS.toHours(millisUntilFinished),
+                        (TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
+                                TimeUnit.MILLISECONDS.toHours(millisUntilFinished))),
+                        (TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+                                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)))))
+            }
+
+            override fun onFinish() {
+                time.text = getString(R.string.time_out)
+                resendCode.visibility = View.VISIBLE
+            }
+        }.start()
 
         mBuilder.setView(mView)
         val dialog = mBuilder.create()
+        dialog.setCanceledOnTouchOutside(false)
         dialog.show()
+        resendCode.setOnClickListener {
+            dialog.show()
+            presenter.reSendHappyCode(jobId)
+        }
         submitBtn.setOnClickListener {
             if (otp.text.toString().isNotEmpty()) {
                 val ot = otp.text.toString()
@@ -295,23 +332,159 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         presenter.getSparePartsList()
     }
 
-    private fun addParts(jobId: Int, partsList: ArrayList<SparePartsData>) {
+    /*private fun addParts(jobId: Int, partsList: ArrayList<SparePartsData>) {
         val newFragment = SparePartsFragment.newInstance(jobId, partsList)
         newFragment.setStyle(DialogFragment.STYLE_NO_TITLE, 0)
         newFragment.show(supportFragmentManager, "dialog")
-    }
+    }*/
 
     override fun showSparePartsRes(res: ArrayList<SparePartsData>) {
         dialog.dismiss()
         if (res.isNotEmpty()) {
             partList = res
             if (partList.isNotEmpty()) {
-                addParts(jobId, partList)
+                addParts(partList)
             } else {
                 toast("No Spares Found")
             }
         }
     }
+
+    override fun reSendHappyCodeRes(res: SubmiPidRes) {
+        if (res.success) {
+            toast(res.message)
+        }
+    }
+
+    private fun addParts(partsList: ArrayList<SparePartsData>) {
+        val mBuilder = AlertDialog.Builder(this)
+        val mView = layoutInflater.inflate(R.layout.layout_spare_parts, null)
+        mBuilder.setView(mView)
+        val dialog = mBuilder.create()
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
+        dialog.show()
+        val listView = mView.findViewById<ListView>(R.id.list_view)
+        val addbtn = mView.findViewById<Button>(R.id.btn_add_spares)
+        listView.choiceMode = ListView.CHOICE_MODE_MULTIPLE
+        val adapter = ArrayAdapter(this, R.layout.item_spare_parts, R.id.tv_spare_name, partsList)
+        listView.adapter = adapter
+
+        //populate selectedItems from sharedpref
+        prepareSelectedItemsList(listView, partList)
+        fetchItemsAndSet(listView, partList, selectedItems, selectedItemsid)
+
+        listView.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            selectedItem = (view as TextView).text.toString()
+            selectedItemid = partsList[position].itemid.toString()
+            if (selectedItems.contains(selectedItem!!) && selectedItemsid.contains(selectedItemid!!)) {
+                selectedItems.remove(selectedItem!!)
+                selectedItemsid.remove(selectedItemid!!)
+            } else {
+                selectedItems.add(selectedItem!!)
+                selectedItemsid.add(selectedItemid!!)
+            }
+        }
+
+        dialog.setOnCancelListener {
+            selectedItems.clear()
+            selectedItemsid.clear()
+            items = ""
+            itemsid = ""
+        }
+        addbtn.setOnClickListener {
+            items = ""
+            itemsid = ""
+            for (item in selectedItems) {
+                if (items!!.isEmpty()) {
+                    items += item
+                } else if (items!!.isNotEmpty()) {
+                    items += ",$item"
+                }
+            }
+            for (item in selectedItemsid) {
+                if (itemsid!!.isEmpty()) {
+                    itemsid += item
+                } else if (itemsid!!.isNotEmpty()) {
+                    itemsid += ",$item"
+                }
+            }
+
+            val sharedPreferences = getSharedPreferences("DrinkPrimeParts_$jobId.txt", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putString("items", items)
+            editor.putString("itemsid", itemsid)
+            editor.apply()
+            fetchItemsFromSharedPref()
+            dialog.dismiss()
+        }
+
+    }
+
+    private fun prepareSelectedItemsList(chl: ListView, purifierParts: ArrayList<SparePartsData>) {
+        val sharedPreferences = getSharedPreferences("DrinkPrimeParts_$jobId.txt", Context.MODE_PRIVATE)
+        temp = sharedPreferences.getString("items", "Nothing")
+        tempid = sharedPreferences.getString("itemsid", "Nothing")
+
+        if (temp == "Nothing") temp = ""
+        if (tempid == "Nothing") tempid = ""
+
+        val aList = ArrayList(Arrays.asList(*temp!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()))
+        aList.remove("")
+        for (i in aList.indices) {
+            if (!selectedItems.contains(aList[i].toString())) {
+                selectedItems.add(aList[i].toString())
+
+            }
+        }
+        val aListId = ArrayList(Arrays.asList(*tempid!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()))
+        aListId.remove("")
+        for (i in aListId.indices) {
+            if (!selectedItemsid.contains(aListId[i].toString())) {
+                selectedItemsid.add(aListId[i].toString())
+            }
+        }
+        //loop through purifierParts
+        //find the position of items in purifierParts
+        val checked = chl.checkedItemPositions
+        for (i in 0 until chl.adapter.count) {
+            if (checked.get(i)) {
+                val part = purifierParts[i].itemname
+                val partId = purifierParts[i].itemid.toString()
+                if (!selectedItems.contains(part) && !selectedItemsid.contains(partId))
+                    selectedItems.add(part)
+                selectedItemsid.add(partId)
+
+            }
+        }
+    }
+
+    private fun fetchItemsAndSet(chl: ListView, purifierParts: ArrayList<SparePartsData>, selectedItems: ArrayList<String>, selectedItemsid: ArrayList<String>) {
+        var item: String
+        var itemid: String
+        for (i in selectedItems.indices) {
+
+            item = selectedItems[i]
+            Log.e(TAG, selectedItems[i])
+            for (j in purifierParts.indices) {
+                if (item == purifierParts[j]?.itemname) {
+                    chl.setItemChecked(j, true)
+                }
+            }
+        }
+
+        for (i in selectedItemsid.indices) {
+
+            itemid = selectedItemsid[i]
+            Log.e(TAG, selectedItemsid[i])
+            for (j in purifierParts.indices) {
+                if (itemid == purifierParts[j].itemid.toString()) {
+                    chl.setItemChecked(j, true)
+                }
+            }
+        }
+    }
+
 
     private fun finishJob() {
         val currentTime = Date()
@@ -403,8 +576,8 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
 
     fun fetchItemsFromSharedPref() {
         val sharedPreferences = getSharedPreferences("DrinkPrimeParts_$jobId.txt", Context.MODE_PRIVATE)
-        val fetchedItemsName = sharedPreferences.getString("itemsName", "")
-        val s = sharedPreferences.getString("key", "")
+        val fetchedItemsName = sharedPreferences.getString("items", "")
+        val s = sharedPreferences.getString("itemsid", "")
         val spareParts = fetchedItemsName!!.replace("[", "")
         val spareParts1 = spareParts.replace("]", "")
         val st = StringTokenizer(s, ",")
@@ -413,12 +586,12 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
             result.add(st.nextToken().toInt())
         }
         partsIdList = result
-        if (fetchedItemsName.isNotEmpty()) {
-            add_parts_txt!!.text = spareParts1
-            add_parts_txt!!.setTextColor(ContextCompat.getColor(context, R.color.colorGreen))
-        } else {
+        if (fetchedItemsName.isNullOrEmpty()) {
             add_parts_txt!!.text = "No Parts Are Selected"
             add_parts_txt!!.setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
+        } else {
+            add_parts_txt!!.text = spareParts1
+            add_parts_txt!!.setTextColor(ContextCompat.getColor(context, R.color.colorGreen))
         }
 
         val sharedPreferenceshappycode = getSharedPreferences("happycode$jobId", Context.MODE_PRIVATE)

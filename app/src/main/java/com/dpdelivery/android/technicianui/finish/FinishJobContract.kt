@@ -10,10 +10,12 @@ interface FinishJobContract {
     interface View : BaseView {
         fun showSparePartsRes(res: ArrayList<SparePartsData>)
         fun showFinishJobRes(res: SubmiPidRes)
+        fun reSendHappyCodeRes(res: SubmiPidRes)
     }
 
     interface Presenter : BasePresenter<View> {
         fun getSparePartsList()
-        fun finishJob(jobId:Int,finishJobIp: FinishJobIp)
+        fun reSendHappyCode(jobId: Int)
+        fun finishJob(jobId: Int, finishJobIp: FinishJobIp)
     }
 }

@@ -22,8 +22,6 @@ import com.dpdelivery.android.commonadapter.BasicAdapter
 import com.dpdelivery.android.commonviews.MultiStateView
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
-import com.dpdelivery.android.model.Note
-import com.dpdelivery.android.model.input.UpdateStatusIp
 import com.dpdelivery.android.model.techinp.StartJobIP
 import com.dpdelivery.android.model.techinp.SubmitPidIp
 import com.dpdelivery.android.model.techinp.UpdateJobIp
@@ -31,22 +29,14 @@ import com.dpdelivery.android.model.techres.*
 import com.dpdelivery.android.technicianui.base.TechBaseActivity
 import com.dpdelivery.android.technicianui.finish.FinishJobActivity
 import com.dpdelivery.android.technicianui.scanner.ScannerActivity
-import com.dpdelivery.android.technicianui.techjobslist.TechJobsListActivity
 import com.dpdelivery.android.utils.toast
 import com.dpdelivery.android.utils.withNotNullNorEmpty
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_assigned_job.*
-import kotlinx.android.synthetic.main.activity_assigned_job.tv_address
-import kotlinx.android.synthetic.main.activity_assigned_job.tv_alt_phone
-import kotlinx.android.synthetic.main.activity_assigned_job.tv_name
-import kotlinx.android.synthetic.main.activity_assigned_job.tv_phone
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
-import kotlinx.android.synthetic.main.app_bar_tech_base.tv_view_notes
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
-import kotlinx.android.synthetic.main.item_asg_jobs_list.*
 import kotlinx.android.synthetic.main.layout_type_installation.*
-import kotlinx.android.synthetic.main.layout_type_installation.tv_status
 import org.json.JSONException
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -193,7 +183,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         val output = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
         output.timeZone = TimeZone.getTimeZone("GMT")
         val jobStartTime = output.format(currentTime)
-        detailsPresenter.startJob(jobId!!, startJobIP = StartJobIP(jobStartTime = jobStartTime, status = "INP"))
+        detailsPresenter.startJob(jobId!!, startJobIP = StartJobIP(jobStartTime = jobStartTime, status = ""))
     }
 
     private fun submitPid() {
@@ -337,6 +327,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
             showViewState(MultiStateView.VIEW_STATE_CONTENT)
             toast("Job Started Successfully")
             init()
+        } else {
+            toast(startJobRes.error.toString())
         }
     }
 

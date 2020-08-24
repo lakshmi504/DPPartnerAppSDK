@@ -74,5 +74,6 @@
     <string name="add_parts">Add Parts</string>
     <string name="no_images_uploaded">No Images Uploaded</string>
     <string name="search_for_job_id_name">Search for Job Id/Name</string>
+    <string name="time_out">TimeOut!</string>
 
 </resources>
