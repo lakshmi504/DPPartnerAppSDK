@@ -104,4 +104,8 @@ interface ApiService {
 
     @PUT(ApiConstants.FINISH_JOB + "{jobId}")
     fun finishJob(@Header("Authorization") token: String, @Path("jobId", encoded = true) jobId: Int, @Body finishJobIp: FinishJobIp): Observable<SubmiPidRes>
+
+    @GET(ApiConstants.SEND_HAPPY_CODE + "{jobId}")
+    fun resendHappyCode(@Header("Authorization") token: String, @Path("jobId", encoded = true) jobId: Int): Observable<SubmiPidRes>
+
 }

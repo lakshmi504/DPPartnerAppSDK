@@ -5,17 +5,25 @@
     android:orientation="vertical"
     android:padding="@dimen/dimens_30">
 
+  <!--  <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/btn_close"
+        android:layout_width="@dimen/dimens_35"
+        android:layout_height="@dimen/dimens_35"
+        android:layout_gravity="top|end"
+        android:background="@drawable/btn_bg_close"
+        android:src="@drawable/ic_error" />-->
+
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dimens_5"
         android:layout_weight="1"
+        android:fontFamily="@font/montserrat_regular"
         android:gravity="center"
-        android:textSize="@dimen/dimens_12sp"
         android:hint="@string/enter_customer_happy_code"
         android:padding="@dimen/dimens_10"
-        android:fontFamily="@font/montserrat_regular"
-        android:textColorHint="@color/colorBlack" />
+        android:textColorHint="@color/colorBlack"
+        android:textSize="@dimen/dimens_12sp" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/output_otp"
@@ -24,17 +32,30 @@
         android:layout_marginStart="@dimen/dimens_5"
         android:layout_marginTop="@dimen/dimens_10"
         android:layout_weight="1"
-        android:textSize="@dimen/dimens_12sp"
+        android:background="@drawable/bg_orange_stroke"
         android:ems="10"
+        android:fontFamily="@font/montserrat_regular"
         android:gravity="center"
         android:hint="@string/happy_code"
-        android:textColor="@color/colorBlack"
         android:inputType="number"
-        android:background="@drawable/bg_orange_stroke"
         android:maxLength="6"
         android:padding="@dimen/dimens_10"
+        android:textColor="@color/colorBlack"
+        android:textColorHint="@color/colorBlackOverlay"
+        android:textSize="@dimen/dimens_12sp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dimens_15"
+        android:layout_marginBottom="@dimen/dimens_5"
         android:fontFamily="@font/montserrat_regular"
-        android:textColorHint="@color/colorBlackOverlay" />
+        android:text="00:00:60"
+        android:textColor="@color/light_orange"
+        android:textSize="@dimen/dimens_12sp"
+        android:textStyle="bold" />
 
 
     <androidx.appcompat.widget.AppCompatButton
@@ -45,8 +66,22 @@
         android:layout_marginTop="@dimen/dimens_15"
         android:background="@drawable/btn_orange_bg"
         android:padding="@dimen/dimens_10"
-        android:textSize="@dimen/dimens_12sp"
         android:text="@string/submit"
-        android:textColor="#fff" />
+        android:textColor="#fff"
+        android:textSize="@dimen/dimens_12sp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_resend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dimens_10"
+        android:layout_marginBottom="@dimen/dimens_15"
+        android:fontFamily="@font/montserrat_semibold"
+        android:text="Resend HappyCode"
+        android:textAllCaps="false"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/dimens_12sp"
+        android:visibility="invisible" />
 
 </LinearLayout>

@@ -77,11 +77,6 @@ class SparePartsFragment : DialogFragment(), IAdapterClickListener {
         adapterSpares = BasicAdapter(mContext, R.layout.item_spare_parts, adapterClickListener = this)
         val myDivider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         myDivider.setDrawable(ContextCompat.getDrawable(mContext, R.drawable.divider)!!)
-        rv_spares.apply {
-            layoutManager = LinearLayoutManager(mContext)
-            adapter = adapterSpares
-            addItemDecoration(myDivider)
-        }
         partsList!!.withNotNullNorEmpty {
             adapterSpares.addList(partsList!!)
         }
@@ -107,7 +102,7 @@ class SparePartsFragment : DialogFragment(), IAdapterClickListener {
                 Constants.SPARE_PARTS -> {
                     for (i in partsList!!) {
                         if (any.selected && i!!.itemid == any.itemid) {
-                            type.iv_msg.setImageResource(R.drawable.ic_checkbox_on)
+                            //type.iv_msg.setImageResource(R.drawable.ic_checkbox_on)
                             val selectedId = any.itemid
                             any.selected = false
                             selectedPartsList.add(selectedId)
@@ -119,7 +114,7 @@ class SparePartsFragment : DialogFragment(), IAdapterClickListener {
                             selectedPartsListName.remove(any.itemname)
                             partId = selectedPartsList.toString()
                             partName = selectedPartsListName.toString()
-                            type.iv_msg.setImageResource(R.drawable.ic_checkbox)
+                           // type.iv_msg.setImageResource(R.drawable.ic_checkbox)
                             any.selected = true
                         }
                     }
