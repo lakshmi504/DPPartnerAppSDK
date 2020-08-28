@@ -29,7 +29,10 @@ import com.dpdelivery.android.commonviews.MultiStateView
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.interfaces.SelectedDateListener
-import com.dpdelivery.android.model.*
+import com.dpdelivery.android.model.AssignJobRes
+import com.dpdelivery.android.model.DeliveryJobsRes
+import com.dpdelivery.android.model.GetAgentsRes
+import com.dpdelivery.android.model.Note
 import com.dpdelivery.android.model.input.AssignJobsIp
 import com.dpdelivery.android.model.input.UpdateAppointmentIp
 import com.dpdelivery.android.model.input.UpdateStatusIp
@@ -44,7 +47,6 @@ import kotlinx.android.synthetic.main.app_bar_base.*
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
 import kotlinx.android.synthetic.main.layout_header.*
-import okhttp3.ResponseBody
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -271,10 +273,8 @@ class DeliveryJobActivity : BaseActivity(), View.OnClickListener, DeliveryJobCon
 
     }
 
-    override fun showUpdateAppointmntRes(responseBody: ResponseBody) {
-        if (responseBody.string().isNotEmpty()) {
-            toast("Appointment updated successfully.")
-        }
+    override fun showUpdateAppointmntRes(res: String) {
+        toast(res)
     }
 
     private fun showUpdateStatus() {
@@ -400,12 +400,15 @@ class DeliveryJobActivity : BaseActivity(), View.OnClickListener, DeliveryJobCon
         paymentmodeSpin!!.onItemSelectedListener = this
     }
 
-    override fun showUpdateStatusRes(responseBody: ResponseBody) {
-        if (responseBody.string().isNotEmpty()) {
+    override fun showUpdateStatusRes(res: String) {
+        if (res == "SUCCESS") {
             toast("Updated Status/Note successfully.")
             CommonUtils.saveTransactionImageName("")
             CommonUtils.saveDeliveredImageName("")
+        } else {
+            toast(res)
         }
+
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) {

@@ -47,8 +47,9 @@ class DeliveryJobPresenter @Inject constructor(
                         .subscribe(
                                 { res ->
                                     if (res.isSuccessful) {
-                                        view?.showUpdateAppointmntRes(res.body()!!)
-                                    }
+                                        view?.showUpdateAppointmntRes(res.body()!!.string())
+                                    }else
+                                        view?.showErrorMsg(Throwable(res.errorBody().toString()))
                                 },
                                 { throwable ->
                                     view?.showErrorMsg(throwable)
@@ -64,8 +65,11 @@ class DeliveryJobPresenter @Inject constructor(
                         .subscribe(
                                 { res ->
                                     if (res.isSuccessful) {
-                                        view?.showUpdateStatusRes(res.body()!!)
-                                    }
+                                        if (res.body() != null) {
+                                            view?.showUpdateStatusRes(res.body()!!.string())
+                                        }
+                                    }else
+                                        view?.showErrorMsg(Throwable(res.errorBody().toString()))
                                 },
                                 { throwable ->
                                     view?.showErrorMsg(throwable)

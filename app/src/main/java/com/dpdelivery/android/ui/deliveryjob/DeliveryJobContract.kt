@@ -12,8 +12,8 @@ interface DeliveryJobContract {
 
     interface View : BaseView {
         fun showDeliveryJobRes(res: DeliveryJobsRes)
-        fun showUpdateAppointmntRes(responseBody: ResponseBody)
-        fun showUpdateStatusRes(responseBody: ResponseBody)
+        fun showUpdateAppointmntRes(res:String)
+        fun showUpdateStatusRes(res:String)
         fun showAgentsListRes(res: List<GetAgentsRes>)
         fun showAssignJobsRes(res: AssignJobRes)
     }

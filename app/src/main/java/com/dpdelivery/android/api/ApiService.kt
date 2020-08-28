@@ -51,7 +51,7 @@ interface ApiService {
     fun searchDeliveryList(@Header("Authorization") token: String, @Query("search") search: String): Observable<DeliveryJobsListRes>
 
     @GET(ApiConstants.SEARCH)
-    fun filterDeliveryList(@Header("Authorization") token: String, @Query("status") status: String): Observable<DeliveryJobsListRes>
+    fun filterDeliveryList(@Header("Authorization") token: String, @Query("status") status: String, @Query("jobType") jobType: String): Observable<DeliveryJobsListRes>
 
     @GET(ApiConstants.GET_AGENTS)
     fun getAgentsList(@Header("Authorization") token: String): Observable<List<GetAgentsRes>>

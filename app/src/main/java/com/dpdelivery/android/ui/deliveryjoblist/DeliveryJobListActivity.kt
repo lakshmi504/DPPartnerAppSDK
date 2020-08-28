@@ -7,8 +7,10 @@ import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
@@ -23,7 +25,6 @@ import com.dpdelivery.android.model.Data
 import com.dpdelivery.android.model.DeliveryJobsListRes
 import com.dpdelivery.android.ui.base.BaseActivity
 import com.dpdelivery.android.ui.deliveryjob.DeliveryJobActivity
-import com.dpdelivery.android.ui.filteredjobs.FilteredJobsListActivity
 import com.dpdelivery.android.ui.search.DeliverySearchActivity
 import com.dpdelivery.android.utils.toast
 import com.dpdelivery.android.utils.withNotNullNorEmpty
@@ -37,6 +38,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
+
 class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, View.OnClickListener,
         IAdapterClickListener, AdapterView.OnItemSelectedListener {
 
@@ -48,7 +50,9 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
     lateinit var adapterJobsList: BasicAdapter
     lateinit var manager: LinearLayoutManager
     private var mode: String? = null
+    private var jobModeType: String? = null
     private val statusMode: Array<String> = arrayOf<String>("Status Filter", "New", "Assigned", "Picked-Up", "In-Progress", "Delayed", "On-Hold", "Rejected", "Delivered")
+    private val jobType: Array<String> = arrayOf<String>("Job Type", "Installation", "UnInstallation")
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,11 +70,13 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
         empty_button.setOnClickListener(this)
         error_button.setOnClickListener(this)
         fb_datePicker.setOnClickListener(this)
-        tv_search.visibility = View.VISIBLE
+        iv_search.visibility = View.VISIBLE
         sp_filter.visibility = View.VISIBLE
+        sp_type.visibility = View.VISIBLE
         fb_datePicker.visibility = View.VISIBLE
-        tv_search.setOnClickListener(this)
+        iv_search.setOnClickListener(this)
         loadDefaultSpinner()
+        loadDefaultType()
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -83,6 +89,7 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
             R.id.sp_filter -> {
                 (parent.getChildAt(0) as TextView).setTextColor(Color.WHITE)
                 (parent.getChildAt(0) as TextView).textSize = 14f
+                (parent.getChildAt(0) as TextView).gravity = Gravity.END
                 mode = sp_filter!!.selectedItem.toString()
                 if (mode == "New") {
                     mode = "NEW"
@@ -101,13 +108,44 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
                 } else if (mode == "Delivered") {
                     mode = "DEL"
                 }
-                if (mode != "Status Filter") {
-                    /*showViewState(MultiStateView.VIEW_STATE_LOADING)
-                    presenter.getFilterJobsList(status = mode.toString())*/
-                    startActivity(Intent(this, FilteredJobsListActivity::class.java).putExtra("filter", mode))
-                    overridePendingTransition(0, 0)
+                if (mode != "Status Filter" && jobModeType != "Job Type") {
+                    showViewState(MultiStateView.VIEW_STATE_LOADING)
+                    presenter.getFilterJobsList(status = mode.toString(), jobType = jobModeType.toString())
+                    /*startActivity(Intent(this, FilteredJobsListActivity::class.java).putExtra("filter", mode))
+                    overridePendingTransition(0, 0)*/
+                } else if (mode != "Status Filter" && jobModeType == "Job Type") {
+                    showViewState(MultiStateView.VIEW_STATE_LOADING)
+                    presenter.getFilterJobsList(status = mode.toString(), jobType = "")
                 }
             }
+            R.id.sp_type -> {
+                (parent.getChildAt(0) as TextView).setTextColor(Color.WHITE)
+                (parent.getChildAt(0) as TextView).textSize = 14f
+                (parent.getChildAt(0) as TextView).gravity = Gravity.END
+                jobModeType = sp_type!!.selectedItem.toString()
+                if (jobModeType == "Installation") {
+                    jobModeType = "INS"
+                } else if (jobModeType == "UnInstallation") {
+                    jobModeType = "UIN"
+                }
+                if (jobModeType != "Job Type" && mode != "Status Filter") {
+                    showViewState(MultiStateView.VIEW_STATE_LOADING)
+                    presenter.getFilterJobsList(status = mode.toString(), jobType = jobModeType.toString())
+                    /*startActivity(Intent(this, FilteredJobsListActivity::class.java).putExtra("filter", mode))
+                    overridePendingTransition(0, 0)*/
+                } else if (mode == "Status Filter" && jobModeType != "Job Type") {
+                    showViewState(MultiStateView.VIEW_STATE_LOADING)
+                    presenter.getFilterJobsList(status = "", jobType = jobModeType.toString())
+                }
+            }
+        }
+    }
+
+    private fun setMargins(view: View, left: Int, top: Int, right: Int, bottom: Int) {
+        if (view.layoutParams is MarginLayoutParams) {
+            val p = view.layoutParams as MarginLayoutParams
+            p.setMargins(left, top, right, bottom)
+            view.requestLayout()
         }
     }
 
@@ -115,13 +153,15 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
         when (v!!.id) {
             R.id.error_button -> {
                 loadDefaultSpinner()
+                loadDefaultType()
                 getDeliveryJobsList()
             }
             R.id.empty_button -> {
                 loadDefaultSpinner()
+                loadDefaultType()
                 getDeliveryJobsList()
             }
-            R.id.tv_search -> {
+            R.id.iv_search -> {
                 startActivity(Intent(this, DeliverySearchActivity::class.java))
             }
             R.id.fb_datePicker -> {
@@ -147,9 +187,16 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
 
     private fun loadDefaultSpinner() {
         val adapterMode = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, statusMode)
-        adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapterMode.setDropDownViewResource(R.layout.spinner_textview_items)
         sp_filter!!.adapter = adapterMode
         sp_filter.onItemSelectedListener = this
+    }
+
+    private fun loadDefaultType() {
+        val adapterMode = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, jobType)
+        adapterMode.setDropDownViewResource(R.layout.spinner_textview_items)
+        sp_type!!.adapter = adapterMode
+        sp_type.onItemSelectedListener = this
     }
 
     private fun getDeliveryJobsList() {
@@ -169,7 +216,7 @@ class DeliveryJobListActivity : BaseActivity(), DeliveryJobsListContract.View, V
         presenter.takeView(this)
         bottom_navigation.selectedItemId = R.id.action_jobs_list
         loadDefaultSpinner()
-        //et_search.text?.clear()
+        loadDefaultType()
         getDeliveryJobsList()
     }
 

@@ -70,10 +70,10 @@ class DeliveryJobsListPresenter @Inject constructor(
                                 }))
     }
 
-    override fun getFilterJobsList(status: String) {
+    override fun getFilterJobsList(status: String, jobType: String) {
         view?.showProgress()
         subscription.add(
-                apiService.filterDeliveryList(CommonUtils.getLoginToken(), status = status)
+                apiService.filterDeliveryList(CommonUtils.getLoginToken(), status = status, jobType = jobType)
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(
