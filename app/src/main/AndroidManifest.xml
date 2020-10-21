@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -25,6 +26,10 @@
         android:name="android.hardware.microphone"
         android:required="false" />
 
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -33,7 +38,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.search.DeliverySearchActivity"></activity>
+
+        <activity android:name=".technicianui.summary.SummaryActivity" />
+        <activity android:name=".ui.search.DeliverySearchActivity" />
         <activity android:name=".ui.filteredjobs.FilteredJobsListActivity" />
         <activity android:name=".technicianui.search.SearchActivity" />
         <activity android:name=".technicianui.jobslist.JobsListActivity" />
@@ -111,6 +118,7 @@
         <activity
             android:name=".technicianui.base.TechBaseActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />
         <activity
@@ -130,6 +138,16 @@
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".technicianui.finish.FinishJobActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+
+        <service
+            android:name=".technicianui.sync.BluetoothLeService"
+            android:enabled="true" />
+
+        <activity
+            android:name=".technicianui.sync.SyncActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />

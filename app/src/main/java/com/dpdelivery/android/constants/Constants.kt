@@ -15,5 +15,7 @@ class Constants {
         const val SPARE_PARTS = "SPARE_PARTS"
         const val PARTS = "PARTS"
         const val DEVICE_CODE = "DEVICE_CODE"
+        const val BOT_ID = "BOT_ID"
+        const val CONNECTIVITY = "CONNECTIVITY"
     }
 }

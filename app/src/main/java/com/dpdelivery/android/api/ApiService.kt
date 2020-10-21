@@ -16,6 +16,7 @@ import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*
+import retrofit2.http.Body
 
 interface ApiService {
 
@@ -66,7 +67,10 @@ interface ApiService {
     //Technician App
 
     @GET(ApiConstants.JOBS_LIST)
-    fun getAssignedJobs(@Header("Authorization") token: String, @Query("orderDir") orderDir: String, @Query("orderBy") orderBy: String): Observable<ASGListRes>
+    fun getAssignedJobs(@Header("Authorization") token: String, @Query("status") status: String, @Query("appointmentDate") appointmentDate: String, @Query("orderBy") orderBy: String, @Query("pageSize") pageSize: Int, @Query("page") page: Int): Observable<ASGListRes>
+
+    @GET(ApiConstants.JOBS_LIST)
+    fun getMoreJobsList(@Header("Authorization") token: String, @Query("status") status: String, @Query("appointmentDate") appointmentDate: String, @Query("orderBy") orderBy: String, @Query("pageSize") pageSize: Int, @Query("page") page: Int): Observable<ASGListRes>
 
     @GET(ApiConstants.JOBS_LIST)
     fun getAssignedJobs(@Header("Authorization") token: String, @Query("status") status: String, @Query("orderBy") orderBy: String, @Query("pageSize") pageSize: Int, @Query("page") page: Int): Observable<ASGListRes>
@@ -75,7 +79,7 @@ interface ApiService {
     fun getMoreJobsList(@Header("Authorization") token: String, @Query("status") status: String, @Query("orderBy") orderBy: String, @Query("pageSize") pageSize: Int, @Query("page") page: Int): Observable<ASGListRes>
 
     @GET(ApiConstants.JOBS_LIST)
-    fun getFilterJobs(@Header("Authorization") token: String, @Query("status") status: String, @Query("orderBy") orderBy: String): Observable<ASGListRes>
+    fun getFilterJobs(@Header("Authorization") token: String, @Query("status") status: String, @Query("appointmentDate") appointmentDate: String, @Query("orderBy") orderBy: String): Observable<ASGListRes>
 
     @GET(ApiConstants.JOBS_LIST)
     fun searchTechJobsList(@Header("Authorization") token: String, @Query("search") search: String, @Query("orderBy") orderBy: String): Observable<ASGListRes>
@@ -107,5 +111,17 @@ interface ApiService {
 
     @GET(ApiConstants.SEND_HAPPY_CODE + "{jobId}")
     fun resendHappyCode(@Header("Authorization") token: String, @Path("jobId", encoded = true) jobId: Int): Observable<SubmiPidRes>
+
+    @GET(ApiConstants.SUMMARY)
+    fun getSummary(@Header("Authorization") token: String): Observable<SummaryRes>
+
+    @FormUrlEncoded
+    @POST(ApiConstants.GET_BLE_DETAILS)
+    fun getBLEDetails(@FieldMap purifierid: HashMap<String, String>): Observable<BLEDetailsRes>
+
+    @FormUrlEncoded
+    @POST(ApiConstants.SYNC)
+    fun updateServerCmds(@FieldMap params: HashMap<String, String>): Observable<BLEDetailsRes>
+
 
 }

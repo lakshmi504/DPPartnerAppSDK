@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <RelativeLayout
+        android:id="@+id/rl_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dimens_30"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_background"
+            android:layout_width="@dimen/dimens_40"
+            android:layout_height="@dimen/dimens_40"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/bg_circle_grey" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="@dimen/dimens_9"
+            android:layout_marginEnd="14dp"
+            app:srcCompat="@drawable/ic_close"
+            tools:ignore="VectorDrawableCompat" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_close"
+        android:layout_margin="@dimen/dimens_10"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dimens_10"
+                android:text="BotId:"
+                android:textSize="@dimen/dimens_14sp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_botId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BotId"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dimens_10"
+                android:text="PurifierId:"
+                android:textSize="@dimen/dimens_14sp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_pid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PurifierId"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dimens_10"
+                android:text="Owner Name:"
+                android:textSize="@dimen/dimens_14sp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_owner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Owner Name"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_sync"
+        android:layout_width="@dimen/dimens_100"
+        android:layout_height="@dimen/dimens_100"
+        android:layout_centerInParent="true"
+        android:src="@drawable/ic_sync_image" />
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/circular_progress_bar"
+        android:indeterminateTintMode="src_atop"
+        android:progress="50"
+        android:rotation="70" />
+
+    <ProgressBar
+        android:id="@+id/progress1"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="260dp"
+        android:layout_height="260dp"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/circular_progress_bar"
+        android:indeterminateTintMode="src_atop"
+        android:progress="50"
+        android:rotation="220" />
+
+    <ProgressBar
+        android:id="@+id/progress2"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/circular_progress_bar"
+        android:indeterminateTintMode="src_atop"
+        android:progress="50"
+        android:rotation="360" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_coonect"
+        android:layout_width="@dimen/dimens_30"
+        android:layout_height="@dimen/dimens_30"
+        android:layout_below="@id/iv_sync"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dimens_20"
+        android:src="@drawable/ic_tick"
+        android:visibility="gone"
+        tools:ignore="VectorDrawableCompat" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/synctext_completed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progress1"
+        android:layout_marginTop="@dimen/dimens_10"
+        android:gravity="center"
+        android:text="Sync Completed !"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/dimens_12sp"
+        android:visibility="gone" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_not_coonect"
+        android:layout_width="@dimen/dimens_30"
+        android:layout_height="@dimen/dimens_30"
+        android:layout_below="@id/iv_sync"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dimens_20"
+        android:src="@drawable/ic_cancel"
+        android:visibility="gone"
+        tools:ignore="VectorDrawableCompat" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/synctext_notcompleted"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progress1"
+        android:layout_marginTop="@dimen/dimens_10"
+        android:gravity="center"
+        android:text="Not able to sync !"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/dimens_12sp"
+        android:visibility="gone" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/synctext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progress1"
+        android:layout_marginTop="@dimen/dimens_20"
+        android:gravity="center"
+        android:text="@string/connecting_to_your_prime_device"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/dimens_12sp" />
+
+</RelativeLayout>

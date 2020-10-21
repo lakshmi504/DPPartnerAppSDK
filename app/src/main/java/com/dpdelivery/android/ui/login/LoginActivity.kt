@@ -11,7 +11,6 @@ import com.auth0.android.jwt.JWT
 import com.dpdelivery.android.R
 import com.dpdelivery.android.model.input.LoginIp
 import com.dpdelivery.android.technicianui.techjobslist.TechJobsListActivity
-import com.dpdelivery.android.ui.dashboard.DashBoardActivity
 import com.dpdelivery.android.ui.deliveryjoblist.DeliveryJobListActivity
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.toast
@@ -76,26 +75,22 @@ class LoginActivity : DaggerAppCompatActivity(), View.OnClickListener, LoginCont
     }
 
     override fun setLoginRes(res: Headers) {
-        if (res.name(0) == "Authorization") {
-            var data = res.get("Authorization")
-            CommonUtils.saveLoginToken(data)
-            if (data!!.startsWith("Bearer ")) {
-                data = data.split(' ')[1]
-                val jwt = JWT(data)
-                val aud = jwt.audience?.get(0)
-                CommonUtils.saveRole(aud.toString())
-                if (aud.equals("ROLE_Technician")) {
-                    val intent = Intent(this, TechJobsListActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                } else {
-                    val intent = Intent(this, DeliveryJobListActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
+        var data = res.get("Authorization")
+        CommonUtils.saveLoginToken(data)
+        if (data!!.startsWith("Bearer ")) {
+            data = data.split(' ')[1]
+            val jwt = JWT(data)
+            val aud = jwt.audience?.get(0)
+            CommonUtils.saveRole(aud.toString())
+            if (aud.equals("ROLE_Technician")) {
+                val intent = Intent(this, TechJobsListActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                val intent = Intent(this, DeliveryJobListActivity::class.java)
+                startActivity(intent)
+                finish()
             }
-        } else {
-            toast("Invalid Credentials")
         }
     }
 

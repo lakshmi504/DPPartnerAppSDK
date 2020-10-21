@@ -2,6 +2,8 @@ package com.dpdelivery.android.technicianui.techjobslist
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,10 +19,13 @@ import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.model.techres.ASGListRes
 import com.dpdelivery.android.model.techres.Job
+import com.dpdelivery.android.technicianui.ForceUpdateAsync
 import com.dpdelivery.android.technicianui.base.TechBaseActivity
 import com.dpdelivery.android.technicianui.jobdetails.TechJobDetailsActivity
 import com.dpdelivery.android.technicianui.jobslist.JobsListActivity
 import com.dpdelivery.android.technicianui.search.SearchActivity
+import com.dpdelivery.android.utils.CommonUtils
+import com.dpdelivery.android.utils.DateHelper
 import com.dpdelivery.android.utils.toast
 import com.dpdelivery.android.utils.withNotNullNorEmpty
 import kotlinx.android.synthetic.main.activity_assigned_jobs_list.*
@@ -39,6 +44,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
     lateinit var jobsList: ArrayList<Job?>
     private var filter: String? = null
 
+
     @Inject
     lateinit var presenter: TechJobsListPresenter
     private val filterMode: Array<String> = arrayOf<String>("Status Filter", "Assigned", "In-Progress", "Completed")
@@ -46,14 +52,14 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LayoutInflater.from(baseContext).inflate(R.layout.activity_assigned_jobs_list, tech_layout_container)
+        LayoutInflater.from(context).inflate(R.layout.activity_assigned_jobs_list, tech_layout_container)
         init()
     }
 
     override fun init() {
         mContext = this
         setTitle("Jobs List")
-        setUpBottomNavView(false)
+        setUpBottomNavView(true)
         loadDefaultSpinner()
         search_filter.visibility = View.GONE
         tv_search.setOnClickListener(this)
@@ -61,6 +67,20 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         empty_button.setOnClickListener(this)
         tv_search.visibility = View.VISIBLE
         sp_filter.visibility = View.VISIBLE
+        forceUpdate()
+    }
+
+    private fun forceUpdate() {
+        val packageManager = this.packageManager
+        var packageInfo: PackageInfo? = null
+        try {
+            packageInfo = packageManager.getPackageInfo(packageName, 0)
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+        val currentVersion = packageInfo?.versionName
+        ForceUpdateAsync(currentVersion!!, this).execute()
+        CommonUtils.setCurrentVersion(currentVersion)
     }
 
     private fun getAssignedJobsList() {
@@ -69,7 +89,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         rv_asg_jobs_list.layoutManager = manager
         adapterAsgJobsList = BasicAdapter(this, R.layout.item_asg_jobs_list, adapterClickListener = this)
         rv_asg_jobs_list.apply {
-            presenter.getFilterJobsList(status = "ASG")
+            presenter.getFilterJobsList(status = "ASG", appointmentDate = DateHelper.getCurrentDate())
             adapter = adapterAsgJobsList
             adapter!!.notifyDataSetChanged()
         }
@@ -100,6 +120,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
     override fun onResume() {
         super.onResume()
         presenter.takeView(this)
+        bottom_navigation.selectedItemId = R.id.action_jobs
         loadDefaultSpinner()
         getAssignedJobsList()
     }
@@ -166,9 +187,11 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
             }
         }
     }
+
     override fun showViewState(state: Int) {
         multistateview.viewState = state
     }
+
     override fun onBackPressed() {
         super.onBackPressed()
         finishAffinity()

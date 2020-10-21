@@ -175,13 +175,45 @@
                 android:id="@+id/sp_mode"
                 android:layout_width="200dp"
                 android:layout_height="@dimen/dimens_35"
+                android:background="@drawable/bg_note"
                 android:gravity="center"
                 android:padding="@dimen/dimens_5"
-                android:background="@drawable/bg_note"
                 android:spinnerMode="dropdown"
                 android:visibility="gone" />
         </RelativeLayout>
 
+        <LinearLayout
+            android:id="@+id/ll_sync"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:fontFamily="@font/montserrat_semibold"
+                android:text="Sync : "
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_14sp" />
+
+            <TextView
+                android:id="@+id/synctxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/montserrat_regular"
+                android:gravity="center"
+                android:text="Not Synced"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <Button
+                android:id="@+id/btn_sync"
+                style="@style/finish_buttons_style"
+                android:text="Sync Now" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/btn_finish_job"

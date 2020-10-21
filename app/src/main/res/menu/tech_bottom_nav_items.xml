@@ -2,23 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_assigned"
+        android:id="@+id/action_jobs"
         android:enabled="true"
         android:icon="@drawable/ic_assianged_task"
-        android:title="@string/assigned_jobs"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_working"
-        android:enabled="true"
-        android:icon="@drawable/ic_working_jobs"
-        android:title="@string/in_progress_jobs"
+        android:title="@string/jobs_list"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_summary"
         android:enabled="true"
         android:icon="@drawable/summary"
-        android:title="@string/completed_jobs"
+        android:title="@string/summary"
         app:showAsAction="ifRoom" />
 
 </menu>

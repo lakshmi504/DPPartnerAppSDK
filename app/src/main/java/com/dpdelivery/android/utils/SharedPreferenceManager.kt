@@ -21,6 +21,16 @@ class SharedPreferenceManager {
         val SEARCHED_CITY = "SEARCHED_CITY"
         val TRANSACTION_IMAGE= "TRANSACTION_IMAGE"
         val DELIVERED_IMAGE= "DELIVERED_IMAGE"
+        val CURRENT_VERSION= "CURRENT_VERSION"
+
+        val KEY_HASUPDATE = "hasupdate"
+
+        val KEY_CURRENT = "current"
+        val KEY_FLOWLIMIT = "flowlimit"
+        val KEY_VALIDITY = "validity"
+        val KEY_STATUS = "purifierstatus"
+        val KEY_CMDS = "cmds"
+        val KEY_PREPAID = "prepaid"
 
         fun clearPreferences() {
             getPrefs().edit().clear().apply()

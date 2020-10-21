@@ -1,6 +1,7 @@
 package com.dpdelivery.android.ui.location
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
@@ -17,7 +18,6 @@ import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.RelativeLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -39,6 +39,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.Places
 import kotlinx.android.synthetic.main.activity_location.*
 
 class LocationActivity : AppCompatActivity(), View.OnClickListener, OnMapReadyCallback,
@@ -75,37 +76,24 @@ class LocationActivity : AppCompatActivity(), View.OnClickListener, OnMapReadyCa
         resultText = findViewById(R.id.tv_location)
         btn_use_location.setOnClickListener(this)
 
-        locationButton = (findViewById<View>(Integer.parseInt("1")).parent as View).findViewById(Integer.parseInt("2"))
-        val rlp = locationButton!!.layoutParams as RelativeLayout.LayoutParams
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0)
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE)
-        rlp.setMargins(0, 50, 0, 0)
-
+        if (!Places.isInitialized()) {
+            Places.initialize(applicationContext, "AIzaSyAaodfDw6xFWkb7P3Fd3Dk9BMrvGAyWBpg")
+        }
         service = this.getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager
         enabled = service!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
-    }
 
-    override fun onClick(v: View?) {
-        when (v!!.id) {
-            R.id.btn_use_location -> {
-                if (mapAddress!!.getAddressLine(0).isNotEmpty()) {
-                    val intent = Intent()
-                    intent.putExtra("address", mapAddress!!.getAddressLine(0))
-                    intent.putExtra("latitude", mapAddress!!.latitude)
-                    intent.putExtra("longitude", mapAddress!!.longitude)
-                    setResult(Activity.RESULT_OK, intent)
-                    finish()
-                } else {
-                    toast("Please select location")
-                }
-            }
-        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.uiSettings.isMyLocationButtonEnabled = true
+
         locationButton = (findViewById<View>(Integer.parseInt("1")).parent as View).findViewById(Integer.parseInt("2"))
+        val rlp = locationButton!!.layoutParams as RelativeLayout.LayoutParams
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0)
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE)
+        rlp.setMargins(0, 1800, 0, 0)
+
         fab.setOnClickListener {
             if (mMap != null) {
                 if (locationButton != null)
@@ -135,15 +123,6 @@ class LocationActivity : AppCompatActivity(), View.OnClickListener, OnMapReadyCa
         initCameraIdle()
     }
 
-    private fun buildGoogleApiClient() {
-        mGoogleApiClient = GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build()
-        mGoogleApiClient!!.connect()
-    }
-
     private fun checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(
                         this,
@@ -153,7 +132,7 @@ class LocationActivity : AppCompatActivity(), View.OnClickListener, OnMapReadyCa
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
                 AlertDialog.Builder(this)
                         .setTitle("Location Permission Needed")
-                        .setMessage("Allow DP Delivery to\n" +
+                        .setMessage("Allow DP Partner 2.0 to\n" +
                                 "access this device’s\n" +
                                 "location?")
                         .setPositiveButton("OK") { dialog, which ->
@@ -171,6 +150,40 @@ class LocationActivity : AppCompatActivity(), View.OnClickListener, OnMapReadyCa
                     REQUEST_LOCATION_CODE
             )
         }
+    }
+
+    private fun initCameraIdle() {
+        mMap.setOnCameraIdleListener {
+            center = mMap.cameraPosition.target
+            getCurrentAddress(center!!.latitude, center!!.longitude).execute()
+        }
+    }
+
+    override fun onClick(v: View?) {
+        when (v!!.id) {
+            R.id.btn_use_location -> {
+                if (mapAddress!!.getAddressLine(0).isNotEmpty()) {
+                    val intent = Intent()
+                    intent.putExtra("address", mapAddress!!.getAddressLine(0))
+                    intent.putExtra("latitude", mapAddress!!.latitude)
+                    intent.putExtra("longitude", mapAddress!!.longitude)
+                    setResult(Activity.RESULT_OK, intent)
+                    finish()
+                } else {
+                    toast("Please select location")
+                }
+            }
+        }
+    }
+
+    @Synchronized
+    fun buildGoogleApiClient() {
+        mGoogleApiClient = GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build()
+        mGoogleApiClient!!.connect()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -193,13 +206,6 @@ class LocationActivity : AppCompatActivity(), View.OnClickListener, OnMapReadyCa
         }
     }
 
-    private fun initCameraIdle() {
-        mMap.setOnCameraIdleListener {
-            center = mMap.cameraPosition.target
-            getCurrentAddress(center!!.latitude, center!!.longitude).execute()
-        }
-    }
-
     override fun onConnected(p0: Bundle?) {
         mLocationRequest = LocationRequest()
         mLocationRequest!!.interval = 1000
@@ -212,7 +218,6 @@ class LocationActivity : AppCompatActivity(), View.OnClickListener, OnMapReadyCa
         }
         if (ContextCompat.checkSelfPermission(this,
                         Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient!!, mLocationRequest!!, this)
             fusedLocationClient.lastLocation
                     .addOnSuccessListener { location: Location? ->
                         if (location != null) {
@@ -246,6 +251,7 @@ class LocationActivity : AppCompatActivity(), View.OnClickListener, OnMapReadyCa
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f))
     }
 
+    @SuppressLint("StaticFieldLeak")
     inner class getCurrentAddress(internal var Latitude: Double?, internal var Longitude: Double?) : AsyncTask<Void, Void, String>() {
 
 
@@ -268,20 +274,7 @@ class LocationActivity : AppCompatActivity(), View.OnClickListener, OnMapReadyCa
             } else {
                 if (!(mContext as Activity).isFinishing) {
                     try {
-                        resultText.setText(R.string.woops_something_went_wrong)
-                        /*pendingTransactionDialog = Dialog(mContext, R.style.CustomDialogThemeLightBg)
-                        pendingTransactionDialog!!.setCanceledOnTouchOutside(true)
-                        pendingTransactionDialog!!.setContentView(R.layout.dialog_alert_message)
-                        (pendingTransactionDialog!!.findViewById(R.id.dialog_title) as TextView).text = mContext.getString(R.string.unable_to_identify)
-                        (pendingTransactionDialog!!.findViewById(R.id.dialog_text) as TextView).text = mContext.getString(R.string.please_try_again)
-                        (pendingTransactionDialog!!.findViewById(R.id.tv_retry) as TextView).text = mContext.getString(R.string.retry).toUpperCase()
-                        pendingTransactionDialog!!.show()
-
-                        (pendingTransactionDialog!!.findViewById(R.id.tv_retry) as TextView).setOnClickListener {
-                            mapDataInitialise()
-                            pendingTransactionDialog!!.dismiss()
-
-                        }*/
+                        resultText.setText(R.string.fetching_location)
                     } catch (e: WindowManager.BadTokenException) {
                         Log.e("WindowManagerBad ", e.toString())
                     }
@@ -290,6 +283,7 @@ class LocationActivity : AppCompatActivity(), View.OnClickListener, OnMapReadyCa
             }
         }
     }
+
 }
 
 

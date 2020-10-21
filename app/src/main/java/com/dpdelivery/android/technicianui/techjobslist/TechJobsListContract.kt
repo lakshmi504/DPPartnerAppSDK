@@ -12,7 +12,7 @@ interface TechJobsListContract {
 
     interface Presenter : BasePresenter<View> {
         //fun getAssignedJobsList()
-        fun getFilterJobsList(status: String)
+        fun getFilterJobsList(status: String, appointmentDate: String)
         fun getSearchJobsList(search: String)
     }
 }

@@ -19,6 +19,23 @@ class JobsListPresenter @Inject constructor(
         this.view = view
     }
 
+    override fun getAssignedJobsList(status: String, appointmentDate: String) {
+        view?.showProgress()
+        subscription.add(
+                apiService.getAssignedJobs(CommonUtils.getLoginToken(), status, appointmentDate, pageSize = 10, page = 1, orderBy = "appointmentStartTime")
+                        .subscribeOn(baseScheduler.io())
+                        .observeOn(baseScheduler.ui())
+                        .subscribe(
+                                { res ->
+                                    view?.hideProgress()
+                                    view?.showAsgJobsListRes(res)
+                                },
+                                { throwable ->
+                                    view?.hideProgress()
+                                    view?.showErrorMsg(throwable)
+                                }))
+    }
+
     override fun getAssignedJobsList(status: String) {
         view?.showProgress()
         subscription.add(
@@ -29,6 +46,23 @@ class JobsListPresenter @Inject constructor(
                                 { res ->
                                     view?.hideProgress()
                                     view?.showAsgJobsListRes(res)
+                                },
+                                { throwable ->
+                                    view?.hideProgress()
+                                    view?.showErrorMsg(throwable)
+                                }))
+    }
+
+    override fun getMoreJobsList(page: Int, status: String, appointmentDate: String) {
+        view?.showProgress()
+        subscription.add(
+                apiService.getMoreJobsList(CommonUtils.getLoginToken(), status, appointmentDate, pageSize = 10, page = page, orderBy = "appointmentStartTime")
+                        .subscribeOn(baseScheduler.io())
+                        .observeOn(baseScheduler.ui())
+                        .subscribe(
+                                { res ->
+                                    view?.hideProgress()
+                                    view?.showMoreAsgJobsListRes(res)
                                 },
                                 { throwable ->
                                     view?.hideProgress()

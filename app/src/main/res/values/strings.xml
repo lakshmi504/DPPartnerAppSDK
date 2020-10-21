@@ -34,6 +34,7 @@
     <string name="please_wait">Please wait</string>
     <string name="pin_location">Pin Location</string>
     <string name="woops_something_went_wrong">Whoops Something Went Wrong!</string>
+    <string name="fetching_location">Trying To Fetch Your Location</string>
     <string name="unable_to_identify">Unable to identify location?</string>
     <string name="please_try_again">Please try again.</string>
     <string name="please_provide_location_permission">Please Provide Location Permission</string>
@@ -75,5 +76,12 @@
     <string name="no_images_uploaded">No Images Uploaded</string>
     <string name="search_for_job_id_name">Search for Job Id/Name</string>
     <string name="time_out">TimeOut!</string>
+    <string name="no_data_found">No Data Found</string>
+    <string name="jobs_list">Jobs List</string>
+    <string name="summary">Summary</string>
+    <string name="copyright">&#169;DP Partner 2.0\u0020</string>
 
+    <string name="connecting_to_your_prime_device">Connecting to the Purifier…</string>
+    <string name="ble_not_supported">BLE is not supported</string>
+    <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
 </resources>

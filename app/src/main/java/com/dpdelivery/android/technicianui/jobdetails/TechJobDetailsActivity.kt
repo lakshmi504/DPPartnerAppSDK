@@ -62,13 +62,15 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
     private var city: String = ""
     private var state: String = ""
     private var zipcode: String = ""
+    private var botId: String? = null
+    private var connectivity: String? = null
 
     @Inject
     lateinit var detailsPresenter: TechJobDetailsPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LayoutInflater.from(baseContext).inflate(R.layout.activity_assigned_job, tech_layout_container)
+        LayoutInflater.from(context).inflate(R.layout.activity_assigned_job, tech_layout_container)
         init()
     }
 
@@ -138,12 +140,16 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
                 submitPid()
             }
             R.id.btn_start_job -> {
-                startJob()
+                if (btn_start_job.visibility == View.VISIBLE) {
+                    startJob()
+                }
             }
             R.id.finish_job -> {
                 val intent = Intent(this, FinishJobActivity::class.java)
                 intent.putExtra(Constants.ID, jobId)
                 intent.putExtra(Constants.DEVICE_CODE, deviceCode)
+                intent.putExtra(Constants.BOT_ID, botId)
+                intent.putExtra(Constants.CONNECTIVITY, connectivity)
                 startActivity(intent)
             }
             R.id.btn_finish_job -> {
@@ -183,7 +189,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         val output = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
         output.timeZone = TimeZone.getTimeZone("GMT")
         val jobStartTime = output.format(currentTime)
-        detailsPresenter.startJob(jobId!!, startJobIP = StartJobIP(jobStartTime = jobStartTime, status = ""))
+        detailsPresenter.startJob(jobId!!, startJobIP = StartJobIP(jobStartTime = jobStartTime, status = "INP"))
     }
 
     private fun submitPid() {
@@ -225,6 +231,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
             val intent = Intent(this, FinishJobActivity::class.java)
             intent.putExtra(Constants.ID, jobId)
             intent.putExtra(Constants.DEVICE_CODE, et_purifierid.text.toString())
+            intent.putExtra(Constants.BOT_ID, botId)
+            intent.putExtra(Constants.CONNECTIVITY, connectivity)
             startActivity(intent)
         } else {
             toast("Please verify fields before finish job.")
@@ -284,15 +292,13 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         tv_address.text = address
         tv_job_desc.text = res.description
 
-        if (res.type.code.equals("ISU") && (res.status.code.equals("INP"))) {
+        if (!res.type.code.equals("INS") && (res.status.code.equals("INP"))) {
             btn_start_job.visibility = View.GONE
             finish_job.visibility = View.VISIBLE
         } else if (res.type.code.equals("INS") && (res.status.code.equals("INP"))) {
             btn_start_job.visibility = View.GONE
             layout_ins.visibility = View.VISIBLE
-        } else if (res.type.code.equals("ISU") && (res.status.code.equals("ASG"))) {
-            btn_start_job.visibility = View.VISIBLE
-        } else if (res.type.code.equals("INS") && (res.status.code.equals("ASG"))) {
+        } else if (res.status.code.equals("ASG")) {
             btn_start_job.visibility = View.VISIBLE
         } else {
             btn_start_job.visibility = View.GONE
@@ -319,6 +325,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
             tv_appt_end.text = res.appointmentEndTime
         }
         deviceCode = res.installation?.deviceCode
+        botId = res.bid + ""
+        connectivity = res.connectivity
         et_purifierid.setText(res.installation?.deviceCode)
     }
 

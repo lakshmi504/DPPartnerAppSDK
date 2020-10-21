@@ -21,6 +21,8 @@ data class Job(
         val deliveryStatus: String?,
         val description: String?,
         val deviceStatus: String?,
+        val connectivity: String?,
+        val bid: String?,
         val financial: Any?,
         val id: Int?,
         val installation: Installation?,
@@ -59,7 +61,9 @@ data class Installation(
         val deviceCode: String? = "",
         val id: Int?,
         val plan: Plan?,
-        val deviceStatus: String?
+        val deviceStatus: String?,
+        val bId: String?,
+        val connectivity: String?
 )
 @Keep
 data class Plan(

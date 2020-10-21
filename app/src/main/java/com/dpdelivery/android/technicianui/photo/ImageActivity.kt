@@ -55,7 +55,7 @@ class ImageActivity : TechBaseActivity(), View.OnClickListener, ImageContract.Vi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LayoutInflater.from(baseContext).inflate(R.layout.activity_image, tech_layout_container)
+        LayoutInflater.from(context).inflate(R.layout.activity_image, tech_layout_container)
         init()
     }
 

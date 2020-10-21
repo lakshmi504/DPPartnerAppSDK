@@ -1,7 +1,6 @@
 package com.dpdelivery.android.technicianui.jobslist
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -11,13 +10,11 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dpdelivery.android.R
 import com.dpdelivery.android.commonviews.MultiStateView
-import com.dpdelivery.android.constants.Constants
-import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.interfaces.PaginationScrollListener
 import com.dpdelivery.android.model.techres.ASGListRes
 import com.dpdelivery.android.model.techres.Job
 import com.dpdelivery.android.technicianui.base.TechBaseActivity
-import com.dpdelivery.android.technicianui.jobdetails.TechJobDetailsActivity
+import com.dpdelivery.android.utils.DateHelper
 import com.dpdelivery.android.utils.toast
 import com.dpdelivery.android.utils.withNotNullNorEmpty
 import kotlinx.android.synthetic.main.activity_assigned_jobs_list.*
@@ -27,7 +24,7 @@ import kotlinx.android.synthetic.main.error_view.*
 import javax.inject.Inject
 import kotlin.math.ceil
 
-class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClickListener{
+class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClickListener {
 
     lateinit var mContext: Context
     lateinit var manager: LinearLayoutManager
@@ -45,7 +42,7 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LayoutInflater.from(baseContext).inflate(R.layout.activity_assigned_jobs_list, tech_layout_container)
+        LayoutInflater.from(context).inflate(R.layout.activity_assigned_jobs_list, tech_layout_container)
         init()
     }
 
@@ -89,7 +86,16 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
                 Handler().postDelayed({ getMoreResults() }, 1000)
             }
         })
-        getAssignedJobsList(data!!)
+        if (data.equals("ASG")) {
+            getAssignedJobsList(data!!, DateHelper.getCurrentDate())
+        } else {
+            getAssignedJobsList(data!!)
+        }
+    }
+
+    private fun getAssignedJobsList(data: String, appointmentDate: String) {
+        showViewState(MultiStateView.VIEW_STATE_LOADING)
+        presenter.getAssignedJobsList(status = data, appointmentDate = appointmentDate)
     }
 
     private fun getAssignedJobsList(data: String) {
@@ -98,7 +104,11 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
     }
 
     private fun getMoreResults() {
-        presenter.getMoreJobsList(currentPage, data!!)
+        if (data.equals("ASG")) {
+            presenter.getMoreJobsList(currentPage, DateHelper.getCurrentDate(), data!!)
+        } else {
+            presenter.getMoreJobsList(currentPage, data!!)
+        }
     }
 
     override fun onClick(v: View?) {

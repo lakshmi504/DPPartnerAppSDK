@@ -3,9 +3,10 @@ package com.dpdelivery.android.api
 class ApiConstants {
     companion object {
 
-        //const val BASE_URL = "http://ec2-13-127-87-159.ap-south-1.compute.amazonaws.com:8080/"
+        //const val BASE_URL = "http://ec2-15-207-89-27.ap-south-1.compute.amazonaws.com:8080/"
         //const val BASE_URL = "http://dev.waterwalaprime.in:8080/"
         const val BASE_URL = "http://staging.waterwalaprime.in:8080/"
+        //const val BASE_URL = "http://test.waterwalaprime.in:8080/"
         const val PRD_BASE_URL = "http://prd.waterwalaprime.in:8090/"
 
         // Delivery App Apis
@@ -28,5 +29,8 @@ class ApiConstants {
         const val SPARE_PARTS = "inventory/spareParts"
         const val FINISH_JOB = "workforce/job/"
         const val SEND_HAPPY_CODE = "workforce/sendHappyCode"
+        const val SUMMARY = "employee/monthlyReport"
+        const val SYNC = "https://waterwalaprime.com/controller/sync1.php"
+        const val GET_BLE_DETAILS = "https://waterwalaprime.com/controller/getdetailsBLE.php"
     }
 }

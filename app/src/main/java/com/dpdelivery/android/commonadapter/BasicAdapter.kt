@@ -7,6 +7,8 @@ import com.dpdelivery.android.R
 import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.technicianui.finish.viewholder.SparePartsViewHolder
 import com.dpdelivery.android.technicianui.jobdetails.TechNotesListViewHolder
+import com.dpdelivery.android.technicianui.summary.viewholder.SummaryLastMonth
+import com.dpdelivery.android.technicianui.summary.viewholder.SummaryThisMonth
 import com.dpdelivery.android.technicianui.techjobslist.viewholder.TechJobsListViewHolder
 import com.dpdelivery.android.ui.deliveryjob.viewholder.NotesListViewHolder
 import com.dpdelivery.android.ui.deliveryjoblist.viewholder.DeliveryJobsListViewHolder
@@ -35,6 +37,8 @@ class BasicAdapter(var context: Context, var type: Int, var adapterType: String 
             R.layout.item_asg_jobs_list -> holder = TechJobsListViewHolder(view, context, adapterClickListener!!)
             R.layout.item_spare_parts -> holder = SparePartsViewHolder(view, context, adapterClickListener!!)
             R.layout.tech_item_notes_list -> holder = TechNotesListViewHolder(view, context, adapterClickListener!!)
+            R.layout.item_summary_this_month -> holder = SummaryThisMonth(view, context, adapterClickListener!!)
+            R.layout.item_summary_last_month -> holder = SummaryLastMonth(view, context, adapterClickListener!!)
 
 
         }

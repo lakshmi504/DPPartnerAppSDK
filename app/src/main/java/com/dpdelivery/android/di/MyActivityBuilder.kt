@@ -7,6 +7,8 @@ import com.dpdelivery.android.technicianui.jobslist.JobsListActivity
 import com.dpdelivery.android.technicianui.photo.ImageActivity
 import com.dpdelivery.android.technicianui.scanner.ScannerActivity
 import com.dpdelivery.android.technicianui.search.SearchActivity
+import com.dpdelivery.android.technicianui.summary.SummaryActivity
+import com.dpdelivery.android.technicianui.sync.SyncActivity
 import com.dpdelivery.android.technicianui.techjobslist.TechJobsListActivity
 import com.dpdelivery.android.ui.base.BaseActivity
 import com.dpdelivery.android.ui.dashboard.DashBoardActivity
@@ -85,5 +87,11 @@ abstract class MyActivityBuilder {
 
     @ContributesAndroidInjector()
     internal abstract fun searchActivity(): SearchActivity
+
+    @ContributesAndroidInjector()
+    internal abstract fun summaryActivity(): SummaryActivity
+
+    @ContributesAndroidInjector()
+    internal abstract fun syncActivity(): SyncActivity
 
 }

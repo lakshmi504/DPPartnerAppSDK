@@ -25,16 +25,23 @@ import com.dpdelivery.android.R
 import com.dpdelivery.android.commonviews.MultiStateView
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.model.techinp.FinishJobIp
+import com.dpdelivery.android.model.techres.BLEDetailsRes
 import com.dpdelivery.android.model.techres.SparePartsData
 import com.dpdelivery.android.model.techres.SubmiPidRes
 import com.dpdelivery.android.technicianui.base.TechBaseActivity
 import com.dpdelivery.android.technicianui.photo.ImageActivity
+import com.dpdelivery.android.technicianui.sync.Command
+import com.dpdelivery.android.technicianui.sync.DatabaseHandler
+import com.dpdelivery.android.technicianui.sync.SyncActivity
 import com.dpdelivery.android.technicianui.techjobslist.TechJobsListActivity
-import com.dpdelivery.android.ui.location.MapLocationActivity
+import com.dpdelivery.android.ui.location.LocationActivity
+import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.toast
 import kotlinx.android.synthetic.main.activity_finish_job.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.error_view.*
+import org.json.JSONArray
+import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -56,6 +63,9 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
     private val PHOTO_REQUEST_CODE = 1
     private var jobId: Int = 0
     private var deviceCode: String? = null
+    private var ownerName: String = ""
+    private var botId: String? = null
+    private var connectivity: String? = null
     private var inputTds: Int = 0
     private var outputTds: Int = 0
     private var jobEndTime: String? = null
@@ -69,6 +79,7 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
     private var itemsid: String? = null
     private var selectedItems = ArrayList<String>()
     private var selectedItemsid = ArrayList<String>()
+    lateinit var dbH: DatabaseHandler
 
     @Inject
     lateinit var presenter: FinishJobPresenter
@@ -77,10 +88,12 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
     private val paymentMode: Array<String> = arrayOf<String>("Payment Type", "Cash", "Card", "PayTM", "InstaMojo", "EazyPay-Paytm", "EazyPay-GPay", "EazyPay-PhonePay", "BankTransfer", "Cheque", "Other")
     lateinit var partList: ArrayList<SparePartsData>
     private var amountCollected: Float = 0.0f
+    private var syncAt: String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LayoutInflater.from(baseContext).inflate(R.layout.activity_finish_job, tech_layout_container)
+        LayoutInflater.from(context).inflate(R.layout.activity_finish_job, tech_layout_container)
         init()
     }
 
@@ -96,9 +109,12 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         btn_tds.setOnClickListener(this)
         error_button.setOnClickListener(this)
         btn_finish_job.setOnClickListener(this)
+        dbH = DatabaseHandler(this)
         if (intent != null) {
             jobId = intent.getIntExtra(Constants.ID, 0)
             deviceCode = intent.getStringExtra(Constants.DEVICE_CODE)
+            botId = intent.getStringExtra(Constants.BOT_ID)
+            connectivity = intent.getStringExtra(Constants.CONNECTIVITY)
         }
         et_amount!!.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable?) {
@@ -132,13 +148,99 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
     override fun onResume() {
         super.onResume()
         presenter.takeView(this)
+        updateLatestDetails(deviceCode)
         fetchItemsFromSharedPref()
+        if (connectivity!!.contentEquals("BLE")) {
+            ll_sync.visibility = View.VISIBLE
+            val botId = botId!!.substring(0, 2) + ":" + botId!!.substring(2, 4) + ":" + botId!!.substring(4, 6) + ":" + botId!!.substring(6, 8) + ":" + botId!!.substring(8, 10) + ":" + botId!!.substring(10, 12)
+            btn_sync.setOnClickListener {
+                startActivity(Intent(this, SyncActivity::class.java)
+                        .putExtra("botId", botId)
+                        .putExtra("purifierId", deviceCode)
+                        .putExtra("owner", ownerName))
+            }
+        }
+    }
+
+    private fun updateLatestDetails(deviceCode: String?) {
+        if (CommonUtils.hasUpdates) {
+            updateServerCmds()
+        } else {
+            getPidDetails(deviceCode)
+        }
+    }
+
+    private fun updateServerCmds() {
+        showViewState(MultiStateView.VIEW_STATE_LOADING)
+        val params = HashMap<String, String>()
+        params["purifierid"] = deviceCode.toString()
+        params["currentliters"] = CommonUtils.current.toString() + ""
+        params["validity"] = CommonUtils.validity!!
+        params["flowlimit"] = CommonUtils.flowlimit.toString() + ""
+        params["status"] = CommonUtils.purifierStatus.toString() + ""
+        params["techApp"] = "1"
+
+        val ja = JSONArray()
+        try {
+            val list = dbH.allAcks
+            for (i in list.indices) {
+                val cmd = list[i]
+                val temp = JSONObject()
+                temp.put("cmdid", cmd.id)
+                temp.put("cmd", cmd.cmd)
+                temp.put("status", cmd.status)
+                ja.put(temp)
+            }
+            params["cmds"] = ja.toString()
+
+        } catch (e: Exception) {
+
+        }
+        presenter.updateServerCmds(params)
+    }
+
+    override fun showSyncRes(res: BLEDetailsRes) {
+        showViewState(MultiStateView.VIEW_STATE_CONTENT)
+        if (res.status.equals("OK")) {
+            dbH.clearAcks()
+            CommonUtils.resetUpdate()
+            getPidDetails(deviceCode)
+        } else {
+            updateServerCmds()
+            toast(res.output!!.message!!)
+        }
+    }
+
+    private fun getPidDetails(deviceCode: String?) {
+        showViewState(MultiStateView.VIEW_STATE_LOADING)
+        val params = HashMap<String, String>()
+        params["purifierid"] = deviceCode.toString()
+        presenter.getPidDetails(params)
+    }
+
+    override fun showPidDetailsRes(res: BLEDetailsRes) {
+        showViewState(MultiStateView.VIEW_STATE_CONTENT)
+        if (res.status.equals("OK")) {
+            ownerName = res.output?.owner!!
+            syncAt = res.output.lastsync
+            synctxt.text = syncAt
+            dbH.deleteAll()
+            val cmds = res.cmds
+            for (i in 0 until cmds!!.size) {
+                val c = Command(cmds[i]!!.id!!, cmds[i]!!.cmd, "INIT")
+                //Log.i("command", "INIT Command Found")
+                dbH.addCommand(c)
+                Log.i("SSyyzzzz", "added into table")
+            }
+        } else {
+            toast(res.output!!.message!!)
+        }
     }
 
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.btn_location -> {
-                val intent = Intent(context, MapLocationActivity::class.java)
+                val intent = Intent(context, LocationActivity::class.java)
                 startActivityForResult(intent, LOCATION_REQUEST_CODE)
             }
             R.id.btn_happy_code -> {
@@ -331,12 +433,6 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         dialog.show()
         presenter.getSparePartsList()
     }
-
-    /*private fun addParts(jobId: Int, partsList: ArrayList<SparePartsData>) {
-        val newFragment = SparePartsFragment.newInstance(jobId, partsList)
-        newFragment.setStyle(DialogFragment.STYLE_NO_TITLE, 0)
-        newFragment.show(supportFragmentManager, "dialog")
-    }*/
 
     override fun showSparePartsRes(res: ArrayList<SparePartsData>) {
         dialog.dismiss()

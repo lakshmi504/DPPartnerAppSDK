@@ -53,12 +53,42 @@ class FinishJobPresenter @Inject constructor(
     override fun reSendHappyCode(jobId: Int) {
         view?.showProgress()
         subscription.add(
-                apiService.resendHappyCode(CommonUtils.getLoginToken(),jobId = jobId)
+                apiService.resendHappyCode(CommonUtils.getLoginToken(), jobId = jobId)
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(
                                 { res ->
                                     view?.reSendHappyCodeRes(res)
+                                },
+                                { throwable ->
+                                    view?.showErrorMsg(throwable)
+                                }))
+    }
+
+    override fun getPidDetails(hashMap: HashMap<String, String>) {
+        view?.showProgress()
+        subscription.add(
+                apiService.getBLEDetails(purifierid = hashMap)
+                        .subscribeOn(baseScheduler.io())
+                        .observeOn(baseScheduler.ui())
+                        .subscribe(
+                                { res ->
+                                    view?.showPidDetailsRes(res)
+                                },
+                                { throwable ->
+                                    view?.showErrorMsg(throwable)
+                                }))
+    }
+
+    override fun updateServerCmds(hashMap: HashMap<String, String>) {
+        view?.showProgress()
+        subscription.add(
+                apiService.updateServerCmds(params = hashMap)
+                        .subscribeOn(baseScheduler.io())
+                        .observeOn(baseScheduler.ui())
+                        .subscribe(
+                                { res ->
+                                    view?.showSyncRes(res)
                                 },
                                 { throwable ->
                                     view?.showErrorMsg(throwable)

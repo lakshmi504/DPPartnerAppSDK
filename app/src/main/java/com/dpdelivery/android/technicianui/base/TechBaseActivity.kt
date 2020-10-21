@@ -13,6 +13,7 @@ import androidx.multidex.MultiDex
 import com.dpdelivery.android.MyApplication
 import com.dpdelivery.android.R
 import com.dpdelivery.android.commonviews.BottomNavigationViewHelper
+import com.dpdelivery.android.technicianui.summary.SummaryActivity
 import com.dpdelivery.android.technicianui.techjobslist.TechJobsListActivity
 import com.dpdelivery.android.utils.makeVisible
 import com.google.android.material.appbar.AppBarLayout
@@ -21,7 +22,7 @@ import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import javax.inject.Inject
 
-open class TechBaseActivity : DaggerAppCompatActivity() , BottomNavigationView.OnNavigationItemSelectedListener{
+open class TechBaseActivity : DaggerAppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
     var appbar: AppBarLayout? = null
     lateinit var context: Context
@@ -66,6 +67,7 @@ open class TechBaseActivity : DaggerAppCompatActivity() , BottomNavigationView.O
             toolbar_title!!.visibility = View.GONE
         }
     }
+
     fun setUpBottomNavView(needToShow: Boolean = true) {
         BottomNavigationViewHelper.removeShiftMode(bottom_navigation)
         bottom_navigation.setOnNavigationItemSelectedListener(this)
@@ -74,14 +76,7 @@ open class TechBaseActivity : DaggerAppCompatActivity() , BottomNavigationView.O
 
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
-            R.id.action_assigned -> {
-                if (!myApp.currAct.contentEquals(TechJobsListActivity::class.java.simpleName)) {
-                    intent = Intent(this, TechJobsListActivity::class.java)
-                    startActivity(intent)
-                    overridePendingTransition(0, 0)
-                }
-            }
-            R.id.action_working -> {
+            R.id.action_jobs -> {
                 if (!myApp.currAct.contentEquals(TechJobsListActivity::class.java.simpleName)) {
                     intent = Intent(this, TechJobsListActivity::class.java)
                     startActivity(intent)
@@ -90,8 +85,8 @@ open class TechBaseActivity : DaggerAppCompatActivity() , BottomNavigationView.O
             }
 
             R.id.action_summary -> {
-                if (!myApp.currAct.contentEquals(TechJobsListActivity::class.java.simpleName)) {
-                    intent = Intent(this, TechJobsListActivity::class.java)
+                if (!myApp.currAct.contentEquals(SummaryActivity::class.java.simpleName)) {
+                    intent = Intent(this, SummaryActivity::class.java)
                     startActivity(intent)
                     overridePendingTransition(0, 0)
                 }

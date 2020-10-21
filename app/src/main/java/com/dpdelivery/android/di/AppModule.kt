@@ -3,10 +3,7 @@ package com.dpdelivery.android.di
 import android.content.Context
 import com.dpdelivery.android.MyApplication
 import com.dpdelivery.android.api.ApiRequestParam
-import com.dpdelivery.android.utils.AppSharedPreference
 import com.dpdelivery.android.utils.SharedPreferenceManager
-import com.dpdelivery.android.utils.schedulers.BaseScheduler
-import com.dpdelivery.android.utils.schedulers.Scheduler
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

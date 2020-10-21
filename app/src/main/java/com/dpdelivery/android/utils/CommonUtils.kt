@@ -3,18 +3,15 @@ package com.dpdelivery.android.utils
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.location.Address
 import android.location.Geocoder
-import android.util.Base64
 import android.view.LayoutInflater
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.dpdelivery.android.R
-import com.dpdelivery.android.api.ApiConstants
 import com.dpdelivery.android.interfaces.SelectedDateListener
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -117,7 +114,53 @@ class CommonUtils {
         fun getDeliveredImageName(): String {
             return SharedPreferenceManager.getPrefVal(SharedPreferenceManager.DELIVERED_IMAGE, "", SharedPreferenceManager.VALUE_TYPE.STRING) as String
         }
+
+        fun setCurrentVersion(version: String) {
+            SharedPreferenceManager.setPrefVal(SharedPreferenceManager.CURRENT_VERSION, version, SharedPreferenceManager.VALUE_TYPE.STRING)
+
+        }
+
+        val version: String?
+            get() = SharedPreferenceManager.getPrefVal(SharedPreferenceManager.CURRENT_VERSION, "", SharedPreferenceManager.VALUE_TYPE.STRING) as String
+
+        fun getCopyRightSymbol(context: Context, text: String): String {
+            return context.getString(R.string.copyright) + text
+        }
+
+        fun setStatus(current: Int, flowlimit: Int, validity: String, status: Int, prepaid: Int, cmds: String) {
+
+            SharedPreferenceManager.setPrefVal(SharedPreferenceManager.KEY_HASUPDATE, true, SharedPreferenceManager.VALUE_TYPE.BOOLEAN)
+            SharedPreferenceManager.setPrefVal(SharedPreferenceManager.KEY_CURRENT, current, SharedPreferenceManager.VALUE_TYPE.INTEGER)
+            SharedPreferenceManager.setPrefVal(SharedPreferenceManager.KEY_FLOWLIMIT, flowlimit, SharedPreferenceManager.VALUE_TYPE.INTEGER)
+            SharedPreferenceManager.setPrefVal(SharedPreferenceManager.KEY_VALIDITY, validity, SharedPreferenceManager.VALUE_TYPE.STRING)
+            SharedPreferenceManager.setPrefVal(SharedPreferenceManager.KEY_STATUS, status, SharedPreferenceManager.VALUE_TYPE.INTEGER)
+            SharedPreferenceManager.setPrefVal(SharedPreferenceManager.KEY_PREPAID, prepaid, SharedPreferenceManager.VALUE_TYPE.INTEGER)
+            SharedPreferenceManager.setPrefVal(SharedPreferenceManager.KEY_CMDS, cmds, SharedPreferenceManager.VALUE_TYPE.STRING)
+        }
+
+        val hasUpdates: Boolean
+            get() = SharedPreferenceManager.getPrefVal(SharedPreferenceManager.KEY_HASUPDATE, false, SharedPreferenceManager.VALUE_TYPE.BOOLEAN) as Boolean
+
+        fun resetUpdate() {
+            SharedPreferenceManager.setPrefVal(SharedPreferenceManager.KEY_HASUPDATE, false, SharedPreferenceManager.VALUE_TYPE.BOOLEAN)
+        }
+
+        val current: Int
+            get() = SharedPreferenceManager.getPrefVal(SharedPreferenceManager.KEY_CURRENT, 0, SharedPreferenceManager.VALUE_TYPE.INTEGER) as Int
+
+        val flowlimit: Int
+            get() = SharedPreferenceManager.getPrefVal(SharedPreferenceManager.KEY_FLOWLIMIT, 0, SharedPreferenceManager.VALUE_TYPE.INTEGER) as Int
+
+        val validity: String?
+            get() = SharedPreferenceManager.getPrefVal(SharedPreferenceManager.KEY_VALIDITY, "", SharedPreferenceManager.VALUE_TYPE.STRING) as String
+
+        val purifierStatus: Int
+            get() = SharedPreferenceManager.getPrefVal(SharedPreferenceManager.KEY_STATUS, 0, SharedPreferenceManager.VALUE_TYPE.INTEGER) as Int
+
+        val cmds: String?
+            get() = SharedPreferenceManager.getPrefVal(SharedPreferenceManager.KEY_CMDS, "", SharedPreferenceManager.VALUE_TYPE.STRING) as String
     }
+
 }
 
 inline fun <E : Any, T : Collection<E?>> T?.withNotNullNorEmpty(func: T.() -> Unit): Unit {
