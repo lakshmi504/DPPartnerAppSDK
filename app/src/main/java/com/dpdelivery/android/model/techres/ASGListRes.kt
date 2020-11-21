@@ -1,12 +1,15 @@
 package com.dpdelivery.android.model.techres
 
+import android.os.Parcelable
 import androidx.annotation.Keep
+import kotlinx.android.parcel.Parcelize
 
 @Keep
 data class ASGListRes(
         val jobs: ArrayList<Job?>?,
         val total: Int?
 )
+
 @Keep
 data class Job(
         val appointmentEndTime: String?,
@@ -25,6 +28,7 @@ data class Job(
         val bid: String?,
         val financial: Any?,
         val id: Int?,
+        val workflowId: Int?,
         val installation: Installation?,
         val jobEndTime: Any?,
         val jobStartTime: Any?,
@@ -35,6 +39,7 @@ data class Job(
         val status: Status?,
         val type: Type?
 )
+
 @Keep
 data class CustomerAddress(
         val area: Area?,
@@ -46,16 +51,19 @@ data class CustomerAddress(
         val zip: String?,
         val leadId: String?
 )
+
 @Keep
 data class Area(
         val description: String?,
         val code: String?
 )
+
 @Keep
 data class AssignedTo(
         val id: Int,
         val name: String
 )
+
 @Keep
 data class Installation(
         val deviceCode: String? = "",
@@ -65,6 +73,7 @@ data class Installation(
         val bId: String?,
         val connectivity: String?
 )
+
 @Keep
 data class Plan(
         val code: String?,
@@ -72,18 +81,22 @@ data class Plan(
         val id: Int?,
         val status: Any?
 )
+
 @Keep
+@Parcelize
 data class TechNote(
         val createdBy: CreatedBy?,
         val createdOn: String?,
         val id: Int?,
         val note: String?
-)
+) : Parcelable
+
 @Keep
+@Parcelize
 data class CreatedBy(
         val id: Int?,
         val name: String?
-)
+) : Parcelable
 
 @Keep
 data class Priority(
@@ -91,12 +104,14 @@ data class Priority(
         val description: String?,
         val id: Int?
 )
+
 @Keep
 data class Status(
         val code: String?,
         val description: String?,
         val id: Int?
 )
+
 @Keep
 data class Type(
         val code: String?,

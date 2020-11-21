@@ -84,4 +84,9 @@
     <string name="connecting_to_your_prime_device">Connecting to the Purifier…</string>
     <string name="ble_not_supported">BLE is not supported</string>
     <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
+
+    <string name="new_version_available">New version available</string>
+    <string name="update_app">Looks like you have an older version of the app. Please update to get latest features and best experience.</string>
+    <string name="update_now">Update now</string>
+
 </resources>

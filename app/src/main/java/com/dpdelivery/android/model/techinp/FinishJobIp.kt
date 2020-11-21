@@ -4,15 +4,15 @@ import androidx.annotation.Keep
 
 @Keep
 data class FinishJobIp(
-        val amountCollected: Float,
-        val deviceCode: String,
-        val happyCode: String,
-        val inputTds: String,
-        val jobEndTime: String,
-        val status: String,
-        val latitude: String,
-        val longitude: String,
-        val outputTds: String,
-        val paymentType: String,
-        val spares: List<Int>
+        val amountCollected: Float? = null,
+        val deviceCode: String? = null,
+        val happyCode: String? = null,
+        val inputTds: String? = null,
+        val jobEndTime: String? = null,
+        val status: String? = null,
+        val latitude: String? = null,
+        val longitude: String? = null,
+        val outputTds: String? = null,
+        val paymentType: String? = null,
+        val spares: List<Int>? = null
 )

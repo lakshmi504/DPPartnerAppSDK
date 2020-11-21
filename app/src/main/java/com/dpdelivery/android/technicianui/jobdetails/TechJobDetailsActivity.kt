@@ -29,6 +29,7 @@ import com.dpdelivery.android.model.techres.*
 import com.dpdelivery.android.technicianui.base.TechBaseActivity
 import com.dpdelivery.android.technicianui.finish.FinishJobActivity
 import com.dpdelivery.android.technicianui.scanner.ScannerActivity
+import com.dpdelivery.android.technicianui.workflow.WorkFlowActivity
 import com.dpdelivery.android.utils.toast
 import com.dpdelivery.android.utils.withNotNullNorEmpty
 import com.google.zxing.integration.android.IntentIntegrator
@@ -48,6 +49,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
 
     lateinit var mContext: Context
     private var jobId: Int? = 0
+    private var workflowId: Int? = 0
     private var phone: String? = null
     private var altPhone: String? = null
     private var statusCode: String? = null
@@ -64,6 +66,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
     private var zipcode: String = ""
     private var botId: String? = null
     private var connectivity: String? = null
+    private var jobType: String? = null
 
     @Inject
     lateinit var detailsPresenter: TechJobDetailsPresenter
@@ -95,6 +98,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         tv_view_notes.setOnClickListener(this)
         btn_add_note.setOnClickListener(this)
         finish_job.setOnClickListener(this)
+        btn_select.setOnClickListener(this)
     }
 
     private fun getAssignedJob() {
@@ -150,6 +154,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
                 intent.putExtra(Constants.DEVICE_CODE, deviceCode)
                 intent.putExtra(Constants.BOT_ID, botId)
                 intent.putExtra(Constants.CONNECTIVITY, connectivity)
+                intent.putExtra(Constants.JOB_TYPE, jobType)
                 startActivity(intent)
             }
             R.id.btn_finish_job -> {
@@ -179,6 +184,27 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
             }
             R.id.btn_add_note -> {
                 addNote()
+            }
+            R.id.btn_select -> {
+                if (layout_ins.visibility == View.VISIBLE) {
+                    if (et_purifierid!!.text.toString().isNotEmpty() && tv_status!!.text.toString() == "ACTIVE") {
+                        startActivity(Intent(this, WorkFlowActivity::class.java).putExtra(Constants.ID, jobId).putExtra(Constants.DEVICE_CODE, et_purifierid.text.toString())
+                                .putExtra(Constants.BOT_ID, botId)
+                                .putExtra(Constants.CONNECTIVITY, connectivity)
+                                .putExtra(Constants.JOB_TYPE, jobType))
+                    } else {
+                        toast("Please verify fields before proceed.")
+                    }
+                } else {
+                    val intent = Intent(this, WorkFlowActivity::class.java)
+                    intent.putExtra(Constants.ID, jobId)
+                    intent.putExtra(Constants.DEVICE_CODE, deviceCode)
+                    intent.putExtra(Constants.BOT_ID, botId)
+                    intent.putExtra(Constants.CONNECTIVITY, connectivity)
+                    intent.putExtra(Constants.JOB_TYPE, jobType)
+                    intent.putParcelableArrayListExtra(Constants.NOTES, noteList)
+                    startActivity(intent)
+                }
             }
         }
     }
@@ -233,6 +259,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
             intent.putExtra(Constants.DEVICE_CODE, et_purifierid.text.toString())
             intent.putExtra(Constants.BOT_ID, botId)
             intent.putExtra(Constants.CONNECTIVITY, connectivity)
+            intent.putExtra(Constants.JOB_TYPE, jobType)
             startActivity(intent)
         } else {
             toast("Please verify fields before finish job.")
@@ -300,6 +327,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
             layout_ins.visibility = View.VISIBLE
         } else if (res.status.code.equals("ASG")) {
             btn_start_job.visibility = View.VISIBLE
+            ll_workflow.visibility = View.GONE
         } else {
             btn_start_job.visibility = View.GONE
         }
@@ -327,7 +355,18 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         deviceCode = res.installation?.deviceCode
         botId = res.bid + ""
         connectivity = res.connectivity
+        workflowId = res.workflowId
+        if (workflowId != null) {
+            if (!res.status.code.equals("ASG")) {
+                ll_workflow.visibility = View.VISIBLE
+            }
+            btn_finish_job.visibility = View.GONE
+            finish_job.visibility = View.GONE
+        } else {
+            ll_workflow.visibility = View.GONE
+        }
         et_purifierid.setText(res.installation?.deviceCode)
+        jobType = res.type.code
     }
 
     override fun showStartJobRes(startJobRes: StartJobRes) {

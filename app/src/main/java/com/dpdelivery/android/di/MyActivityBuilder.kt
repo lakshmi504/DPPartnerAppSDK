@@ -10,6 +10,7 @@ import com.dpdelivery.android.technicianui.search.SearchActivity
 import com.dpdelivery.android.technicianui.summary.SummaryActivity
 import com.dpdelivery.android.technicianui.sync.SyncActivity
 import com.dpdelivery.android.technicianui.techjobslist.TechJobsListActivity
+import com.dpdelivery.android.technicianui.workflow.WorkFlowActivity
 import com.dpdelivery.android.ui.base.BaseActivity
 import com.dpdelivery.android.ui.dashboard.DashBoardActivity
 import com.dpdelivery.android.ui.deliveryjob.DeliveryJobActivity
@@ -93,5 +94,8 @@ abstract class MyActivityBuilder {
 
     @ContributesAndroidInjector()
     internal abstract fun syncActivity(): SyncActivity
+
+    @ContributesAndroidInjector()
+    internal abstract fun workFlowActivity(): WorkFlowActivity
 
 }

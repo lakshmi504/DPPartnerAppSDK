@@ -4,9 +4,10 @@ class ApiConstants {
     companion object {
 
         //const val BASE_URL = "http://ec2-15-207-89-27.ap-south-1.compute.amazonaws.com:8080/"
-        //const val BASE_URL = "http://dev.waterwalaprime.in:8080/"
-        const val BASE_URL = "http://staging.waterwalaprime.in:8080/"
-        //const val BASE_URL = "http://test.waterwalaprime.in:8080/"
+       // const val BASE_URL = "http://dev.waterwalaprime.in:8080/"
+        //const val BASE_URL = "http://staging.waterwalaprime.in:8080/"
+
+        const val BASE_URL = "http://test.waterwalaprime.in:8080/"
         const val PRD_BASE_URL = "http://prd.waterwalaprime.in:8090/"
 
         // Delivery App Apis
@@ -32,5 +33,9 @@ class ApiConstants {
         const val SUMMARY = "employee/monthlyReport"
         const val SYNC = "https://waterwalaprime.com/controller/sync1.php"
         const val GET_BLE_DETAILS = "https://waterwalaprime.com/controller/getdetailsBLE.php"
+        const val GET_WORK_FLOW_DATA = "http://test.waterwalaprime.in:8080/workflow/getAppData"
+        const val ADD_TEXT = "http://test.waterwalaprime.in:8080/workflow/addText"
+        const val ADD_IMAGE = "http://test.waterwalaprime.in:8080/workflow/addImage"
+        const val ADD_WORK_FLOW = "http://test.waterwalaprime.in:8080/workflow/addData"
     }
 }

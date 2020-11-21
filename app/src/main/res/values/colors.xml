@@ -29,4 +29,6 @@
     <color name="light_blue">#96DCF7</color>
     <color name="recharge_green">#59E299</color>
     <color name="recharge_blue">#00AEEF</color>
+
+    <color name="md_grey_300">#E0E0E0</color>
 </resources>

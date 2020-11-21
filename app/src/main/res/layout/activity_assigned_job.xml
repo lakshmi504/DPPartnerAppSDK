@@ -52,14 +52,14 @@
                         android:id="@+id/btn_add_note"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/dimens_30"
-                        android:layout_weight="0.8"
                         android:layout_margin="@dimen/dimens_10"
+                        android:layout_weight="0.8"
+                        android:background="@drawable/btn_background"
+                        android:fontFamily="@font/montserrat_regular"
                         android:text="@string/add_note"
                         android:textAllCaps="false"
-                        android:fontFamily="@font/montserrat_regular"
-                        android:textSize="@dimen/dimens_12sp"
                         android:textColor="@color/colorWhite"
-                        android:background="@drawable/btn_background"/>
+                        android:textSize="@dimen/dimens_12sp" />
 
                 </LinearLayout>
 
@@ -269,6 +269,36 @@
                     android:textSize="@dimen/dimens_14sp" />
 
 
+                <include
+                    android:id="@+id/layout_ins"
+                    layout="@layout/layout_type_installation"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/ll_workflow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/dimens_10"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_select"
+                        android:layout_width="@dimen/dimens_150"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_orange_bg"
+                        android:gravity="center"
+                        android:paddingStart="@dimen/dimens_15"
+                        android:paddingEnd="@dimen/dimens_15"
+                        android:text="Continue"
+                        android:textAllCaps="false"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/dimens_12sp" />
+
+                </LinearLayout>
+
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_start_job"
                     android:layout_width="@dimen/dimens_150"
@@ -299,11 +329,6 @@
                     android:textAllCaps="false"
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/dimens_12sp"
-                    android:visibility="gone" />
-
-                <include
-                    android:id="@+id/layout_ins"
-                    layout="@layout/layout_type_installation"
                     android:visibility="gone" />
 
             </LinearLayout>

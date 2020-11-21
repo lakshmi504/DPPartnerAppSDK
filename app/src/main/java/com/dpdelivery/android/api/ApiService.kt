@@ -5,10 +5,7 @@ import com.dpdelivery.android.model.input.AssignJobsIp
 import com.dpdelivery.android.model.input.LoginIp
 import com.dpdelivery.android.model.input.UpdateAppointmentIp
 import com.dpdelivery.android.model.input.UpdateStatusIp
-import com.dpdelivery.android.model.techinp.FinishJobIp
-import com.dpdelivery.android.model.techinp.StartJobIP
-import com.dpdelivery.android.model.techinp.SubmitPidIp
-import com.dpdelivery.android.model.techinp.UpdateJobIp
+import com.dpdelivery.android.model.techinp.*
 import com.dpdelivery.android.model.techres.*
 import io.reactivex.Observable
 import okhttp3.MultipartBody
@@ -123,5 +120,17 @@ interface ApiService {
     @POST(ApiConstants.SYNC)
     fun updateServerCmds(@FieldMap params: HashMap<String, String>): Observable<BLEDetailsRes>
 
+    @GET(ApiConstants.GET_WORK_FLOW_DATA)
+    fun getWorkFlowData(@Header("Authorization") token: String, @Query("jobId") jobId: Int): Observable<WorkFlowDataRes>
+
+    @POST(ApiConstants.ADD_TEXT)
+    fun addText(@Header("Authorization") token: String, @Body addTextIp: AddTextIp): Observable<AddTextRes>
+
+    @POST(ApiConstants.ADD_WORK_FLOW)
+    fun addWorkFlow(@Header("Authorization") token: String, @Body workFlow: AddWorkFlowData): Observable<AddTextRes>
+
+    @Multipart
+    @POST(ApiConstants.ADD_IMAGE + "/{jobId}" + "/{elementId}")
+    fun addImage(@Header("Authorization") token: String, @Path("jobId", encoded = true) jobId: Int, @Path("elementId", encoded = true) elementId: Int, @Part file: MultipartBody.Part): Observable<AddTextRes>
 
 }

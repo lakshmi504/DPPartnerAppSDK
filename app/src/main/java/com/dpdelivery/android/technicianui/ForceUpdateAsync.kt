@@ -3,9 +3,11 @@ package com.dpdelivery.android.technicianui
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.AsyncTask
-import android.view.View
-import android.widget.TextView
+import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatButton
 import com.dpdelivery.android.R
 import com.dpdelivery.android.ui.splash.SplashActivity
 import org.json.JSONObject
@@ -52,12 +54,12 @@ class ForceUpdateAsync(private val currentVersion: String, private val context: 
 
     private fun showForceUpdateDialog() {
 
-        pendingTransactionDialog = Dialog(context, R.style.CustomDialogThemeLightBg)
+        /*pendingTransactionDialog = Dialog(context, R.style.CustomDialogThemeLightBg)
         pendingTransactionDialog!!.setContentView(R.layout.dialog_alert_message)
         pendingTransactionDialog!!.setCancelable(false)
         pendingTransactionDialog!!.setCanceledOnTouchOutside(false)
-        (pendingTransactionDialog!!.findViewById(R.id.dialog_title) as TextView).text = "App Update Required"
-        (pendingTransactionDialog!!.findViewById(R.id.dialog_text) as TextView).text = "Please check with the manager and get latest version of the App"
+        (pendingTransactionDialog!!.findViewById(R.id.dialog_title) as TextView).text = context.getString(R.string.new_version_available)
+        (pendingTransactionDialog!!.findViewById(R.id.dialog_text) as TextView).text = context.getString(R.string.update_app)
         (pendingTransactionDialog!!.findViewById(R.id.tv_retry) as TextView).text = context.getString(R.string.update).toUpperCase()
         (pendingTransactionDialog!!.findViewById(R.id.tv_cancel) as TextView).visibility = View.INVISIBLE
         //(pendingTransactionDialog!!.findViewById(R.id.tv_cancel) as TextView).text = context.getString(R.string.later).toUpperCase()
@@ -71,6 +73,20 @@ class ForceUpdateAsync(private val currentVersion: String, private val context: 
         (pendingTransactionDialog!!.findViewById(R.id.tv_cancel) as TextView).setOnClickListener {
             pendingTransactionDialog!!.dismiss()
 
+        }*/
+
+        pendingTransactionDialog = Dialog(context, R.style.CustomDialogThemeLightBg)
+        pendingTransactionDialog!!.setContentView(R.layout.dialog_alert_message)
+        pendingTransactionDialog!!.setCancelable(false)
+
+        (pendingTransactionDialog!!.findViewById(R.id.btn_update) as AppCompatButton).setOnClickListener {
+            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + context.packageName)))
+            pendingTransactionDialog!!.dismiss()
         }
+        (pendingTransactionDialog!!.findViewById(R.id.iv_close) as ImageView).setOnClickListener {
+            pendingTransactionDialog!!.dismiss()
+        }
+        pendingTransactionDialog!!.show()
     }
+
 }

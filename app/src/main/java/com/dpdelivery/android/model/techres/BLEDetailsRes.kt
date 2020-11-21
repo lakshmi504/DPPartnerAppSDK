@@ -1,5 +1,8 @@
 package com.dpdelivery.android.model.techres
 
+import androidx.annotation.Keep
+
+@Keep
 data class BLEDetailsRes(
         val cmds: ArrayList<Cmd?>?,
         val cmdsPending: Int?,
@@ -7,13 +10,13 @@ data class BLEDetailsRes(
         val pc: String?,
         val status: String?
 )
-
+@Keep
 data class Cmd(
         val cmd: String?,
         val cmdid: String?,
         val id: Int?
 )
-
+@Keep
 data class BLEDetailsResOutput(
         val balance: Int?,
         val color: String?,

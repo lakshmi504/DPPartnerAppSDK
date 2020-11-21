@@ -82,7 +82,7 @@ class LoginActivity : DaggerAppCompatActivity(), View.OnClickListener, LoginCont
             val jwt = JWT(data)
             val aud = jwt.audience?.get(0)
             CommonUtils.saveRole(aud.toString())
-            if (aud.equals("ROLE_Technician")) {
+            /*if (aud.equals("ROLE_Technician")) {
                 val intent = Intent(this, TechJobsListActivity::class.java)
                 startActivity(intent)
                 finish()
@@ -90,7 +90,10 @@ class LoginActivity : DaggerAppCompatActivity(), View.OnClickListener, LoginCont
                 val intent = Intent(this, DeliveryJobListActivity::class.java)
                 startActivity(intent)
                 finish()
-            }
+            }*/
+            val intent = Intent(this, TechJobsListActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 

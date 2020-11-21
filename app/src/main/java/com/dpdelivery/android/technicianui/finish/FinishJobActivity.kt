@@ -89,6 +89,7 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
     lateinit var partList: ArrayList<SparePartsData>
     private var amountCollected: Float = 0.0f
     private var syncAt: String? = null
+    private var jobType: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -115,6 +116,7 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
             deviceCode = intent.getStringExtra(Constants.DEVICE_CODE)
             botId = intent.getStringExtra(Constants.BOT_ID)
             connectivity = intent.getStringExtra(Constants.CONNECTIVITY)
+            jobType = intent.getStringExtra(Constants.JOB_TYPE)
         }
         et_amount!!.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable?) {

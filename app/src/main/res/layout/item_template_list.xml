@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dimens_5"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_template_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_regular"
+        android:textColor="@color/colorBlacklight"
+        android:textSize="@dimen/dimens_12sp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_lower_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_15"
+        android:layout_marginEnd="@dimen/dimens_15"
+        android:background="@color/colorWhite"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/dimens_10"/>
+
+</LinearLayout>

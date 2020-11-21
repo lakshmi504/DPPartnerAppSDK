@@ -75,7 +75,7 @@ class ImageActivity : TechBaseActivity(), View.OnClickListener, ImageContract.Vi
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.btn_capture -> {
-                if (Build.VERSION.SDK_INT >= 17) {
+                if (Build.VERSION.SDK_INT >= 21) {
                     if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
                             ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
                             PackageManager.PERMISSION_GRANTED) {
