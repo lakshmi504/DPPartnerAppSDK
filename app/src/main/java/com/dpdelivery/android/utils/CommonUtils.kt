@@ -1,14 +1,23 @@
 package com.dpdelivery.android.utils
 
+import android.Manifest
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.location.Address
 import android.location.Geocoder
+import android.location.LocationManager
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.dpdelivery.android.R
@@ -159,8 +168,54 @@ class CommonUtils {
 
         val cmds: String?
             get() = SharedPreferenceManager.getPrefVal(SharedPreferenceManager.KEY_CMDS, "", SharedPreferenceManager.VALUE_TYPE.STRING) as String
-    }
 
+        /**
+         * Function to request permission from the user
+         */
+        fun requestAccessFineLocationPermission(activity: AppCompatActivity, requestId: Int) {
+            ActivityCompat.requestPermissions(
+                    activity,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    requestId
+            )
+        }
+
+        /**
+         * Function to check if the location permissions are granted or not
+         */
+        fun isAccessFineLocationGranted(context: Context): Boolean {
+            return ContextCompat
+                    .checkSelfPermission(
+                            context,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED
+        }
+
+        /**
+         * Function to check if location of the device is enabled or not
+         */
+        fun isLocationEnabled(context: Context): Boolean {
+            val locationManager: LocationManager =
+                    context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                    || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+        }
+
+        /**
+         * Function to show the "enable GPS" Dialog box
+         */
+        fun showGPSNotEnabledDialog(context: Context) {
+            AlertDialog.Builder(context, R.style.Theme_AppCompat_Light_Dialog_Alert)
+                    .setTitle(context.getString(R.string.enable_gps))
+                    .setMessage(context.getString(R.string.required_for_this_app))
+                    .setCancelable(false)
+                    .setPositiveButton(context.getString(R.string.enable_now)) { _, _ ->
+                        context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                    }
+                    .show()
+        }
+
+    }
 }
 
 inline fun <E : Any, T : Collection<E?>> T?.withNotNullNorEmpty(func: T.() -> Unit): Unit {

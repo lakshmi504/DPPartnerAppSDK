@@ -24,5 +24,6 @@ class Constants {
         const val JOB_TYPE = "JOB_TYPE"
         const val NOTES = "NOTES"
         const val MyPREFERENCES = "MyPREFERENCES"
+        const val ELEMENT = "ELEMENT"
     }
 }
