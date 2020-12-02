@@ -19,7 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat_regular"
-        android:paddingTop="@dimen/dimens_5"
         android:textColor="@color/app_text_grey"
         android:textSize="@dimen/dimens_12sp"
         android:visibility="gone" />
@@ -34,9 +33,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimens_5"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:fontFamily="@font/montserrat_regular"
-            android:hint="Please add your input"
+            android:hint="@string/please_add_your_input"
             android:textSize="@dimen/dimens_12sp"
+            android:theme="@style/EditTextTheme"
             android:visibility="gone" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -48,18 +50,6 @@
             android:visibility="gone" />
 
     </LinearLayout>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/iv_update"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dimens_20"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="@dimen/dimens_10"
-        android:background="@drawable/btn_background"
-        android:fontFamily="@font/montserrat_regular"
-        android:text="@string/submit"
-        android:textColor="@color/colorWhite"
-        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -103,18 +93,6 @@
             android:visibility="gone" />
     </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/iv_dropdown_update"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dimens_20"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="@dimen/dimens_10"
-        android:background="@drawable/btn_background"
-        android:fontFamily="@font/montserrat_regular"
-        android:text="@string/submit"
-        android:textColor="@color/colorWhite"
-        android:visibility="gone" />
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -140,10 +118,11 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/btn_upload_image"
-            android:layout_width="@dimen/dimens_40"
-            android:layout_height="@dimen/dimens_40"
+            android:layout_width="@dimen/dimens_30"
+            android:layout_height="@dimen/dimens_30"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/dimens_10"
+            android:layout_marginTop="@dimen/dimens_10"
             android:layout_toEndOf="@+id/iv_mandatory2"
             android:src="@drawable/upload_image"
             android:visibility="gone" />

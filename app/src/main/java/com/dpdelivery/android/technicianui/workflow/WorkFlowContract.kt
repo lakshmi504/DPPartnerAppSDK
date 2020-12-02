@@ -16,6 +16,7 @@ interface WorkFlowContract {
         fun showWorFlowDataRes(res: WorkFlowDataRes)
         fun showAddTextRes(res: AddTextRes)
         fun showWorkFlowDataRes(res: AddTextRes)
+        fun showWorkFlowFinishDataRes(res: AddTextRes)
         fun showFinishJobRes(res: SubmiPidRes)
     }
 
@@ -23,6 +24,7 @@ interface WorkFlowContract {
         fun getWorkFlowData(jobId: Int)
         fun addText(addTextIp: AddTextIp)
         fun addWorkFlow(workFlow: AddWorkFlowData)
+        fun addFinishWorkFlow(workFlow: AddWorkFlowData)
         fun addImage(jobId: Int, elementId: Int, file: File)
         fun finishJob(jobId: Int, finishJobIp: FinishJobIp)
     }

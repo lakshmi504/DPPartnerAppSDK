@@ -15,6 +15,7 @@ import android.media.MediaScannerConnection
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -33,7 +34,7 @@ import com.dpdelivery.android.commonadapter.BasicAdapter
 import com.dpdelivery.android.commonviews.MultiStateView
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
-import com.dpdelivery.android.model.techinp.AddTextIp
+import com.dpdelivery.android.model.techinp.AddWorkFlowData
 import com.dpdelivery.android.model.techinp.FinishJobIp
 import com.dpdelivery.android.model.techres.AddTextRes
 import com.dpdelivery.android.model.techres.SubmiPidRes
@@ -42,10 +43,14 @@ import com.dpdelivery.android.model.techres.WorkFlowDataRes
 import com.dpdelivery.android.technicianui.base.TechBaseActivity
 import com.dpdelivery.android.technicianui.finish.FinishJobActivity
 import com.dpdelivery.android.technicianui.techjobslist.TechJobsListActivity
-import com.dpdelivery.android.technicianui.workflow.viewholder.TemplateListViewHolder
+import com.dpdelivery.android.technicianui.workflow.workflowadapter.TemplateListAdapter
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.toast
 import com.dpdelivery.android.utils.withNotNullNorEmpty
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import id.zelory.compressor.Compressor
 import kotlinx.android.synthetic.main.activity_work_flow.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
@@ -55,6 +60,7 @@ import kotlinx.android.synthetic.main.item_timeline.*
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -67,7 +73,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var botId: String? = null
     private var connectivity: String? = null
     lateinit var mLayoutManager: LinearLayoutManager
-    private var workFlowAdapter: TemplateListViewHolder? = null
+    private var workFlowAdapter: TemplateListAdapter? = null
     private var currentPosition: Int = 0
     lateinit var manager: LinearLayoutManager
     lateinit var adapterNotesList: BasicAdapter
@@ -84,17 +90,22 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     lateinit var dialog: Dialog
     lateinit var data: JSONObject
     private var image: AppCompatImageView? = null
-    private var upload_image: AppCompatImageView? = null
+    private var uploadImage: AppCompatImageView? = null
+    private var mandatory: AppCompatImageView? = null
     private var elementId: Int = 0
     private var mTemplateList: ArrayList<WorkFlowDataRes.WorkFlowDataResBody.Step.Template>? = null
-    private var mElementList: ArrayList<WorkFlowDataRes.WorkFlowDataResBody.Step.Template.Element>? = null
     private var noteList: ArrayList<TechNote?>? = null
-    private var itemsList = ArrayList<String?>()
+    private val stepMap: MutableMap<String, String> = mutableMapOf<String, String>()
+    private val stepImageMap: MutableMap<String, String> = mutableMapOf<String, String>()
+    private val stepMapList = ArrayList<AddWorkFlowData.Data>()
+    private var latitude: String = ""
+    private var longitude: String = ""
+    private var LOCATION_PERMISSION_REQUEST_CODE = 123
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LayoutInflater.from(context).inflate(R.layout.activity_work_flow, tech_layout_container)
+        LayoutInflater.from(applicationContext).inflate(R.layout.activity_work_flow, tech_layout_container)
         init()
     }
 
@@ -122,57 +133,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
     override fun onClick(v: View?) {
         when (v!!.id) {
-            /* R.id.btn_next -> {
-                 try {
-                     var i = 0
-                     var j = 0
-                     while (i <= mTemplateList!!.size) {
-                         mElementList = mTemplateList!![i].elements
-                         while (j <= mElementList!!.size) {
-                             if (!(mElementList!![j].optional)!! && mElementList!![j].value.isNullOrEmpty()) {
-                                 toast("Please submit mandatory fields")
-                                 break
-                             } else {
-                                 if (currentPosition < mDataList!!.size) {
-                                     setStep(currentPosition + 1)
-                                     if (currentPosition == mDataList!!.size - 1) {
-                                         btn_next.visibility = View.GONE
-                                         btn_Finish.visibility = View.VISIBLE
-                                     }
-                                 }
-                             }
-                             j++
-                         }
-                         i++
-                     }
-                 } catch (e: Exception) {
-                 }
-             }
-             R.id.btn_Finish -> {
- *//*                var i = 0
-                val ja = ArrayList<AddWorkFlowData.Data>()
-                try {
-                    while (i <= mTemplateList!!.size) {
-                        mElementList = mTemplateList!![i].elements
-                        try {
-                            val list = mElementList
-                            for (data in list!!.indices) {
-                                val cmd = list[data]
-                                if (list[data].inputApi.equals("TEXT")) {
-                                    val temp = AddWorkFlowData.Data(elementId = cmd.id, value = cmd.value)
-                                    ja.add(temp)
-                                }
-                            }
-                        } catch (e: Exception) {
-
-                        }
-                        i++
-                    }
-                } catch (e: Exception) {
-
-                }
-                workFlowPresenter.addWorkFlow(workFlow = AddWorkFlowData(data = ja, jobId = jobId))*//*
-            }*/
             R.id.tv_view_notes -> {
                 if (noteList!!.isNotEmpty()) {
                     showNotesList()   // for showing notes list
@@ -202,65 +162,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         dialog.show()
     }
 
-    fun nextStep() {
-        /* showViewState(MultiStateView.VIEW_STATE_LOADING)
-         var i = 0
-         val ja = ArrayList<AddWorkFlowData.Data>()
-         try {
-             while (i <= mTemplateList!!.size) {
-                 mElementList = mTemplateList!![i].elements
-                 try {
-                     val list = mElementList
-                     val sharedPreferences = getSharedPreferences("$jobId${Constants.MyPREFERENCES}", Context.MODE_PRIVATE)
-                     val selectedListName = sharedPreferences.getString("name_key", "")
-                     for (data in itemsList.indices) {
-                         val item = list!![data]
-                         if (item.inputApi.equals("TEXT")) {
-                             val temp = AddWorkFlowData.Data(elementId = item.id, value = selectedListName)
-                             ja.add(temp)
-                         }
-                     }
-                 } catch (e: Exception) {
-
-                 }
-                 i++
-             }
-         } catch (e: Exception) {
-
-         }
-         workFlowPresenter.addWorkFlow(workFlow = AddWorkFlowData(data = ja, jobId = jobId))*/
-        if (currentPosition < mDataList!!.size) {
-            setStep(currentPosition + 1)
-            if (currentPosition == mDataList!!.size - 1) {
-                btn_next.visibility = View.GONE
-                btn_Finish.visibility = View.VISIBLE
-            }
-        }
-    }
-
-    fun finishJob() {
-        if (jobType == "DEL" || jobType == "UIN") {
-            showViewState(MultiStateView.VIEW_STATE_LOADING)
-            val finishJobIp = FinishJobIp(status = "COM")
-            workFlowPresenter.finishJob(jobId!!, finishJobIp)
-        } else {
-            val intent = Intent(this, FinishJobActivity::class.java)
-            intent.putExtra(Constants.ID, jobId)
-            intent.putExtra(Constants.DEVICE_CODE, deviceCode)
-            intent.putExtra(Constants.BOT_ID, botId)
-            intent.putExtra(Constants.CONNECTIVITY, connectivity)
-            intent.putExtra(Constants.JOB_TYPE, jobType)
-            startActivity(intent)
-        }
-    }
-
-    private fun getWorkFlowData(jobId: Int?) {
-        showViewState(MultiStateView.VIEW_STATE_LOADING)
-        if (jobId != null) {
-            workFlowPresenter.getWorkFlowData(jobId)
-        }
-    }
-
     private fun initRecyclerView() {
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             @SuppressLint("LongLogTag")
@@ -273,7 +174,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
         recyclerView.apply {
             layoutManager = mLayoutManager
-            workFlowAdapter = TemplateListViewHolder(mContext, adapterClickListener = this@WorkFlowActivity, jobId = jobId!!)
+            workFlowAdapter = TemplateListAdapter(mContext, adapterClickListener = this@WorkFlowActivity, stepMap = stepMap)
             adapter = workFlowAdapter
         }
         val recyclerViewState = recyclerView.layoutManager!!.onSaveInstanceState()
@@ -282,9 +183,11 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
     }
 
-    override fun onResume() {
-        super.onResume()
-        workFlowPresenter.takeView(this)
+    private fun getWorkFlowData(jobId: Int?) {
+        showViewState(MultiStateView.VIEW_STATE_LOADING)
+        if (jobId != null) {
+            workFlowPresenter.getWorkFlowData(jobId)
+        }
     }
 
     override fun showWorFlowDataRes(res: WorkFlowDataRes) {
@@ -298,11 +201,38 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private fun setStep(position: Int) {
         if (mDataList != null && mDataList!!.isNotEmpty() && mDataList!!.size > position) {
             currentPosition = position
+            stepMap.clear()
+            stepMapList.clear()
+            stepImageMap.clear()
             tv_nums.text = "" + (position + 1) + "."
             tv_step_name.text = mDataList?.get(position)?.name
             mTemplateList = mDataList?.get(position)?.templates
             workFlowAdapter!!.addList(mTemplateList)
         }
+    }
+
+    fun nextStep() {
+        showViewState(MultiStateView.VIEW_STATE_LOADING)
+        for (mutableEntry in stepMap) {
+            stepMapList.add(AddWorkFlowData.Data(elementId = mutableEntry.key, value = mutableEntry.value))
+        }
+        workFlowPresenter.addWorkFlow(workFlow = AddWorkFlowData(data = stepMapList, jobId = jobId!!))
+    }
+
+    fun finishJob() {
+        showViewState(MultiStateView.VIEW_STATE_LOADING)
+        /* for (i in stepImageMap) {
+             workFlowPresenter.addImage(jobid = jobId!!, elementId = i.key.toInt(), file = Compressor(this).compressToFile(File(i.value)))
+         }*/
+        for (mutableEntry in stepMap) {
+            stepMapList.add(AddWorkFlowData.Data(elementId = mutableEntry.key, value = mutableEntry.value))
+        }
+        workFlowPresenter.addFinishWorkFlow(workFlow = AddWorkFlowData(data = stepMapList, jobId = jobId!!))
+    }
+
+    override fun onResume() {
+        super.onResume()
+        workFlowPresenter.takeView(this)
     }
 
     override fun showAddTextRes(res: AddTextRes) {
@@ -318,13 +248,42 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     override fun showWorkFlowDataRes(res: AddTextRes) {
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (res.success!!) {
-            toast(res.message!!)
+            stepMap.clear()
+            stepMapList.clear()
             if (currentPosition < mDataList!!.size) {
                 setStep(currentPosition + 1)
                 if (currentPosition == mDataList!!.size - 1) {
                     btn_next.visibility = View.GONE
                     btn_Finish.visibility = View.VISIBLE
                 }
+            }
+        } else {
+            toast(res.message!!)
+        }
+    }
+
+    override fun showWorkFlowFinishDataRes(res: AddTextRes) {
+        showViewState(MultiStateView.VIEW_STATE_CONTENT)
+        if (res.success!!) {
+            toast(res.message!!)
+            stepMap.clear()
+            stepMapList.clear()
+            if (jobType == "DEL" || jobType == "UIN") {
+                showViewState(MultiStateView.VIEW_STATE_LOADING)
+                val currentTime = Date()
+                val output = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
+                output.timeZone = TimeZone.getTimeZone("GMT")
+                val jobEndTime = output.format(currentTime)
+                val finishJobIp = FinishJobIp(status = "COM", latitude = latitude, longitude = longitude, jobEndTime = jobEndTime)
+                workFlowPresenter.finishJob(jobId!!, finishJobIp)
+            } else {
+                val intent = Intent(this, FinishJobActivity::class.java)
+                intent.putExtra(Constants.ID, jobId!!)
+                intent.putExtra(Constants.DEVICE_CODE, deviceCode)
+                intent.putExtra(Constants.BOT_ID, botId)
+                intent.putExtra(Constants.CONNECTIVITY, connectivity)
+                intent.putExtra(Constants.JOB_TYPE, jobType)
+                startActivity(intent)
             }
         } else {
             toast(res.message!!)
@@ -343,14 +302,11 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     override fun onclick(any: Any, pos: Int, type: Any, op: String) {
         if (any is WorkFlowDataRes.WorkFlowDataResBody.Step.Template.Element && type is View) {
             when (op) {
-                Constants.ELEMENT_TEXT -> {
-                    showViewState(MultiStateView.VIEW_STATE_LOADING)
-                    workFlowPresenter.addText(addTextIp = AddTextIp(elementId = any.id, jobId = jobId, text = (type.et_add_text.text.toString())))
-                }
                 Constants.ELEMENT_IMAGE -> {
                     image = type.btn_add_image
-                    upload_image = type.btn_upload_image
-                    elementId = any.id!!
+                    uploadImage = type.btn_upload_image
+                    elementId = any.id
+                    mandatory = type.iv_mandatory2
                     if (Build.VERSION.SDK_INT >= 21) {
                         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
                                 ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
@@ -368,15 +324,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 Constants.ELEMENT_UPLOAD_IMAGE -> {
                     showViewState(MultiStateView.VIEW_STATE_LOADING)
                     if (imgpath.isNotEmpty()) {
-                        val file = File(imgpath)
-                        val compressedImgFile: File = Compressor(this).compressToFile(file)
-                        workFlowPresenter.addImage(jobid = jobId!!, elementId = elementId, file = compressedImgFile)
+                        workFlowPresenter.addImage(jobid = jobId!!, elementId = any.id, file = Compressor(this).compressToFile(File(imgpath)))
                     }
-                }
-                Constants.ELEMENT_DROPDOWN -> {
-                    showViewState(MultiStateView.VIEW_STATE_LOADING)
-                    type.et_add_text.setText(type.spinner_center.selectedItem.toString())
-                    workFlowPresenter.addText(addTextIp = AddTextIp(elementId = any.id, jobId = jobId, text = (type.spinner_center.selectedItem.toString())))
                 }
             }
         }
@@ -398,8 +347,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == CAMERA_REQUEST) {
-
-            var f = File(mContext.getExternalFilesDir(null)!!.absolutePath)
+            val f = File(mContext.getExternalFilesDir(null)!!.absolutePath)
             var dir = File(f, "DP Partner 2.0/Image")
             if (!dir.exists())
                 dir.mkdirs()
@@ -416,15 +364,10 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             }
 
             if (!dir.exists()) {
-
                 Toast.makeText(baseContext, "Error while capturing image", Toast.LENGTH_LONG).show()
-
                 return
-
             }
-
             try {
-
                 bitmap = BitmapFactory.decodeFile(dir.absolutePath)
                 bitmap = Bitmap.createScaledBitmap(bitmap, 400, 400, true)
                 var rotate = 0
@@ -451,8 +394,10 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
                 image!!.setImageBitmap(bitmap)
                 if (imgpath.isNotEmpty()) {
-                    upload_image!!.visibility = View.VISIBLE
+                    mandatory!!.visibility = View.GONE
+                    uploadImage!!.visibility = View.VISIBLE
                 }
+                //stepImageMap[elementId.toString()] = imgpath
                 CommonUtils.setUserImagebitmap(mContext, image!!, stream)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -462,11 +407,31 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CAMERA_REQUEST) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                startCamera()
-            } else {
-                Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
+        when (requestCode) {
+            CAMERA_REQUEST -> {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    startCamera()
+                } else {
+                    Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
+                }
+            }
+            LOCATION_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    when {
+                        CommonUtils.isLocationEnabled(this) -> {
+                            setUpLocationListener()
+                        }
+                        else -> {
+                            CommonUtils.showGPSNotEnabledDialog(this)
+                        }
+                    }
+                } else {
+                    Toast.makeText(
+                            this,
+                            getString(R.string.location_permission_not_granted),
+                            Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
     }
@@ -484,9 +449,11 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     override fun onBackPressed() {
         if (currentPosition != 0) {
             setStep(currentPosition - 1)
+            init()
             btn_next.visibility = View.VISIBLE
             btn_Finish.visibility = View.GONE
         }
+
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed()
             return
@@ -500,6 +467,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             android.R.id.home -> {
                 if (currentPosition != 0) {
                     setStep(currentPosition - 1)
+                    init()
                     btn_next.visibility = View.VISIBLE
                     btn_Finish.visibility = View.GONE
                 }
@@ -513,4 +481,55 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             else -> return super.onOptionsItemSelected(item)
         }
     }
+
+    /**
+     * Location
+     */
+    private fun setUpLocationListener() {
+        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        // for getting the current location update after every 2 seconds with high accuracy
+        val locationRequest = LocationRequest().setInterval(2000).setFastestInterval(2000)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+        fusedLocationProviderClient.requestLocationUpdates(
+                locationRequest,
+                object : LocationCallback() {
+                    override fun onLocationResult(locationResult: LocationResult) {
+                        super.onLocationResult(locationResult)
+                        for (location in locationResult.locations) {
+                            latitude = location.latitude.toString()
+                            longitude = location.longitude.toString()
+                        }
+                        // Few more things we can do here:
+                        // For example: Update the location of user on server
+                    }
+                },
+                Looper.myLooper()
+        )
+    }
+
+    override fun onStart() {
+        super.onStart()
+        when {
+            CommonUtils.isAccessFineLocationGranted(this) -> {
+                when {
+                    CommonUtils.isLocationEnabled(this) -> {
+                        setUpLocationListener()
+                    }
+                    else -> {
+                        CommonUtils.showGPSNotEnabledDialog(this)
+                    }
+                }
+            }
+            else -> {
+                CommonUtils.requestAccessFineLocationPermission(
+                        this,
+                        LOCATION_PERMISSION_REQUEST_CODE
+                )
+            }
+        }
+    }
+
 }

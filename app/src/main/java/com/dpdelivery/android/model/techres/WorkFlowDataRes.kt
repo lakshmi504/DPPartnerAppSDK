@@ -26,8 +26,8 @@ data class WorkFlowDataRes(
                 data class Element(
                         val dropdownContents: ArrayList<String?>?,
                         val functionName: Any?,
-                        val id: Int?,
-                        val inputApi: String?,
+                        val id: Int,
+                        val inputApi: String,
                         val name: String?,
                         val optional: Boolean? = null,
                         val showType: String?,

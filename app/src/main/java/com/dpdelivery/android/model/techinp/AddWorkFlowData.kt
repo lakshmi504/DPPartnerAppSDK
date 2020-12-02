@@ -4,12 +4,12 @@ import androidx.annotation.Keep
 
 @Keep
 data class AddWorkFlowData(
-        val data: ArrayList<Data>?,
-        val jobId: Int?
+        val data: ArrayList<Data>,
+        val jobId: Int
 ) {
     @Keep
     data class Data(
-            val elementId: Int?,
-            val value: String?
+            val elementId: String,
+            val value: String
     )
 }
