@@ -88,5 +88,7 @@
     <string name="new_version_available">New version available</string>
     <string name="update_app">Looks like you have an older version of the app. Please update to get latest features and best experience.</string>
     <string name="update_now">Update now</string>
+    <string name="call_api_key">Ac6fb2563b36246159811f96883331d7f</string>
+    <string name="call_method">dial.click2call</string>
 
 </resources>

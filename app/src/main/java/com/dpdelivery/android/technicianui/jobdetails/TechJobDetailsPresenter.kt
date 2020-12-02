@@ -1,6 +1,7 @@
 package com.dpdelivery.android.technicianui.jobdetails
 
 import android.content.Context
+import com.dpdelivery.android.R
 import com.dpdelivery.android.api.ApiService
 import com.dpdelivery.android.model.techinp.StartJobIP
 import com.dpdelivery.android.model.techinp.SubmitPidIp
@@ -38,7 +39,7 @@ class TechJobDetailsPresenter @Inject constructor(
                                         view?.hideProgress()
                                         view?.showErrorMsg(throwable)
                                     }))
-        }catch (e:KotlinNullPointerException){
+        } catch (e: KotlinNullPointerException) {
 
         }
     }
@@ -73,10 +74,10 @@ class TechJobDetailsPresenter @Inject constructor(
                                 }))
     }
 
-    override fun refreshPidStatus(purifierId:String) {
+    override fun refreshPidStatus(purifierId: String) {
         view?.showProgress()
         subscription.add(
-                apiService.refreshPidStatus(CommonUtils.getLoginToken(),deviceId = purifierId)
+                apiService.refreshPidStatus(CommonUtils.getLoginToken(), deviceId = purifierId)
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(
@@ -99,6 +100,25 @@ class TechJobDetailsPresenter @Inject constructor(
                                     view?.showAddNoteRes(res)
                                 },
                                 { throwable ->
+                                    view?.showErrorMsg(throwable)
+                                }))
+    }
+
+    override fun getVoipCall(caller: String, receiver: String) {
+        view?.showProgress()
+        subscription.add(
+                apiService.getVoipCall(api_key = context.getString(R.string.call_api_key), method = context.getString(R.string.call_method), caller = caller, receiver = receiver)
+                        .subscribeOn(baseScheduler.io())
+                        .observeOn(baseScheduler.ui())
+                        .subscribe(
+                                { res ->
+                                    view?.hideProgress()
+                                    if (res.isSuccessful) {
+                                        view?.showVoipRes(res.headers())
+                                    }
+                                },
+                                { throwable ->
+                                    view?.hideProgress()
                                     view?.showErrorMsg(throwable)
                                 }))
     }

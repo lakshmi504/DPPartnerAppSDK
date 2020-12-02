@@ -1,6 +1,7 @@
 package com.dpdelivery.android.technicianui.jobslist
 
 import android.content.Context
+import com.dpdelivery.android.R
 import com.dpdelivery.android.api.ApiService
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.schedulers.BaseScheduler
@@ -22,7 +23,7 @@ class JobsListPresenter @Inject constructor(
     override fun getAssignedJobsList(status: String, appointmentDate: String) {
         view?.showProgress()
         subscription.add(
-                apiService.getAssignedJobs(CommonUtils.getLoginToken(), status, appointmentDate, pageSize = 10, page = 1, orderBy = "appointmentStartTime")
+                apiService.getAssignedJobs(CommonUtils.getLoginToken(), status, appointmentDate, pageSize = 1, page = 1, orderBy = "appointmentDate")
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(
@@ -39,7 +40,7 @@ class JobsListPresenter @Inject constructor(
     override fun getAssignedJobsList(status: String) {
         view?.showProgress()
         subscription.add(
-                apiService.getAssignedJobs(CommonUtils.getLoginToken(), status, pageSize = 10, page = 1, orderBy = "appointmentStartTime")
+                apiService.getAssignedJobs(CommonUtils.getLoginToken(), status, pageSize = 10, page = 1, orderBy = "appointmentDate")
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(
@@ -56,7 +57,7 @@ class JobsListPresenter @Inject constructor(
     override fun getMoreJobsList(page: Int, status: String, appointmentDate: String) {
         view?.showProgress()
         subscription.add(
-                apiService.getMoreJobsList(CommonUtils.getLoginToken(), status, appointmentDate, pageSize = 10, page = page, orderBy = "appointmentStartTime")
+                apiService.getMoreJobsList(CommonUtils.getLoginToken(), status, appointmentDate, pageSize = 10, page = page, orderBy = "appointmentDate")
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(
@@ -73,7 +74,7 @@ class JobsListPresenter @Inject constructor(
     override fun getMoreJobsList(page: Int, status: String) {
         view?.showProgress()
         subscription.add(
-                apiService.getMoreJobsList(CommonUtils.getLoginToken(), status, pageSize = 10, page = page, orderBy = "appointmentStartTime")
+                apiService.getMoreJobsList(CommonUtils.getLoginToken(), status, pageSize = 10, page = page, orderBy = "appointmentDate")
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(
@@ -86,6 +87,26 @@ class JobsListPresenter @Inject constructor(
                                     view?.showErrorMsg(throwable)
                                 }))
     }
+
+    override fun getVoipCall(caller: String, receiver: String) {
+        view?.showProgress()
+        subscription.add(
+                apiService.getVoipCall(api_key = context.getString(R.string.call_api_key), method = context.getString(R.string.call_method), caller = caller, receiver = receiver)
+                        .subscribeOn(baseScheduler.io())
+                        .observeOn(baseScheduler.ui())
+                        .subscribe(
+                                { res ->
+                                    view?.hideProgress()
+                                    if (res.isSuccessful) {
+                                        view?.showVoipRes(res.headers())
+                                    }
+                                },
+                                { throwable ->
+                                    view?.hideProgress()
+                                    view?.showErrorMsg(throwable)
+                                }))
+    }
+
 
     override fun dropView() {
         subscription.clear()

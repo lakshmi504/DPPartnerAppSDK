@@ -2,9 +2,7 @@ package com.dpdelivery.android.technicianui.techjobslist.viewholder
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.Paint
-import android.net.Uri
 import android.view.View
 import com.dpdelivery.android.commonadapter.BaseViewholder
 import com.dpdelivery.android.constants.Constants
@@ -26,7 +24,7 @@ class TechJobsListViewHolder(override val containerView: View?, var context: Con
             tv_namevalue.text = item.customerName
             if (item.customerAddress?.area?.description.isNullOrEmpty()) {
                 tv_areavalue.text = " "
-            }else{
+            } else {
                 tv_areavalue.text = item.customerAddress?.area?.description.toString()
             }
 
@@ -52,15 +50,17 @@ class TechJobsListViewHolder(override val containerView: View?, var context: Con
                 tv_appointmentdate.text = item.appointmentStartTime
             }
             tv_statusvalue.text = item.status?.description
-            tv_cust_phn.text = item.customerPhone
+            val text = item.customerPhone
+            tv_cust_phn.text = text?.replaceRange(5..9, "*****")
             tv_cust_phn.paintFlags = tv_cust_phn.paintFlags or Paint.UNDERLINE_TEXT_FLAG
             if (item.customerPhone!!.isNotEmpty()) {
                 tv_cust_phn.setOnClickListener {
-                    val url = "tel:${item.customerPhone}"
+                    /*val url = "tel:${item.customerPhone}"
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
                     intent.putExtra("finish", true)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    context.startActivity(intent)
+                    context.startActivity(intent)*/
+                    adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.CUST_PHONE)
                 }
             }
 
@@ -68,17 +68,18 @@ class TechJobsListViewHolder(override val containerView: View?, var context: Con
                 tv_alternate_no.visibility = View.GONE
                 alternate_no.visibility = View.GONE
             } else {
-                tv_alternate_no.text = item.customerAltPhone
+                tv_alternate_no.text = (item.customerAltPhone).replaceRange(5..9, "*****")
                 val altPhone = item.customerAltPhone
                 tv_alternate_no.paintFlags = tv_cust_phn.paintFlags or Paint.UNDERLINE_TEXT_FLAG
                 tv_alternate_no.visibility = View.VISIBLE
                 alternate_no.visibility = View.VISIBLE
                 tv_alternate_no.setOnClickListener {
-                    val url = "tel:$altPhone"
-                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
-                    intent.putExtra("finish", true)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    context.startActivity(intent)
+                    /* val url = "tel:$altPhone"
+                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
+                     intent.putExtra("finish", true)
+                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                     context.startActivity(intent)*/
+                    adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.ALT_CUST_PHONE)
                 }
             }
             ll_bg.setOnClickListener {

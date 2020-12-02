@@ -61,7 +61,8 @@ data class Area(
 @Keep
 data class AssignedTo(
         val id: Int,
-        val name: String
+        val name: String,
+        val phoneNumber: String
 )
 
 @Keep
@@ -118,4 +119,5 @@ data class Type(
         val description: String?,
         val id: Int?
 )
+
 

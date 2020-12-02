@@ -7,12 +7,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dpdelivery.android.R
 import com.dpdelivery.android.commonadapter.BaseViewholder
+import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.model.techres.Job
 import com.dpdelivery.android.technicianui.jobslist.viewholder.JobsListViewHolder
 import com.dpdelivery.android.technicianui.jobslist.viewholder.LoadingViewHolder
 
 
-class JobListAdapter(private val context: Context) : RecyclerView.Adapter<BaseViewholder>() {
+class JobListAdapter(private val context: Context, private var adapterClickListener: IAdapterClickListener) : RecyclerView.Adapter<BaseViewholder>() {
     private var jobsList = ArrayList<Job>()
     private var isLoadingAdded = false
     private val ITEM = 0
@@ -25,7 +26,7 @@ class JobListAdapter(private val context: Context) : RecyclerView.Adapter<BaseVi
         when (viewType) {
             ITEM -> {
                 view = LayoutInflater.from(parent.context).inflate(R.layout.item_asg_jobs_list, parent, false)
-                viewHolder = JobsListViewHolder(view)
+                viewHolder = JobsListViewHolder(view, adapterClickListener)
             }
             LOADING -> {
                 view = LayoutInflater.from(parent.context).inflate(R.layout.item_loading, parent, false)
@@ -81,9 +82,9 @@ class JobListAdapter(private val context: Context) : RecyclerView.Adapter<BaseVi
         isLoadingAdded = true
     }
 
-     fun removeLoadingFooter() {
-         isLoadingAdded = false
-     }
+    fun removeLoadingFooter() {
+        isLoadingAdded = false
+    }
 
     private fun getItem(position: Int): Job {
         return jobsList[position]
