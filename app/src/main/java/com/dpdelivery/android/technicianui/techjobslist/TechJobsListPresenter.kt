@@ -1,6 +1,7 @@
 package com.dpdelivery.android.technicianui.techjobslist
 
 import android.content.Context
+import com.dpdelivery.android.R
 import com.dpdelivery.android.api.ApiService
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.schedulers.BaseScheduler
@@ -22,7 +23,7 @@ class TechJobsListPresenter @Inject constructor(
     override fun getFilterJobsList(status: String, appointmentDate: String) {
         view?.showProgress()
         subscription.add(
-                apiService.getFilterJobs(CommonUtils.getLoginToken(), status, appointmentDate, orderBy = "appointmentStartTime")
+                apiService.getFilterJobs(CommonUtils.getLoginToken(), status, appointmentDate, orderBy = "appointmentStartTime", pageSize = 1)
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(
@@ -46,6 +47,25 @@ class TechJobsListPresenter @Inject constructor(
                                 { res ->
                                     view?.hideProgress()
                                     view?.showAsgJobsListRes(res)
+                                },
+                                { throwable ->
+                                    view?.hideProgress()
+                                    view?.showErrorMsg(throwable)
+                                }))
+    }
+
+    override fun getVoipCall(caller: String, receiver: String) {
+        view?.showProgress()
+        subscription.add(
+                apiService.getVoipCall(api_key = context.getString(R.string.call_api_key), method = context.getString(R.string.call_method), caller = caller, receiver = receiver)
+                        .subscribeOn(baseScheduler.io())
+                        .observeOn(baseScheduler.ui())
+                        .subscribe(
+                                { res ->
+                                    view?.hideProgress()
+                                    if (res.isSuccessful) {
+                                        view?.showVoipRes(res.headers())
+                                    }
                                 },
                                 { throwable ->
                                     view?.hideProgress()

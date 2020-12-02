@@ -76,7 +76,7 @@ interface ApiService {
     fun getMoreJobsList(@Header("Authorization") token: String, @Query("status") status: String, @Query("orderBy") orderBy: String, @Query("pageSize") pageSize: Int, @Query("page") page: Int): Observable<ASGListRes>
 
     @GET(ApiConstants.JOBS_LIST)
-    fun getFilterJobs(@Header("Authorization") token: String, @Query("status") status: String, @Query("appointmentDate") appointmentDate: String, @Query("orderBy") orderBy: String): Observable<ASGListRes>
+    fun getFilterJobs(@Header("Authorization") token: String, @Query("status") status: String, @Query("appointmentDate") appointmentDate: String, @Query("orderBy") orderBy: String, @Query("pageSize") pageSize: Int): Observable<ASGListRes>
 
     @GET(ApiConstants.JOBS_LIST)
     fun searchTechJobsList(@Header("Authorization") token: String, @Query("search") search: String, @Query("orderBy") orderBy: String): Observable<ASGListRes>
@@ -132,5 +132,8 @@ interface ApiService {
     @Multipart
     @POST(ApiConstants.ADD_IMAGE + "/{jobId}" + "/{elementId}")
     fun addImage(@Header("Authorization") token: String, @Path("jobId", encoded = true) jobId: Int, @Path("elementId", encoded = true) elementId: Int, @Part file: MultipartBody.Part): Observable<AddTextRes>
+
+    @GET(ApiConstants.VOIP_CALL)
+    fun getVoipCall(@Query("api_key") api_key: String, @Query("method") method: String, @Query("caller") caller: String, @Query("receiver") receiver: String): Observable<Response<ResponseBody>>
 
 }

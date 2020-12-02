@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
 import kotlinx.android.synthetic.main.layout_header_search.*
+import okhttp3.Headers
 import javax.inject.Inject
 
 class SearchActivity : DaggerAppCompatActivity(), TechJobsListContract.View, IAdapterClickListener, View.OnClickListener {
@@ -100,6 +101,10 @@ class SearchActivity : DaggerAppCompatActivity(), TechJobsListContract.View, IAd
             empty_textView.text = "No Jobs Found"
             empty_button.text = "Back to list"
         }
+    }
+
+    override fun showVoipRes(res: Headers) {
+
     }
 
     override fun showErrorMsg(throwable: Throwable, apiType: String) {
