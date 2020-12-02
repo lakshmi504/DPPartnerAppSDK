@@ -20,4 +20,30 @@
         android:scrollbarStyle="insideOverlay"
         android:scrollbars="vertical" />
 
+    <RelativeLayout
+        android:id="@+id/rl_jobs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimens_10">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/total_jobs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_regular"
+            android:text="Total Assigned Jobs:"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/dimens_12sp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_total_jobs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimens_5"
+            android:layout_toEndOf="@id/total_jobs"
+            android:fontFamily="@font/montserrat_regular"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/dimens_12sp" />
+    </RelativeLayout>
+
 </LinearLayout>

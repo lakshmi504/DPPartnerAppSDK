@@ -4,7 +4,7 @@ class ApiConstants {
     companion object {
 
         //const val BASE_URL = "http://ec2-15-207-89-27.ap-south-1.compute.amazonaws.com:8080/"
-       // const val BASE_URL = "http://dev.waterwalaprime.in:8080/"
+        // const val BASE_URL = "http://dev.waterwalaprime.in:8080/"
         //const val BASE_URL = "http://staging.waterwalaprime.in:8080/"
 
         const val BASE_URL = "http://test.waterwalaprime.in:8080/"
@@ -37,5 +37,6 @@ class ApiConstants {
         const val ADD_TEXT = "http://test.waterwalaprime.in:8080/workflow/addText"
         const val ADD_IMAGE = "http://test.waterwalaprime.in:8080/workflow/addImage"
         const val ADD_WORK_FLOW = "http://test.waterwalaprime.in:8080/workflow/addData"
+        const val VOIP_CALL = "https://api-voice.kaleyra.com/v1/"
     }
 }

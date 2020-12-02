@@ -24,5 +24,7 @@ class Constants {
         const val JOB_TYPE = "JOB_TYPE"
         const val NOTES = "NOTES"
         const val MyPREFERENCES = "MyPREFERENCES"
+        const val CUST_PHONE = "CUST_PHONE"
+        const val ALT_CUST_PHONE = "ALT_CUST_PHONE"
     }
 }

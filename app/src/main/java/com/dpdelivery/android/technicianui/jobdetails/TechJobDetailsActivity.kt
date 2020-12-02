@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.text.InputFilter
@@ -30,6 +29,7 @@ import com.dpdelivery.android.technicianui.base.TechBaseActivity
 import com.dpdelivery.android.technicianui.finish.FinishJobActivity
 import com.dpdelivery.android.technicianui.scanner.ScannerActivity
 import com.dpdelivery.android.technicianui.workflow.WorkFlowActivity
+import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.toast
 import com.dpdelivery.android.utils.withNotNullNorEmpty
 import com.google.zxing.integration.android.IntentIntegrator
@@ -38,6 +38,7 @@ import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
 import kotlinx.android.synthetic.main.layout_type_installation.*
+import okhttp3.Headers
 import org.json.JSONException
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -67,6 +68,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
     private var botId: String? = null
     private var connectivity: String? = null
     private var jobType: String? = null
+    private var tech_phone: String? = null
+    private var jobStartTime: String? = null
 
     @Inject
     lateinit var detailsPresenter: TechJobDetailsPresenter
@@ -128,16 +131,22 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
             }
             R.id.iv_call -> { //call function
                 if (phone!!.isNotEmpty()) {
-                    val url = "tel:$phone"
+                    /*val url = "tel:$phone"
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
-                    startActivity(intent)
+                    startActivity(intent)*/
+                    showViewState(MultiStateView.VIEW_STATE_LOADING)
+                    detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = phone!!)
+
+
                 }
             }
             R.id.iv_alt_call -> {  // for call function(alt number)
                 if (altPhone!!.isNotEmpty()) {
-                    val url = "tel:$altPhone"
-                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
-                    startActivity(intent)
+                    /* val url = "tel:$altPhone"
+                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
+                     startActivity(intent)*/
+                    showViewState(MultiStateView.VIEW_STATE_LOADING)
+                    detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = altPhone!!)
                 }
             }
             R.id.btn_activate -> {
@@ -214,7 +223,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         val currentTime = Date()
         val output = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
         output.timeZone = TimeZone.getTimeZone("GMT")
-        val jobStartTime = output.format(currentTime)
+        jobStartTime = output.format(currentTime)
         detailsPresenter.startJob(jobId!!, startJobIP = StartJobIP(jobStartTime = jobStartTime, status = "INP"))
     }
 
@@ -291,11 +300,16 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         tv_job_type.text = res.type!!.description
         tv_name.text = res.customerName
         phone = res.customerPhone
-        tv_phone.text = phone
+        if (phone!!.isNotEmpty()) {
+            tv_phone.text = phone?.replaceRange(5..9, "*****")
+        }
         altPhone = res.customerAltPhone
-        tv_alt_phone.text = altPhone
+        if (altPhone!!.isNotEmpty()) {
+            tv_alt_phone.text = altPhone?.replaceRange(5..9, "*****")
+        }
         statusCode = res.status!!.code
         noteList = res.notes
+        tech_phone = res.assignedTo?.phoneNumber
         tv_view_notes.visibility = View.VISIBLE
 
         //address
@@ -372,8 +386,9 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
     override fun showStartJobRes(startJobRes: StartJobRes) {
         if (startJobRes.success!!) {
             showViewState(MultiStateView.VIEW_STATE_CONTENT)
-            toast("Job Started Successfully")
+            CommonUtils.saveJobStartTime(jobStartTime)
             init()
+            toast("Job Started Successfully")
         } else {
             toast(startJobRes.error.toString())
         }
@@ -382,8 +397,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
     override fun showAddNoteRes(res: StartJobRes) {
         if (res.success!!) {
             showViewState(MultiStateView.VIEW_STATE_CONTENT)
-            toast("Note Added Successfully")
             init()
+            toast("Note Added Successfully")
         }
     }
 
@@ -412,6 +427,11 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         } catch (e: JSONException) {
             e.printStackTrace()
         }
+    }
+
+    override fun showVoipRes(res: Headers) {
+        showViewState(MultiStateView.VIEW_STATE_CONTENT)
+        toast("Call is Connecting..")
     }
 
     override fun showErrorMsg(throwable: Throwable, apiType: String) {

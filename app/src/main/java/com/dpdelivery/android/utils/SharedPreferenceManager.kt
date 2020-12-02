@@ -31,6 +31,7 @@ class SharedPreferenceManager {
         val KEY_STATUS = "purifierstatus"
         val KEY_CMDS = "cmds"
         val KEY_PREPAID = "prepaid"
+        val JOB_START_TIME = "JOB_START_TIME"
 
         fun clearPreferences() {
             getPrefs().edit().clear().apply()

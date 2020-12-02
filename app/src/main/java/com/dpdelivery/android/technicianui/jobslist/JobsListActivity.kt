@@ -10,10 +10,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dpdelivery.android.R
 import com.dpdelivery.android.commonviews.MultiStateView
+import com.dpdelivery.android.constants.Constants
+import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.interfaces.PaginationScrollListener
 import com.dpdelivery.android.model.techres.ASGListRes
 import com.dpdelivery.android.model.techres.Job
 import com.dpdelivery.android.technicianui.base.TechBaseActivity
+import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.DateHelper
 import com.dpdelivery.android.utils.toast
 import com.dpdelivery.android.utils.withNotNullNorEmpty
@@ -21,10 +24,14 @@ import kotlinx.android.synthetic.main.activity_assigned_jobs_list.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
+import okhttp3.Headers
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 import kotlin.math.ceil
 
-class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClickListener {
+class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClickListener, IAdapterClickListener {
 
     lateinit var mContext: Context
     lateinit var manager: LinearLayoutManager
@@ -36,6 +43,8 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
     private var TOTAL_PAGES = 0
     private var currentPage = PAGE_START
     private var data: String? = null
+    val handler = Handler()
+    var refresh: Runnable? = null
 
     @Inject
     lateinit var presenter: JobsListPresenter
@@ -65,7 +74,7 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
         showBack()
         rv_asg_jobs_list.layoutManager = manager
         rv_asg_jobs_list.itemAnimator = DefaultItemAnimator()
-        adapterAsgJobsList = JobListAdapter(this)
+        adapterAsgJobsList = JobListAdapter(this, adapterClickListener = this)
         rv_asg_jobs_list.adapter = adapterAsgJobsList
         rv_asg_jobs_list.addOnScrollListener(object : PaginationScrollListener(manager) {
             override val totalPageCount: Int
@@ -132,11 +141,40 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
             showViewState(MultiStateView.VIEW_STATE_CONTENT)
             res.jobs.withNotNullNorEmpty {
                 jobsList = res.jobs
-                jobsList.sortWith(Comparator { listItem, t1 -> t1?.appointmentStartTime?.let { listItem?.appointmentStartTime?.compareTo(it) }!! })
-                TOTAL_PAGES = ceil(res.total?.toDouble()?.div(10.toDouble())!!.toDouble()).toInt()
-                adapterAsgJobsList.addAll(jobsList)
-                if (currentPage < TOTAL_PAGES) adapterAsgJobsList.addLoadingFooter()
-                else isLastPage = true
+                if (data.equals("ASG")) {
+                    tv_total_jobs.text = res.total.toString()
+                    if (CommonUtils.getJobStartTime().isNotEmpty()) {
+                        val startJobInput = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
+                        startJobInput.timeZone = TimeZone.getTimeZone("GMT")
+                        var startJobDate: Date? = null
+                        try {
+                            startJobDate = startJobInput.parse(CommonUtils.getJobStartTime())
+                        } catch (e: ParseException) {
+                            e.printStackTrace()
+                        }
+                        refresh = Runnable {
+                            val jobstarttime: Long = ((Date().time)) - startJobDate!!.time
+                            val diffInHours = jobstarttime / (60 * 60 * 1000) % 24
+
+                            when {
+                                diffInHours >= 1 -> {
+                                    adapterAsgJobsList.addAll(jobsList)
+                                }
+                            }
+                            handler.postDelayed(refresh!!, 1000)
+                        }
+                        handler.post(refresh!!)
+                    } else {
+                        adapterAsgJobsList.addAll(jobsList)
+                    }
+                } else {
+                    rl_jobs.visibility = View.GONE
+                    TOTAL_PAGES = ceil(res.total?.toDouble()?.div(10.toDouble())!!.toDouble()).toInt()
+                    jobsList.sortWith(Comparator { listItem, t1 -> t1?.appointmentStartTime?.let { listItem?.appointmentStartTime?.compareTo(it) }!! })
+                    adapterAsgJobsList.addAll(jobsList)
+                    if (currentPage < TOTAL_PAGES) adapterAsgJobsList.addLoadingFooter()
+                    else isLastPage = true
+                }
             }
         } else {
             showViewState(MultiStateView.VIEW_STATE_EMPTY)
@@ -150,7 +188,7 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
             showViewState(MultiStateView.VIEW_STATE_CONTENT)
             res.jobs.withNotNullNorEmpty {
                 jobsList = res.jobs
-                jobsList.sortWith(Comparator { listItem, t1 -> t1?.appointmentStartTime?.let { listItem?.appointmentStartTime?.compareTo(it) }!! })
+                //jobsList.sortWith(Comparator { listItem, t1 -> t1?.appointmentStartTime?.let { listItem?.appointmentStartTime?.compareTo(it) }!! })
                 adapterAsgJobsList.removeLoadingFooter()
                 isLoading = false
                 TOTAL_PAGES = ceil(res.total?.div(10)!!.toDouble()).toInt()
@@ -163,6 +201,11 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
         }
     }
 
+    override fun showVoipRes(res: Headers) {
+        showViewState(MultiStateView.VIEW_STATE_CONTENT)
+        toast("Call is Connecting..")
+    }
+
     override fun showErrorMsg(throwable: Throwable, apiType: String) {
         toast(throwable.message.toString())
         showViewState(MultiStateView.VIEW_STATE_ERROR)
@@ -170,6 +213,21 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
 
     override fun showViewState(state: Int) {
         multistateview.viewState = state
+    }
+
+    override fun onclick(any: Any, pos: Int, type: Any, op: String) {
+        if (any is Job && type is View) {
+            when (op) {
+                Constants.CUST_PHONE -> {
+                    showViewState(MultiStateView.VIEW_STATE_LOADING)
+                    presenter.getVoipCall(caller = any.assignedTo!!.phoneNumber, receiver = any.customerPhone!!)
+                }
+                Constants.ALT_CUST_PHONE -> {
+                    showViewState(MultiStateView.VIEW_STATE_LOADING)
+                    presenter.getVoipCall(caller = any.assignedTo!!.phoneNumber, receiver = any.customerAltPhone!!)
+                }
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

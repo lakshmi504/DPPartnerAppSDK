@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
@@ -32,6 +33,9 @@ import kotlinx.android.synthetic.main.activity_assigned_jobs_list.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
+import okhttp3.Headers
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -43,7 +47,8 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
     lateinit var adapterAsgJobsList: BasicAdapter
     lateinit var jobsList: ArrayList<Job?>
     private var filter: String? = null
-
+    val handler = Handler()
+    var refresh: Runnable? = null
 
     @Inject
     lateinit var presenter: TechJobsListPresenter
@@ -147,8 +152,6 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
                     }
                 }
                 if (filter != "Status Filter") {
-                    //multistateview1.viewState = MultiStateView.VIEW_STATE_LOADING
-                    //presenter.getFilterJobsList(status = filter.toString())
                     startActivity(Intent(this, JobsListActivity::class.java).putExtra("filter", filter))
                     overridePendingTransition(0, 0)
                 }
@@ -161,8 +164,31 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
             showViewState(MultiStateView.VIEW_STATE_CONTENT)
             res.jobs.withNotNullNorEmpty {
                 jobsList = res.jobs
-                jobsList.sortWith(Comparator { listItem, t1 -> t1?.appointmentStartTime?.let { listItem?.appointmentStartTime?.compareTo(it) }!! })
-                adapterAsgJobsList.addList(jobsList)
+                tv_total_jobs.text = res.total.toString()
+                if (CommonUtils.getJobStartTime().isNotEmpty()) {
+                    val startJobInput = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
+                    startJobInput.timeZone = TimeZone.getTimeZone("GMT")
+                    var startJobDate: Date? = null
+                    try {
+                        startJobDate = startJobInput.parse(CommonUtils.getJobStartTime())
+                    } catch (e: ParseException) {
+                        e.printStackTrace()
+                    }
+                    refresh = Runnable {
+                        val jobstarttime: Long = ((Date().time)) - startJobDate!!.time
+                        val diffInHours = jobstarttime / (60 * 60 * 1000) % 24
+
+                        when {
+                            diffInHours >= 1 -> {
+                                adapterAsgJobsList.addList(jobsList)
+                            }
+                        }
+                        handler.postDelayed(refresh!!, 1000)
+                    }
+                    handler.post(refresh!!)
+                } else {
+                    adapterAsgJobsList.addList(jobsList)
+                }
             }
         } else {
             showViewState(MultiStateView.VIEW_STATE_EMPTY)
@@ -184,8 +210,21 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
                     intent.putExtra(Constants.ID, any.id)
                     startActivity(intent)
                 }
+                Constants.CUST_PHONE -> {
+                    showViewState(MultiStateView.VIEW_STATE_LOADING)
+                    presenter.getVoipCall(caller = any.assignedTo!!.phoneNumber, receiver = any.customerPhone!!)
+                }
+                Constants.ALT_CUST_PHONE -> {
+                    showViewState(MultiStateView.VIEW_STATE_LOADING)
+                    presenter.getVoipCall(caller = any.assignedTo!!.phoneNumber, receiver = any.customerAltPhone!!)
+                }
             }
         }
+    }
+
+    override fun showVoipRes(res: Headers) {
+        showViewState(MultiStateView.VIEW_STATE_CONTENT)
+        toast("Call is Connecting..")
     }
 
     override fun showViewState(state: Int) {

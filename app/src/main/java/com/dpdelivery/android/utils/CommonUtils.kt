@@ -46,6 +46,14 @@ class CommonUtils {
             return SharedPreferenceManager.getPrefVal(SharedPreferenceManager.ROLE, "", SharedPreferenceManager.VALUE_TYPE.STRING) as String
         }
 
+        fun saveJobStartTime(string: String?) {
+            SharedPreferenceManager.setPrefVal(SharedPreferenceManager.JOB_START_TIME, string!!, SharedPreferenceManager.VALUE_TYPE.STRING)
+        }
+
+        fun getJobStartTime(): String {
+            return SharedPreferenceManager.getPrefVal(SharedPreferenceManager.JOB_START_TIME, "", SharedPreferenceManager.VALUE_TYPE.STRING) as String
+        }
+
         fun showdatepicker(context: Context, listener: SelectedDateListener, dateValue: Long, s: String) {
             dateListener = listener
             val mYear: Int

@@ -3,20 +3,18 @@ package com.dpdelivery.android.technicianui.jobslist.viewholder
 import android.content.Context
 import android.content.Intent
 import android.graphics.Paint
-import android.net.Uri
 import android.view.View
 import com.dpdelivery.android.commonadapter.BaseViewholder
 import com.dpdelivery.android.constants.Constants
+import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.model.techres.Job
 import com.dpdelivery.android.technicianui.jobdetails.TechJobDetailsActivity
-import kotlinx.android.synthetic.main.item_asg_jobs_list.*
 import kotlinx.android.synthetic.main.item_asg_jobs_list.view.*
-import kotlinx.android.synthetic.main.item_asg_jobs_list.view.tv_jobidvalue
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class JobsListViewHolder(var view: View) : BaseViewholder(view) {
+class JobsListViewHolder(var view: View, private var adapterClickListener: IAdapterClickListener) : BaseViewholder(view) {
     override fun bind(context: Context, item: Any, pos: Int) {
         if (item is Job) {
             view.tv_jobtypevalue.text = item.type?.description
@@ -24,7 +22,7 @@ class JobsListViewHolder(var view: View) : BaseViewholder(view) {
             view.tv_namevalue.text = item.customerName
             if (item.customerAddress?.area?.description.isNullOrEmpty()) {
                 view.tv_areavalue.text = " "
-            }else{
+            } else {
                 view.tv_areavalue.text = item.customerAddress?.area?.description.toString()
             }
             if (!item.appointmentStartTime.isNullOrEmpty()) {
@@ -49,15 +47,17 @@ class JobsListViewHolder(var view: View) : BaseViewholder(view) {
                 view.tv_appointmentdate.text = item.appointmentStartTime
             }
             view.tv_statusvalue.text = item.status?.description
-            view.tv_cust_phn.text = item.customerPhone
+            val text = item.customerPhone
+            view.tv_cust_phn.text = text?.replaceRange(5..9, "*****")
             view.tv_cust_phn.paintFlags = view.tv_cust_phn.paintFlags or Paint.UNDERLINE_TEXT_FLAG
             if (item.customerPhone!!.isNotEmpty()) {
                 view.tv_cust_phn.setOnClickListener {
-                    val url = "tel:${item.customerPhone}"
+                    /*val url = "tel:${item.customerPhone}"
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
                     intent.putExtra("finish", true)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    context.startActivity(intent)
+                    context.startActivity(intent)*/
+                    adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.CUST_PHONE)
                 }
             }
 
@@ -65,17 +65,18 @@ class JobsListViewHolder(var view: View) : BaseViewholder(view) {
                 view.tv_alternate_no.visibility = View.GONE
                 view.alternate_no.visibility = View.GONE
             } else {
-                view.tv_alternate_no.text = item.customerAltPhone
+                view.tv_alternate_no.text = (item.customerAltPhone).replaceRange(5..9, "*****")
                 val altPhone = item.customerAltPhone
                 view.tv_alternate_no.paintFlags = view.tv_cust_phn.paintFlags or Paint.UNDERLINE_TEXT_FLAG
                 view.tv_alternate_no.visibility = View.VISIBLE
                 view.alternate_no.visibility = View.VISIBLE
                 view.tv_alternate_no.setOnClickListener {
-                    val url = "tel:$altPhone"
+                    /*val url = "tel:$altPhone"
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
                     intent.putExtra("finish", true)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    context.startActivity(intent)
+                    context.startActivity(intent)*/
+                    adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.ALT_CUST_PHONE)
                 }
             }
             view.ll_bg.setOnClickListener {
