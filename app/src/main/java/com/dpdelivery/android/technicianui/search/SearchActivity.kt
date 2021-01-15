@@ -112,6 +112,10 @@ class SearchActivity : DaggerAppCompatActivity(), TechJobsListContract.View, IAd
         multistateview2.viewState = MultiStateView.VIEW_STATE_ERROR
     }
 
+    override fun showJobsListRes(res: ASGListRes) {
+
+    }
+
     override fun onclick(any: Any, pos: Int, type: Any, op: String) {
         if (any is Job && type is View) {
             when (op) {

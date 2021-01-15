@@ -94,7 +94,7 @@ class ElementListAdapter(var context: Context, var adapterClickListener: IAdapte
                     if (item.value!!.isNotEmpty()) {
                         et_add_text.visibility = View.VISIBLE
                         val text = item.value
-                        et_add_text.setText(text.replace(item.value, "*"))
+                        et_add_text.setText(text.replace(item.value, "*****"))
                     }
                     if (item.showType == "MASKED" && item.inputApi == "TEXT" && item.workflowElementType == "DROPDOWN") {
                         ll_spinner_center.visibility = View.VISIBLE

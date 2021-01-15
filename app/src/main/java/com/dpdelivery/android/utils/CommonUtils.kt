@@ -109,6 +109,7 @@ class CommonUtils {
             val inflate = LayoutInflater.from(context).inflate(R.layout.progress_dialog, null)
             dialog.setContentView(inflate)
             dialog.setCancelable(false)
+            dialog.setCanceledOnTouchOutside(false)
             dialog.window!!.setBackgroundDrawable(
                     ColorDrawable(Color.TRANSPARENT))
             return dialog

@@ -95,7 +95,7 @@ class WorkFlowPresenter @Inject constructor(
     }
 
     override fun addImage(jobid: Int, elementId: Int, file: File) {
-        view?.showProgress()
+      //  view?.showProgress()
         val reqFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
         val body = MultipartBody.Part.createFormData("file", file.name, reqFile)
         subscription.add(

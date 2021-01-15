@@ -221,9 +221,10 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
     fun finishJob() {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
-        /* for (i in stepImageMap) {
-             workFlowPresenter.addImage(jobid = jobId!!, elementId = i.key.toInt(), file = Compressor(this).compressToFile(File(i.value)))
-         }*/
+
+       /* for (i in stepImageMap) {
+            workFlowPresenter.addImage(jobid = jobId!!, elementId = i.key.toInt(), file = Compressor(this).compressToFile(File(i.value)))
+        }*/
         for (mutableEntry in stepMap) {
             stepMapList.add(AddWorkFlowData.Data(elementId = mutableEntry.key, value = mutableEntry.value))
         }
@@ -236,10 +237,10 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     }
 
     override fun showAddTextRes(res: AddTextRes) {
-        showViewState(MultiStateView.VIEW_STATE_CONTENT)
+        dialog.dismiss()
         if (res.success!!) {
             toast(res.message!!)
-            init()
+            //init()
         } else {
             toast(res.message!!)
         }
@@ -268,6 +269,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             toast(res.message!!)
             stepMap.clear()
             stepMapList.clear()
+            stepImageMap.clear()
             if (jobType == "DEL" || jobType == "UIN") {
                 showViewState(MultiStateView.VIEW_STATE_LOADING)
                 val currentTime = Date()
@@ -320,9 +322,14 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     } else {
                         Toast.makeText(baseContext, getString(R.string.permission_denied), Toast.LENGTH_LONG).show()
                     }
+                    /* val intent = Intent(context, UploadImagesActivity::class.java)
+                     intent.putExtra(Constants.ID, jobId)
+                     intent.putExtra(Constants.ELEMENT_TEXT, elementId)
+                     intent.putExtra(Constants.SOURCE, any.name)
+                     startActivityForResult(intent, 123)*/
                 }
                 Constants.ELEMENT_UPLOAD_IMAGE -> {
-                    showViewState(MultiStateView.VIEW_STATE_LOADING)
+                    dialog.show()
                     if (imgpath.isNotEmpty()) {
                         workFlowPresenter.addImage(jobid = jobId!!, elementId = any.id, file = Compressor(this).compressToFile(File(imgpath)))
                     }
@@ -393,11 +400,13 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 val stream = ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
                 image!!.setImageBitmap(bitmap)
+                dialog.show()
                 if (imgpath.isNotEmpty()) {
                     mandatory!!.visibility = View.GONE
-                    uploadImage!!.visibility = View.VISIBLE
+                    // uploadImage!!.visibility = View.VISIBLE
+                    //stepImageMap[elementId.toString()] = imgpath
+                    workFlowPresenter.addImage(jobid = jobId!!, elementId = elementId, file = Compressor(this).compressToFile(File(imgpath)))
                 }
-                //stepImageMap[elementId.toString()] = imgpath
                 CommonUtils.setUserImagebitmap(mContext, image!!, stream)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -439,6 +448,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     override fun showFinishJobRes(res: SubmiPidRes) {
         if (res.success) {
             startActivity(Intent(this, TechJobsListActivity::class.java))
+            CommonUtils.saveJobStartTime("")
             finish()
         } else {
             toast(res.message)

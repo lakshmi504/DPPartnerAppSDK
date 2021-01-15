@@ -69,8 +69,7 @@ class SummaryActivity : TechBaseActivity(), SummaryContract.View, IAdapterClickL
         } catch (e: ParseException) {
             e.printStackTrace()
         }
-        val formatted = output.format(d!!)
-        val year = formatted
+        val year = output.format(d!!)
         tv_version.text = CommonUtils.getCopyRightSymbol(context, "$year. v$latestversion")
     }
 

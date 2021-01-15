@@ -124,7 +124,7 @@
             android:layout_marginStart="@dimen/dimens_10"
             android:layout_marginTop="@dimen/dimens_10"
             android:layout_toEndOf="@+id/iv_mandatory2"
-            android:src="@drawable/upload_image"
+            android:src="@drawable/ic_upload_image"
             android:visibility="gone" />
     </RelativeLayout>
 

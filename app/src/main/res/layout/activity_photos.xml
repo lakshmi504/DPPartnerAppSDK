@@ -27,6 +27,7 @@
         android:layout_marginTop="@dimen/dimens_20"
         android:background="@drawable/btn_background"
         android:text="Capture Image"
+        android:gravity="center"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/dimens_12sp" />
 
@@ -48,6 +49,7 @@
         android:layout_marginTop="@dimen/dimens_10"
         android:background="@drawable/btn_background"
         android:text="Upload Image"
+        android:gravity="center"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/dimens_12sp"
         android:visibility="gone" />

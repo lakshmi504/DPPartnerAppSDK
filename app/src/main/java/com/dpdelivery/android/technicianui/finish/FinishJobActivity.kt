@@ -641,6 +641,7 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         if (res.success) {
             startActivity(Intent(this, TechJobsListActivity::class.java))
             clearPreferences()
+            CommonUtils.saveJobStartTime("")
             finish()
         } else {
             toast(res.message)

@@ -37,7 +37,8 @@ data class Job(
         val priority: Priority?,
         val spareParts: List<Any>?,
         val status: Status?,
-        val type: Type?
+        val type: Type?,
+        val customerLatLong: String?
 )
 
 @Keep

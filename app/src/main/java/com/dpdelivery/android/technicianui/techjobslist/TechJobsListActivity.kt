@@ -1,5 +1,6 @@
 package com.dpdelivery.android.technicianui.techjobslist
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
@@ -48,7 +49,8 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
     lateinit var jobsList: ArrayList<Job?>
     private var filter: String? = null
     val handler = Handler()
-    var refresh: Runnable? = null
+    private var refresh: Runnable? = null
+    lateinit var dialog: Dialog
 
     @Inject
     lateinit var presenter: TechJobsListPresenter
@@ -72,6 +74,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         empty_button.setOnClickListener(this)
         tv_search.visibility = View.VISIBLE
         sp_filter.visibility = View.VISIBLE
+        dialog = CommonUtils.progressDialog(context)
         forceUpdate()
     }
 
@@ -94,7 +97,11 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         rv_asg_jobs_list.layoutManager = manager
         adapterAsgJobsList = BasicAdapter(this, R.layout.item_asg_jobs_list, adapterClickListener = this)
         rv_asg_jobs_list.apply {
-            presenter.getFilterJobsList(status = "ASG", appointmentDate = DateHelper.getCurrentDate())
+            if (CommonUtils.getRole() == "ROLE_Technician") {
+                presenter.getFilterJobsList(status = "ASG", appointmentDate = DateHelper.getCurrentDate())
+            } else {
+                presenter.getAssignedJobsList(status = "ASG", appointmentDate = DateHelper.getCurrentDate())
+            }
             adapter = adapterAsgJobsList
             adapter!!.notifyDataSetChanged()
         }
@@ -164,31 +171,42 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
             showViewState(MultiStateView.VIEW_STATE_CONTENT)
             res.jobs.withNotNullNorEmpty {
                 jobsList = res.jobs
-                tv_total_jobs.text = res.total.toString()
-                if (CommonUtils.getJobStartTime().isNotEmpty()) {
-                    val startJobInput = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
-                    startJobInput.timeZone = TimeZone.getTimeZone("GMT")
-                    var startJobDate: Date? = null
-                    try {
-                        startJobDate = startJobInput.parse(CommonUtils.getJobStartTime())
-                    } catch (e: ParseException) {
-                        e.printStackTrace()
-                    }
-                    refresh = Runnable {
-                        val jobstarttime: Long = ((Date().time)) - startJobDate!!.time
-                        val diffInHours = jobstarttime / (60 * 60 * 1000) % 24
-
-                        when {
-                            diffInHours >= 1 -> {
-                                adapterAsgJobsList.addList(jobsList)
-                            }
-                        }
-                        handler.postDelayed(refresh!!, 1000)
-                    }
-                    handler.post(refresh!!)
-                } else {
-                    adapterAsgJobsList.addList(jobsList)
+                val startJobInput = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
+                startJobInput.timeZone = TimeZone.getTimeZone("GMT")
+                var startJobDate: Date? = null
+                try {
+                    startJobDate = startJobInput.parse(jobsList[0]!!.appointmentStartTime!!)
+                } catch (e: ParseException) {
+                    e.printStackTrace()
                 }
+                refresh = Runnable {
+                    val jobstarttime: Long = ((startJobDate!!.time)) - Date().time
+                    val diffInHours = jobstarttime / (60 * 60 * 1000) % 24
+
+                    when {
+                        diffInHours <= 1 -> {
+                            adapterAsgJobsList.addList(jobsList)
+                        }
+                    }
+                    handler.postDelayed(refresh!!, 1000)
+                }
+                handler.post(refresh!!)
+                tv_total_jobs.text = res.total.toString()
+            }
+        } else {
+            showViewState(MultiStateView.VIEW_STATE_EMPTY)
+            empty_textView.text = "No Jobs Found"
+            empty_button.text = "Back to list"
+        }
+    }
+
+    override fun showJobsListRes(res: ASGListRes) {
+        if (res.jobs!!.isNotEmpty()) {
+            showViewState(MultiStateView.VIEW_STATE_CONTENT)
+            res.jobs.withNotNullNorEmpty {
+                jobsList = res.jobs
+                adapterAsgJobsList.addList(jobsList)
+                rl_jobs.visibility = View.GONE
             }
         } else {
             showViewState(MultiStateView.VIEW_STATE_EMPTY)
@@ -211,11 +229,11 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
                     startActivity(intent)
                 }
                 Constants.CUST_PHONE -> {
-                    showViewState(MultiStateView.VIEW_STATE_LOADING)
+                    dialog.show()
                     presenter.getVoipCall(caller = any.assignedTo!!.phoneNumber, receiver = any.customerPhone!!)
                 }
                 Constants.ALT_CUST_PHONE -> {
-                    showViewState(MultiStateView.VIEW_STATE_LOADING)
+                    dialog.show()
                     presenter.getVoipCall(caller = any.assignedTo!!.phoneNumber, receiver = any.customerAltPhone!!)
                 }
             }
@@ -223,7 +241,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
     }
 
     override fun showVoipRes(res: Headers) {
-        showViewState(MultiStateView.VIEW_STATE_CONTENT)
+        dialog.dismiss()
         toast("Call is Connecting..")
     }
 

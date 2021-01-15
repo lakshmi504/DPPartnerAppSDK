@@ -16,6 +16,7 @@ interface JobsListContract {
     interface Presenter : BasePresenter<View> {
         fun getAssignedJobsList(status: String)
         fun getAssignedJobsList(status: String, appointmentDate: String)
+        fun getJobsList(status: String, appointmentDate: String)
         fun getMoreJobsList(page: Int, status: String)
         fun getMoreJobsList(page: Int, status: String, appointmentDate: String)
         fun getVoipCall(caller: String, receiver: String)

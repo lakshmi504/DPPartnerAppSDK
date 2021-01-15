@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.text.InputFilter
@@ -70,6 +71,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
     private var jobType: String? = null
     private var tech_phone: String? = null
     private var jobStartTime: String? = null
+    private var latLong: String = ""
 
     @Inject
     lateinit var detailsPresenter: TechJobDetailsPresenter
@@ -93,6 +95,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         empty_button.setOnClickListener(this)
         ivqrcodescan.setOnClickListener(this)
         iv_call.setOnClickListener(this)
+        dialog = CommonUtils.progressDialog(mContext)
         iv_alt_call.setOnClickListener(this)
         btn_activate.setOnClickListener(this)
         btn_start_job.setOnClickListener(this)
@@ -102,6 +105,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         btn_add_note.setOnClickListener(this)
         finish_job.setOnClickListener(this)
         btn_select.setOnClickListener(this)
+        imageButton.setOnClickListener(this)
     }
 
     private fun getAssignedJob() {
@@ -131,22 +135,20 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
             }
             R.id.iv_call -> { //call function
                 if (phone!!.isNotEmpty()) {
-                    /*val url = "tel:$phone"
+                    val url = "tel:$phone"
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
-                    startActivity(intent)*/
-                    showViewState(MultiStateView.VIEW_STATE_LOADING)
-                    detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = phone!!)
-
-
+                    startActivity(intent)
+                    /* dialog!!.show()
+                     detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = phone!!)*/
                 }
             }
             R.id.iv_alt_call -> {  // for call function(alt number)
                 if (altPhone!!.isNotEmpty()) {
-                    /* val url = "tel:$altPhone"
-                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
-                     startActivity(intent)*/
-                    showViewState(MultiStateView.VIEW_STATE_LOADING)
-                    detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = altPhone!!)
+                    val url = "tel:$altPhone"
+                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
+                    startActivity(intent)
+                    /*  dialog!!.show()
+                      detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = altPhone!!)*/
                 }
             }
             R.id.btn_activate -> {
@@ -213,6 +215,17 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
                     intent.putExtra(Constants.JOB_TYPE, jobType)
                     intent.putParcelableArrayListExtra(Constants.NOTES, noteList)
                     startActivity(intent)
+                }
+            }
+            R.id.imageButton -> {
+                if (latLong.isEmpty() || latLong == "null") {
+                    toast("Location is not set")
+                } else {
+                    val URL = "https://www.google.com/maps/dir/?api=1&travelmode=two-wheeler&zoom=12&destination=$latLong"
+                    val location = Uri.parse(URL)
+                    val mapIntent = Intent(Intent.ACTION_VIEW, location)
+                    mapIntent.setPackage("com.google.android.apps.maps")
+                    startActivity(mapIntent)
                 }
             }
         }
@@ -301,11 +314,21 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         tv_name.text = res.customerName
         phone = res.customerPhone
         if (phone!!.isNotEmpty()) {
-            tv_phone.text = phone?.replaceRange(5..9, "*****")
+            try {
+                //tv_phone.text = phone?.replaceRange(5..9, "*****")
+                tv_phone.text = phone
+            } catch (e: Exception) {
+
+            }
         }
         altPhone = res.customerAltPhone
         if (altPhone!!.isNotEmpty()) {
-            tv_alt_phone.text = altPhone?.replaceRange(5..9, "*****")
+            try {
+                // tv_alt_phone.text = altPhone?.replaceRange(5..9, "*****")
+                tv_alt_phone.text = altPhone
+            } catch (e: Exception) {
+
+            }
         }
         statusCode = res.status!!.code
         noteList = res.notes
@@ -381,6 +404,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         }
         et_purifierid.setText(res.installation?.deviceCode)
         jobType = res.type.code
+        latLong = res.customerLatLong.toString()
     }
 
     override fun showStartJobRes(startJobRes: StartJobRes) {
@@ -430,7 +454,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
     }
 
     override fun showVoipRes(res: Headers) {
-        showViewState(MultiStateView.VIEW_STATE_CONTENT)
+        dialog!!.dismiss()
         toast("Call is Connecting..")
     }
 

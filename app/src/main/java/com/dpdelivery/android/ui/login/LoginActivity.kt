@@ -11,7 +11,6 @@ import com.auth0.android.jwt.JWT
 import com.dpdelivery.android.R
 import com.dpdelivery.android.model.input.LoginIp
 import com.dpdelivery.android.technicianui.techjobslist.TechJobsListActivity
-import com.dpdelivery.android.ui.deliveryjoblist.DeliveryJobListActivity
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.toast
 import dagger.android.support.DaggerAppCompatActivity
@@ -82,19 +81,19 @@ class LoginActivity : DaggerAppCompatActivity(), View.OnClickListener, LoginCont
             val jwt = JWT(data)
             val aud = jwt.audience?.get(0)
             CommonUtils.saveRole(aud.toString())
-            /*if (aud.equals("ROLE_Technician")) {
-                val intent = Intent(this, TechJobsListActivity::class.java)
-                startActivity(intent)
-                finish()
-            } else {
-                val intent = Intent(this, DeliveryJobListActivity::class.java)
-                startActivity(intent)
-                finish()
-            }*/
-            val intent = Intent(this, TechJobsListActivity::class.java)
-            startActivity(intent)
-            finish()
+            /* if (aud.equals("ROLE_Technician")) {
+                 val intent = Intent(this, TechJobsListActivity::class.java)
+                 startActivity(intent)
+                 finish()
+             } else {
+                 val intent = Intent(this, DeliveryJobListActivity::class.java)
+                 startActivity(intent)
+                 finish()
+             }*/
         }
+        val intent = Intent(this, TechJobsListActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     override fun showProgress(msg: String) {

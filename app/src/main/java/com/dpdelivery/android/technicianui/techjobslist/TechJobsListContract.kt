@@ -9,12 +9,14 @@ interface TechJobsListContract {
 
     interface View : BaseView {
         fun showAsgJobsListRes(res: ASGListRes)
+        fun showJobsListRes(res: ASGListRes)
         fun showVoipRes(res: Headers)
     }
 
     interface Presenter : BasePresenter<View> {
         //fun getAssignedJobsList()
         fun getFilterJobsList(status: String, appointmentDate: String)
+        fun getAssignedJobsList(status: String, appointmentDate: String)
         fun getSearchJobsList(search: String)
         fun getVoipCall(caller: String, receiver: String)
     }

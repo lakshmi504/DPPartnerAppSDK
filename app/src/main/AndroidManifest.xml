@@ -6,7 +6,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -39,12 +41,36 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
-        <activity android:name=".technicianui.summary.SummaryActivity" />
-        <activity android:name=".ui.search.DeliverySearchActivity" />
-        <activity android:name=".ui.filteredjobs.FilteredJobsListActivity" />
-        <activity android:name=".technicianui.search.SearchActivity" />
-        <activity android:name=".technicianui.jobslist.JobsListActivity" />
-        <activity android:name=".technicianui.photo.ImageActivity" />
+        <activity
+            android:name=".technicianui.summary.SummaryActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ui.search.DeliverySearchActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ui.filteredjobs.FilteredJobsListActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".technicianui.search.SearchActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".technicianui.jobslist.JobsListActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".technicianui.photo.ImageActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -157,6 +183,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />
+
     </application>
 
 </manifest>

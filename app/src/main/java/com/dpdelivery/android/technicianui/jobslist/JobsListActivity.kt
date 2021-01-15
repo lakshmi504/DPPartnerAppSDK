@@ -1,5 +1,6 @@
 package com.dpdelivery.android.technicianui.jobslist
 
+import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
@@ -45,6 +46,7 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
     private var data: String? = null
     val handler = Handler()
     var refresh: Runnable? = null
+    lateinit var dialog: Dialog
 
     @Inject
     lateinit var presenter: JobsListPresenter
@@ -62,6 +64,7 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
         error_button.setOnClickListener(this)
         empty_button.setOnClickListener(this)
         manager = LinearLayoutManager(this)
+        dialog = CommonUtils.progressDialog(mContext)
         if (intent != null)
             data = intent.getStringExtra("filter")
         if (data.equals("ASG")) {
@@ -104,7 +107,12 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
 
     private fun getAssignedJobsList(data: String, appointmentDate: String) {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
-        presenter.getAssignedJobsList(status = data, appointmentDate = appointmentDate)
+        if (CommonUtils.getRole() == "ROLE_Technician") {
+            presenter.getAssignedJobsList(status = data, appointmentDate = appointmentDate)
+        } else {
+            presenter.getJobsList(status = data, appointmentDate = appointmentDate)
+        }
+
     }
 
     private fun getAssignedJobsList(data: String) {
@@ -114,7 +122,11 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
 
     private fun getMoreResults() {
         if (data.equals("ASG")) {
-            presenter.getMoreJobsList(currentPage, DateHelper.getCurrentDate(), data!!)
+            if (CommonUtils.getRole() == "ROLE_Technician") {
+                //presenter.getMoreJobsList(currentPage, DateHelper.getCurrentDate(), data!!)
+            } else {
+                presenter.getMoreJobsList(currentPage, data!!, DateHelper.getCurrentDate())
+            }
         } else {
             presenter.getMoreJobsList(currentPage, data!!)
         }
@@ -142,30 +154,35 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
             res.jobs.withNotNullNorEmpty {
                 jobsList = res.jobs
                 if (data.equals("ASG")) {
-                    tv_total_jobs.text = res.total.toString()
-                    if (CommonUtils.getJobStartTime().isNotEmpty()) {
+                    if (CommonUtils.getRole() == "ROLE_Technician") {
                         val startJobInput = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
                         startJobInput.timeZone = TimeZone.getTimeZone("GMT")
                         var startJobDate: Date? = null
                         try {
-                            startJobDate = startJobInput.parse(CommonUtils.getJobStartTime())
+                            startJobDate = startJobInput.parse(jobsList[0]!!.appointmentStartTime!!)
                         } catch (e: ParseException) {
                             e.printStackTrace()
                         }
                         refresh = Runnable {
-                            val jobstarttime: Long = ((Date().time)) - startJobDate!!.time
+                            val jobstarttime: Long = ((startJobDate!!.time)) - Date().time
                             val diffInHours = jobstarttime / (60 * 60 * 1000) % 24
 
                             when {
-                                diffInHours >= 1 -> {
+                                diffInHours <= 1 -> {
                                     adapterAsgJobsList.addAll(jobsList)
                                 }
                             }
-                            handler.postDelayed(refresh!!, 1000)
+                            // handler.postDelayed(refresh!!, 1000)
                         }
                         handler.post(refresh!!)
+                        tv_total_jobs.text = res.total.toString()
                     } else {
+                        rl_jobs.visibility = View.GONE
+                        TOTAL_PAGES = ceil(res.total?.toDouble()?.div(10.toDouble())!!.toDouble()).toInt()
+                        jobsList.sortWith(Comparator { listItem, t1 -> t1?.appointmentStartTime?.let { listItem?.appointmentStartTime?.compareTo(it) }!! })
                         adapterAsgJobsList.addAll(jobsList)
+                        if (currentPage < TOTAL_PAGES) adapterAsgJobsList.addLoadingFooter()
+                        else isLastPage = true
                     }
                 } else {
                     rl_jobs.visibility = View.GONE
@@ -202,7 +219,7 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
     }
 
     override fun showVoipRes(res: Headers) {
-        showViewState(MultiStateView.VIEW_STATE_CONTENT)
+        dialog.dismiss()
         toast("Call is Connecting..")
     }
 
@@ -219,11 +236,11 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
         if (any is Job && type is View) {
             when (op) {
                 Constants.CUST_PHONE -> {
-                    showViewState(MultiStateView.VIEW_STATE_LOADING)
+                    dialog.show()
                     presenter.getVoipCall(caller = any.assignedTo!!.phoneNumber, receiver = any.customerPhone!!)
                 }
                 Constants.ALT_CUST_PHONE -> {
-                    showViewState(MultiStateView.VIEW_STATE_LOADING)
+                    dialog.show()
                     presenter.getVoipCall(caller = any.assignedTo!!.phoneNumber, receiver = any.customerAltPhone!!)
                 }
             }

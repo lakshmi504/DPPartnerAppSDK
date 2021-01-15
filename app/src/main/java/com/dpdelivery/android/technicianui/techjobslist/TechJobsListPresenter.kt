@@ -23,13 +23,30 @@ class TechJobsListPresenter @Inject constructor(
     override fun getFilterJobsList(status: String, appointmentDate: String) {
         view?.showProgress()
         subscription.add(
-                apiService.getFilterJobs(CommonUtils.getLoginToken(), status, appointmentDate, orderBy = "appointmentStartTime", pageSize = 1)
+                apiService.getFilterJobs(CommonUtils.getLoginToken(), status, appointmentDate, orderBy = "appointmentDate", pageSize = 1)
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(
                                 { res ->
                                     view?.hideProgress()
                                     view?.showAsgJobsListRes(res)
+                                },
+                                { throwable ->
+                                    view?.hideProgress()
+                                    view?.showErrorMsg(throwable)
+                                }))
+    }
+
+    override fun getAssignedJobsList(status: String, appointmentDate: String) {
+        view?.showProgress()
+        subscription.add(
+                apiService.getAssignedJobs(CommonUtils.getLoginToken(), status, appointmentDate, pageSize = 25, page = 1, orderBy = "appointmentDate")
+                        .subscribeOn(baseScheduler.io())
+                        .observeOn(baseScheduler.ui())
+                        .subscribe(
+                                { res ->
+                                    view?.hideProgress()
+                                    view?.showJobsListRes(res)
                                 },
                                 { throwable ->
                                     view?.hideProgress()

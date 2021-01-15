@@ -37,10 +37,27 @@ class JobsListPresenter @Inject constructor(
                                 }))
     }
 
+    override fun getJobsList(status: String, appointmentDate: String) {
+        view?.showProgress()
+        subscription.add(
+                apiService.getAssignedJobs(CommonUtils.getLoginToken(), status, appointmentDate, pageSize = 10, page = 1, orderBy = "appointmentDate")
+                        .subscribeOn(baseScheduler.io())
+                        .observeOn(baseScheduler.ui())
+                        .subscribe(
+                                { res ->
+                                    view?.hideProgress()
+                                    view?.showAsgJobsListRes(res)
+                                },
+                                { throwable ->
+                                    view?.hideProgress()
+                                    view?.showErrorMsg(throwable)
+                                }))
+    }
+
     override fun getAssignedJobsList(status: String) {
         view?.showProgress()
         subscription.add(
-                apiService.getAssignedJobs(CommonUtils.getLoginToken(), status, pageSize = 10, page = 1, orderBy = "appointmentDate")
+                apiService.getAssignedJobs(CommonUtils.getLoginToken(), status, pageSize = 10, page = 1, orderBy = "appointmentStartTime")
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(
@@ -74,7 +91,7 @@ class JobsListPresenter @Inject constructor(
     override fun getMoreJobsList(page: Int, status: String) {
         view?.showProgress()
         subscription.add(
-                apiService.getMoreJobsList(CommonUtils.getLoginToken(), status, pageSize = 10, page = page, orderBy = "appointmentDate")
+                apiService.getMoreJobsList(CommonUtils.getLoginToken(), status, pageSize = 10, page = page, orderBy = "appointmentStartTime")
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(
