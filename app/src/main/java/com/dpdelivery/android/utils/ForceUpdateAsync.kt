@@ -1,4 +1,4 @@
-package com.dpdelivery.android.technicianui
+package com.dpdelivery.android.utils
 
 import android.app.Activity
 import android.app.Dialog
@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.AsyncTask
+import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatButton
 import com.dpdelivery.android.R
@@ -54,38 +55,16 @@ class ForceUpdateAsync(private val currentVersion: String, private val context: 
 
     private fun showForceUpdateDialog() {
 
-        /*pendingTransactionDialog = Dialog(context, R.style.CustomDialogThemeLightBg)
-        pendingTransactionDialog!!.setContentView(R.layout.dialog_alert_message)
-        pendingTransactionDialog!!.setCancelable(false)
-        pendingTransactionDialog!!.setCanceledOnTouchOutside(false)
-        (pendingTransactionDialog!!.findViewById(R.id.dialog_title) as TextView).text = context.getString(R.string.new_version_available)
-        (pendingTransactionDialog!!.findViewById(R.id.dialog_text) as TextView).text = context.getString(R.string.update_app)
-        (pendingTransactionDialog!!.findViewById(R.id.tv_retry) as TextView).text = context.getString(R.string.update).toUpperCase()
-        (pendingTransactionDialog!!.findViewById(R.id.tv_cancel) as TextView).visibility = View.INVISIBLE
-        //(pendingTransactionDialog!!.findViewById(R.id.tv_cancel) as TextView).text = context.getString(R.string.later).toUpperCase()
-        pendingTransactionDialog!!.show()
-
-        (pendingTransactionDialog!!.findViewById(R.id.tv_retry) as TextView).setOnClickListener {
-            // context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + context.packageName)))
-            pendingTransactionDialog!!.dismiss()
-
-        }
-        (pendingTransactionDialog!!.findViewById(R.id.tv_cancel) as TextView).setOnClickListener {
-            pendingTransactionDialog!!.dismiss()
-
-        }*/
-
         pendingTransactionDialog = Dialog(context, R.style.CustomDialogThemeLightBg)
         pendingTransactionDialog!!.setContentView(R.layout.dialog_alert_message)
         pendingTransactionDialog!!.setCancelable(false)
+        pendingTransactionDialog!!.setCanceledOnTouchOutside(false)
 
         (pendingTransactionDialog!!.findViewById(R.id.btn_update) as AppCompatButton).setOnClickListener {
             context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + context.packageName)))
             pendingTransactionDialog!!.dismiss()
         }
-        (pendingTransactionDialog!!.findViewById(R.id.iv_close) as ImageView).setOnClickListener {
-            pendingTransactionDialog!!.dismiss()
-        }
+        (pendingTransactionDialog!!.findViewById(R.id.iv_close) as ImageView).visibility = View.INVISIBLE
         pendingTransactionDialog!!.show()
     }
 

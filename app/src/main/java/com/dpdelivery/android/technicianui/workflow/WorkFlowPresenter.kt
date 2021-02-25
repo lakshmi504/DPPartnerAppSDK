@@ -77,6 +77,23 @@ class WorkFlowPresenter @Inject constructor(
                                 }))
     }
 
+    override fun addWorkFlowSubmit(workFlow: AddWorkFlowData) {
+        view?.showProgress()
+        subscription.add(
+                apiService.addWorkFlow(CommonUtils.getLoginToken(), workFlow)
+                        .subscribeOn(baseScheduler.io())
+                        .observeOn(baseScheduler.ui())
+                        .subscribe(
+                                { res ->
+                                    view?.hideProgress()
+                                    view?.showWorkFlowDataSubmitRes(res)
+                                },
+                                { throwable ->
+                                    view?.hideProgress()
+                                    view?.showErrorMsg(throwable)
+                                }))
+    }
+
     override fun addFinishWorkFlow(workFlow: AddWorkFlowData) {
         view?.showProgress()
         subscription.add(
@@ -95,7 +112,7 @@ class WorkFlowPresenter @Inject constructor(
     }
 
     override fun addImage(jobid: Int, elementId: Int, file: File) {
-      //  view?.showProgress()
+        //  view?.showProgress()
         val reqFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
         val body = MultipartBody.Part.createFormData("file", file.name, reqFile)
         subscription.add(

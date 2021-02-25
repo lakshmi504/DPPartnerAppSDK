@@ -40,31 +40,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:fontFamily="@font/montserrat_semibold"
-            android:text="Happy Code :"
-            android:textColor="@color/colorBlack"
-            android:textSize="@dimen/dimens_14sp" />
-
-        <TextView
-            android:id="@+id/otptxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/montserrat_regular"
-            android:gravity="center"
-            android:text="Not Set"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/dimens_12sp" />
-
-        <Button
-            android:id="@+id/btn_happy_code"
-            style="@style/finish_buttons_style"
-            android:text="Happy Code" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:fontFamily="@font/montserrat_semibold"
             android:text="Purifier Photo :"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/dimens_14sp" />
@@ -215,6 +190,32 @@
                 style="@style/finish_buttons_style"
                 android:text="Sync Now" />
         </LinearLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:fontFamily="@font/montserrat_semibold"
+            android:text="Happy Code :"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/dimens_14sp" />
+
+        <TextView
+            android:id="@+id/otptxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/montserrat_regular"
+            android:gravity="center"
+            android:text="Not Set"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/dimens_12sp" />
+
+        <Button
+            android:id="@+id/btn_happy_code"
+            style="@style/finish_buttons_style"
+            android:text="Happy Code" />
 
         <Button
             android:id="@+id/btn_finish_job"

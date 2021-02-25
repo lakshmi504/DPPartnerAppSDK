@@ -13,7 +13,7 @@ import com.dpdelivery.android.technicianui.jobslist.viewholder.JobsListViewHolde
 import com.dpdelivery.android.technicianui.jobslist.viewholder.LoadingViewHolder
 
 
-class JobListAdapter(private val context: Context, private var adapterClickListener: IAdapterClickListener) : RecyclerView.Adapter<BaseViewholder>() {
+class JobListAdapter(private val context: Context, private var adapterClickListener: IAdapterClickListener, private var jobType: String) : RecyclerView.Adapter<BaseViewholder>() {
     private var jobsList = ArrayList<Job>()
     private var isLoadingAdded = false
     private val ITEM = 0
@@ -26,7 +26,7 @@ class JobListAdapter(private val context: Context, private var adapterClickListe
         when (viewType) {
             ITEM -> {
                 view = LayoutInflater.from(parent.context).inflate(R.layout.item_asg_jobs_list, parent, false)
-                viewHolder = JobsListViewHolder(view, adapterClickListener)
+                viewHolder = JobsListViewHolder(view, adapterClickListener,jobType)
             }
             LOADING -> {
                 view = LayoutInflater.from(parent.context).inflate(R.layout.item_loading, parent, false)

@@ -66,10 +66,12 @@ class MyApplication : DaggerApplication(), Application.ActivityLifecycleCallback
     }
 
     override fun onActivityStarted(activity: Activity) {
+        mActivity = activity
         Log.d(ContentValues.TAG, "${activity::class.java.simpleName}:on Started")
     }
 
     override fun onActivityResumed(activity: Activity) {
+        mActivity = activity
         currAct = activity::class.java.simpleName
         Log.d(ContentValues.TAG, "${activity::class.java.simpleName}:on Resume")
     }

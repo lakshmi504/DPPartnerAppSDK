@@ -98,79 +98,94 @@
                     android:fontFamily="@font/montserrat_regular"
                     android:textSize="@dimen/dimens_14sp" />
 
-                <TextView
+                <LinearLayout
+                    android:id="@+id/ll_mobile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimens_10"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:text="@string/custphn"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/dimens_12sp" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tv_phone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_toStartOf="@id/iv_call"
-                        android:fontFamily="@font/montserrat_regular"
-                        android:textSize="@dimen/dimens_14sp" />
+                        android:layout_marginTop="@dimen/dimens_10"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:text="@string/custphn"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="@dimen/dimens_12sp" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/iv_call"
-                        android:layout_width="@dimen/dimens_20"
-                        android:layout_height="@dimen/dimens_20"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="@dimen/dimens_20"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:src="@drawable/ic_call" />
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
-                </RelativeLayout>
+                        <TextView
+                            android:id="@+id/tv_phone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toStartOf="@id/iv_call"
+                            android:fontFamily="@font/montserrat_regular"
+                            android:textSize="@dimen/dimens_14sp" />
 
-                <TextView
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/iv_call"
+                            android:layout_width="@dimen/dimens_20"
+                            android:layout_height="@dimen/dimens_20"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="@dimen/dimens_20"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:src="@drawable/ic_call" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_alt_mobile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimens_10"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:text="@string/alternate_no"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/dimens_12sp" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tv_alt_phone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_toStartOf="@id/iv_alt_call"
-                        android:fontFamily="@font/montserrat_regular"
-                        android:textSize="@dimen/dimens_14sp" />
+                        android:layout_marginTop="@dimen/dimens_10"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:text="@string/alternate_no"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="@dimen/dimens_12sp" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/iv_alt_call"
-                        android:layout_width="@dimen/dimens_20"
-                        android:layout_height="@dimen/dimens_20"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="@dimen/dimens_20"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:src="@drawable/ic_call" />
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
-                </RelativeLayout>
+                        <TextView
+                            android:id="@+id/tv_alt_phone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toStartOf="@id/iv_alt_call"
+                            android:fontFamily="@font/montserrat_regular"
+                            android:textSize="@dimen/dimens_14sp" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/iv_alt_call"
+                            android:layout_width="@dimen/dimens_20"
+                            android:layout_height="@dimen/dimens_20"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="@dimen/dimens_20"
+                            android:background="?attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:src="@drawable/ic_call" />
+
+                    </RelativeLayout>
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="match_parent"

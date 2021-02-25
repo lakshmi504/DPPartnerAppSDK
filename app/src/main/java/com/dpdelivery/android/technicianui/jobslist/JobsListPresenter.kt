@@ -23,7 +23,7 @@ class JobsListPresenter @Inject constructor(
     override fun getAssignedJobsList(status: String, appointmentDate: String) {
         view?.showProgress()
         subscription.add(
-                apiService.getAssignedJobs(CommonUtils.getLoginToken(), status, appointmentDate, pageSize = 1, page = 1, orderBy = "appointmentDate")
+                apiService.getAssignedJobs(CommonUtils.getLoginToken(), status, appointmentDate, pageSize = 10, page = 1, orderBy = "appointmentDate")
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(

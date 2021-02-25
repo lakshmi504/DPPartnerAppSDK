@@ -145,13 +145,6 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         })
         loadDefaultSpinner()
         dialog = progressDialog(mContext)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        presenter.takeView(this)
-        updateLatestDetails(deviceCode)
-        fetchItemsFromSharedPref()
         if (connectivity!!.contentEquals("BLE")) {
             ll_sync.visibility = View.VISIBLE
             val botId = botId!!.substring(0, 2) + ":" + botId!!.substring(2, 4) + ":" + botId!!.substring(4, 6) + ":" + botId!!.substring(6, 8) + ":" + botId!!.substring(8, 10) + ":" + botId!!.substring(10, 12)
@@ -583,6 +576,12 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        presenter.takeView(this)
+        updateLatestDetails(deviceCode)
+        fetchItemsFromSharedPref()
+    }
 
     private fun finishJob() {
         val currentTime = Date()

@@ -9,13 +9,12 @@ import com.dpdelivery.android.commonadapter.BaseViewholder
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.model.techres.Job
-import com.dpdelivery.android.technicianui.jobdetails.TechJobDetailsActivity
 import kotlinx.android.synthetic.main.item_asg_jobs_list.view.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class JobsListViewHolder(var view: View, private var adapterClickListener: IAdapterClickListener) : BaseViewholder(view) {
+class JobsListViewHolder(var view: View, private var adapterClickListener: IAdapterClickListener, private var jobType: String) : BaseViewholder(view) {
     override fun bind(context: Context, item: Any, pos: Int) {
         if (item is Job) {
             view.tv_jobtypevalue.text = item.type?.description
@@ -25,6 +24,15 @@ class JobsListViewHolder(var view: View, private var adapterClickListener: IAdap
                 view.tv_areavalue.text = " "
             } else {
                 view.tv_areavalue.text = item.customerAddress?.area?.description.toString()
+            }
+            if (jobType == "ASG") {
+                if (pos == 0) {
+                    view.ll_mobile.visibility = View.VISIBLE
+                    view.ll_alt_mobile.visibility = View.VISIBLE
+                } else {
+                    view.ll_mobile.visibility = View.GONE
+                    view.ll_alt_mobile.visibility = View.GONE
+                }
             }
             if (!item.appointmentStartTime.isNullOrEmpty()) {
                 val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ROOT)
@@ -91,7 +99,7 @@ class JobsListViewHolder(var view: View, private var adapterClickListener: IAdap
                 }
             }
             view.ll_bg.setOnClickListener {
-                context.startActivity(Intent(context, TechJobDetailsActivity::class.java).putExtra(Constants.ID, item.id))
+                adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.ASSIGN_JOB_DETAILS)
             }
 
         }

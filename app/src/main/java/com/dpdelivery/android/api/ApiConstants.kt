@@ -22,7 +22,7 @@ class ApiConstants {
         const val UPLOAD_PHOTO = "delivery/uploadPhoto"
 
         //Technician App Apis
-        const val JOBS_LIST = "workforce/job/list"
+        const val JOBS_LIST = "workforce/job/list/v2"
         const val JOB_BY_ID = "workforce/job/"
         const val SUBMIT_PID = "device/add"
         const val PURIFIER_STATUS = "device/code/"

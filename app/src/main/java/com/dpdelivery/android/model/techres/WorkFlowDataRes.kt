@@ -10,7 +10,9 @@ data class WorkFlowDataRes(
 ) {
     @Keep
     data class WorkFlowDataResBody(
-            val steps: ArrayList<Step>?
+            val steps: ArrayList<Step>?,
+            val statusElementId: Int,
+            val submissionField: String
     ) {
         @Keep
         data class Step(

@@ -19,9 +19,9 @@ class SharedPreferenceManager {
         val SEARCHED_LONG = "SEARCHED_LONG"
         val SEARCHED_AREA = "SEARCHED_AREA"
         val SEARCHED_CITY = "SEARCHED_CITY"
-        val TRANSACTION_IMAGE= "TRANSACTION_IMAGE"
-        val DELIVERED_IMAGE= "DELIVERED_IMAGE"
-        val CURRENT_VERSION= "CURRENT_VERSION"
+        val TRANSACTION_IMAGE = "TRANSACTION_IMAGE"
+        val DELIVERED_IMAGE = "DELIVERED_IMAGE"
+        val CURRENT_VERSION = "CURRENT_VERSION"
 
         val KEY_HASUPDATE = "hasupdate"
 
@@ -68,18 +68,41 @@ class SharedPreferenceManager {
             return getPrefs().getString(key, defaultValue)
         }
 
+        fun get(key: String, defaultValue: Int = -1): Int {
+            return getPrefs().getInt(key, defaultValue)
+        }
+
+        fun get(key: String, defaultValue: Float = -1F): Float {
+            return getPrefs().getFloat(key, defaultValue)
+        }
+
+        fun get(key: String, defaultValue: Boolean = false): Boolean {
+            return getPrefs().getBoolean(key, defaultValue)
+        }
 
         fun isLogIn(): Boolean {
             return getPrefVal(IS_LOGED_IN, false, VALUE_TYPE.BOOLEAN) as Boolean
         }
 
-        fun getlat(): Int = AppSharedPreference.get(AppSharedPreference.SEARCHED_LAT, 0)
-        fun getlng(): Int = AppSharedPreference.get(AppSharedPreference.SEARCHED_LONG, 0)
+        fun getlat(): String = get(SEARCHED_LAT, "")!!
+        fun getlng(): String = get(SEARCHED_LONG, "")!!
 
     }
 
     fun put(key: String, defaultValue: String = ""): String? {
         return getPrefs().getString(key, defaultValue)
+    }
+
+    fun put(key: String, value: Int) {
+        getPrefs().edit().putInt(key, value).apply()
+    }
+
+    fun put(key: String, value: Float) {
+        getPrefs().edit().putFloat(key, value).apply()
+    }
+
+    fun put(key: String, value: Boolean) {
+        getPrefs().edit().putBoolean(key, value).apply()
     }
 
 }

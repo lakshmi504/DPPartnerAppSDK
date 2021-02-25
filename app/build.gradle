@@ -16,8 +16,8 @@ android {
         applicationId "com.dpdelivery.android"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 10
-        versionName "2.8"
+        versionCode 14
+        versionName "3.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -50,13 +50,12 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.palette:palette-ktx:1.0.0'
     implementation 'androidx.browser:browser:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.fragment:fragment-ktx:1.2.5'
-    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.fragment:fragment-ktx:1.3.0'
 
     implementation 'com.auth0.android:jwtdecode:1.4.0'
 
@@ -88,21 +87,21 @@ dependencies {
 
     /*google services*/
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
-    implementation 'com.google.android.gms:play-services-location:17.1.0'
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'com.google.android.libraries.places:places:2.4.0'
 
     //firebase
-    implementation "com.google.firebase:firebase-messaging:21.0.0"
-    implementation "com.google.firebase:firebase-core:18.0.0"
-    implementation 'com.google.firebase:firebase-auth:20.0.0'
+    implementation "com.google.firebase:firebase-messaging:21.0.1"
+    implementation "com.google.firebase:firebase-core:18.0.2"
+    implementation 'com.google.firebase:firebase-auth:20.0.2'
 
     //scanner
     implementation 'com.journeyapps:zxing-android-embedded:3.5.0'
 
-    implementation 'com.google.firebase:firebase-crashlytics:17.3.0'
-    implementation 'com.google.firebase:firebase-analytics:18.0.0'
+    implementation 'com.google.firebase:firebase-crashlytics:17.3.1'
+    implementation 'com.google.firebase:firebase-analytics:18.0.2'
 
     /*glide*/
     implementation "com.github.bumptech.glide:glide:$glide"
@@ -118,8 +117,8 @@ dependencies {
 
     //testing
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -7,7 +7,6 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
@@ -21,22 +20,16 @@ import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.model.techres.ASGListRes
 import com.dpdelivery.android.model.techres.Job
-import com.dpdelivery.android.technicianui.ForceUpdateAsync
 import com.dpdelivery.android.technicianui.base.TechBaseActivity
 import com.dpdelivery.android.technicianui.jobdetails.TechJobDetailsActivity
 import com.dpdelivery.android.technicianui.jobslist.JobsListActivity
 import com.dpdelivery.android.technicianui.search.SearchActivity
-import com.dpdelivery.android.utils.CommonUtils
-import com.dpdelivery.android.utils.DateHelper
-import com.dpdelivery.android.utils.toast
-import com.dpdelivery.android.utils.withNotNullNorEmpty
+import com.dpdelivery.android.utils.*
 import kotlinx.android.synthetic.main.activity_assigned_jobs_list.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
 import okhttp3.Headers
-import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -48,8 +41,6 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
     lateinit var adapterAsgJobsList: BasicAdapter
     lateinit var jobsList: ArrayList<Job?>
     private var filter: String? = null
-    val handler = Handler()
-    private var refresh: Runnable? = null
     lateinit var dialog: Dialog
 
     @Inject
@@ -75,7 +66,6 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         tv_search.visibility = View.VISIBLE
         sp_filter.visibility = View.VISIBLE
         dialog = CommonUtils.progressDialog(context)
-        forceUpdate()
     }
 
     private fun forceUpdate() {
@@ -133,6 +123,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         super.onResume()
         presenter.takeView(this)
         bottom_navigation.selectedItemId = R.id.action_jobs
+        forceUpdate()
         loadDefaultSpinner()
         getAssignedJobsList()
     }
@@ -171,26 +162,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
             showViewState(MultiStateView.VIEW_STATE_CONTENT)
             res.jobs.withNotNullNorEmpty {
                 jobsList = res.jobs
-                val startJobInput = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
-                startJobInput.timeZone = TimeZone.getTimeZone("GMT")
-                var startJobDate: Date? = null
-                try {
-                    startJobDate = startJobInput.parse(jobsList[0]!!.appointmentStartTime!!)
-                } catch (e: ParseException) {
-                    e.printStackTrace()
-                }
-                refresh = Runnable {
-                    val jobstarttime: Long = ((startJobDate!!.time)) - Date().time
-                    val diffInHours = jobstarttime / (60 * 60 * 1000) % 24
-
-                    when {
-                        diffInHours <= 1 -> {
-                            adapterAsgJobsList.addList(jobsList)
-                        }
-                    }
-                    handler.postDelayed(refresh!!, 1000)
-                }
-                handler.post(refresh!!)
+                adapterAsgJobsList.addList(jobsList)
                 tv_total_jobs.text = res.total.toString()
             }
         } else {
@@ -224,9 +196,20 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         if (any is Job && type is View) {
             when (op) {
                 Constants.ASSIGN_JOB_DETAILS -> {
-                    val intent = Intent(this, TechJobDetailsActivity::class.java)
-                    intent.putExtra(Constants.ID, any.id)
-                    startActivity(intent)
+                    if (CommonUtils.getRole() == "ROLE_Technician") {
+                        val intent = Intent(this, TechJobDetailsActivity::class.java)
+                        intent.putExtra(Constants.ID, any.id)
+                        intent.putExtra(Constants.POSITION, pos)
+                        intent.putExtra(Constants.STATUS, any.status!!.code)
+                        startActivity(intent)
+                    } else {
+                        val intent = Intent(this, TechJobDetailsActivity::class.java)
+                        intent.putExtra(Constants.ID, any.id)
+                        intent.putExtra(Constants.POSITION, pos)
+                        intent.putExtra(Constants.STATUS, any.status!!.code)
+                        startActivity(intent)
+                    }
+
                 }
                 Constants.CUST_PHONE -> {
                     dialog.show()

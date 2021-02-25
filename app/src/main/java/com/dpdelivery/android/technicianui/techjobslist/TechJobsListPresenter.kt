@@ -23,7 +23,7 @@ class TechJobsListPresenter @Inject constructor(
     override fun getFilterJobsList(status: String, appointmentDate: String) {
         view?.showProgress()
         subscription.add(
-                apiService.getFilterJobs(CommonUtils.getLoginToken(), status, appointmentDate, orderBy = "appointmentDate", pageSize = 1)
+                apiService.getFilterJobs(CommonUtils.getLoginToken(), status, appointmentDate, orderBy = "appointmentDate", pageSize = 25)
                         .subscribeOn(baseScheduler.io())
                         .observeOn(baseScheduler.ui())
                         .subscribe(

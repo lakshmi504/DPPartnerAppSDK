@@ -12,18 +12,19 @@ import com.dpdelivery.android.utils.inflate
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_template_list.*
 
-class TemplateListAdapter(var context: Context, var adapterClickListener: IAdapterClickListener? = null, val stepMap: MutableMap<String, String>) : RecyclerView.Adapter<TemplateListAdapter.TemplateListViewHolder>() {
+class TemplateListAdapter(var context: Context, var adapterClickListener: IAdapterClickListener? = null, val stepMap: MutableMap<String, String>, var submissionField: String) : RecyclerView.Adapter<TemplateListAdapter.TemplateListViewHolder>() {
 
     private var list: ArrayList<WorkFlowDataRes.WorkFlowDataResBody.Step.Template>? = null
 
-    fun addList(list: ArrayList<WorkFlowDataRes.WorkFlowDataResBody.Step.Template>?) {
+    fun addList(list: ArrayList<WorkFlowDataRes.WorkFlowDataResBody.Step.Template>?, submissionField: String) {
         this.list = list
+        this.submissionField = submissionField
         notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TemplateListViewHolder {
         val view = parent.inflate(R.layout.item_template_list)
-        return TemplateListViewHolder(view, adapterClickListener, stepMap)
+        return TemplateListViewHolder(view, adapterClickListener, stepMap, submissionField)
     }
 
     override fun getItemCount() = if (list != null && list!!.size > 0) list!!.size else 0
@@ -36,13 +37,13 @@ class TemplateListAdapter(var context: Context, var adapterClickListener: IAdapt
         holder.bind(context, holder, position)
     }
 
-    class TemplateListViewHolder(override val containerView: View, var adapterClickListener: IAdapterClickListener? = null, val stepMap: MutableMap<String, String>) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+    class TemplateListViewHolder(override val containerView: View, var adapterClickListener: IAdapterClickListener? = null, val stepMap: MutableMap<String, String>, val submissionField: String) : RecyclerView.ViewHolder(containerView), LayoutContainer {
         fun bind(context: Context, item: Any, pos: Int) {
             if (item is WorkFlowDataRes.WorkFlowDataResBody.Step.Template) {
                 tv_template_name.text = "${item.name} :"
                 val lowerList = item.elements
                 rv_lower_list.layoutManager = LinearLayoutManager(context)
-                val adapterLowerList = ElementListAdapter(context, adapterClickListener, stepMap = stepMap)
+                val adapterLowerList = ElementListAdapter(context, adapterClickListener, stepMap = stepMap, submissionField = submissionField)
                 rv_lower_list.adapter = adapterLowerList
                 adapterLowerList.addList(lowerList)
             }

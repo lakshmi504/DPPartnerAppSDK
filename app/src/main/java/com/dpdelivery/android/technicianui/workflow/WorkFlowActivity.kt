@@ -41,7 +41,6 @@ import com.dpdelivery.android.model.techres.SubmiPidRes
 import com.dpdelivery.android.model.techres.TechNote
 import com.dpdelivery.android.model.techres.WorkFlowDataRes
 import com.dpdelivery.android.technicianui.base.TechBaseActivity
-import com.dpdelivery.android.technicianui.finish.FinishJobActivity
 import com.dpdelivery.android.technicianui.techjobslist.TechJobsListActivity
 import com.dpdelivery.android.technicianui.workflow.workflowadapter.TemplateListAdapter
 import com.dpdelivery.android.utils.CommonUtils
@@ -100,6 +99,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private val stepMapList = ArrayList<AddWorkFlowData.Data>()
     private var latitude: String = ""
     private var longitude: String = ""
+    private var submissionField: String = ""
     private var LOCATION_PERMISSION_REQUEST_CODE = 123
 
 
@@ -174,7 +174,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
         recyclerView.apply {
             layoutManager = mLayoutManager
-            workFlowAdapter = TemplateListAdapter(mContext, adapterClickListener = this@WorkFlowActivity, stepMap = stepMap)
+            workFlowAdapter = TemplateListAdapter(mContext, adapterClickListener = this@WorkFlowActivity, stepMap = stepMap, submissionField = submissionField)
             adapter = workFlowAdapter
         }
         val recyclerViewState = recyclerView.layoutManager!!.onSaveInstanceState()
@@ -194,6 +194,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (res.success!!) {
             mDataList = res.body!!.steps
+            submissionField = res.body.submissionField
             setStep(currentPosition)
         }
     }
@@ -207,7 +208,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             tv_nums.text = "" + (position + 1) + "."
             tv_step_name.text = mDataList?.get(position)?.name
             mTemplateList = mDataList?.get(position)?.templates
-            workFlowAdapter!!.addList(mTemplateList)
+            workFlowAdapter!!.addList(mTemplateList, submissionField)
         }
     }
 
@@ -219,12 +220,16 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         workFlowPresenter.addWorkFlow(workFlow = AddWorkFlowData(data = stepMapList, jobId = jobId!!))
     }
 
+    fun submit() {
+        showViewState(MultiStateView.VIEW_STATE_LOADING)
+        for (mutableEntry in stepMap) {
+            stepMapList.add(AddWorkFlowData.Data(elementId = mutableEntry.key, value = mutableEntry.value))
+        }
+        workFlowPresenter.addWorkFlowSubmit(workFlow = AddWorkFlowData(data = stepMapList, jobId = jobId!!))
+    }
+
     fun finishJob() {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
-
-       /* for (i in stepImageMap) {
-            workFlowPresenter.addImage(jobid = jobId!!, elementId = i.key.toInt(), file = Compressor(this).compressToFile(File(i.value)))
-        }*/
         for (mutableEntry in stepMap) {
             stepMapList.add(AddWorkFlowData.Data(elementId = mutableEntry.key, value = mutableEntry.value))
         }
@@ -255,9 +260,22 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 setStep(currentPosition + 1)
                 if (currentPosition == mDataList!!.size - 1) {
                     btn_next.visibility = View.GONE
+                    btn_submit.visibility = View.GONE
                     btn_Finish.visibility = View.VISIBLE
                 }
             }
+        } else {
+            toast(res.message!!)
+        }
+    }
+
+    override fun showWorkFlowDataSubmitRes(res: AddTextRes) {
+        showViewState(MultiStateView.VIEW_STATE_CONTENT)
+        if (res.success!!) {
+            stepMap.clear()
+            stepMapList.clear()
+            startActivity(Intent(this, TechJobsListActivity::class.java))
+            finish()
         } else {
             toast(res.message!!)
         }
@@ -270,23 +288,15 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             stepMap.clear()
             stepMapList.clear()
             stepImageMap.clear()
-            if (jobType == "DEL" || jobType == "UIN") {
-                showViewState(MultiStateView.VIEW_STATE_LOADING)
-                val currentTime = Date()
-                val output = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
-                output.timeZone = TimeZone.getTimeZone("GMT")
-                val jobEndTime = output.format(currentTime)
-                val finishJobIp = FinishJobIp(status = "COM", latitude = latitude, longitude = longitude, jobEndTime = jobEndTime)
-                workFlowPresenter.finishJob(jobId!!, finishJobIp)
-            } else {
-                val intent = Intent(this, FinishJobActivity::class.java)
-                intent.putExtra(Constants.ID, jobId!!)
-                intent.putExtra(Constants.DEVICE_CODE, deviceCode)
-                intent.putExtra(Constants.BOT_ID, botId)
-                intent.putExtra(Constants.CONNECTIVITY, connectivity)
-                intent.putExtra(Constants.JOB_TYPE, jobType)
-                startActivity(intent)
-            }
+
+            showViewState(MultiStateView.VIEW_STATE_LOADING)
+            val currentTime = Date()
+            val output = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
+            output.timeZone = TimeZone.getTimeZone("GMT")
+            val jobEndTime = output.format(currentTime)
+            val finishJobIp = FinishJobIp(status = "COM", latitude = latitude, longitude = longitude, jobEndTime = jobEndTime)
+            workFlowPresenter.finishJob(jobId!!, finishJobIp)
+
         } else {
             toast(res.message!!)
         }
@@ -322,11 +332,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     } else {
                         Toast.makeText(baseContext, getString(R.string.permission_denied), Toast.LENGTH_LONG).show()
                     }
-                    /* val intent = Intent(context, UploadImagesActivity::class.java)
-                     intent.putExtra(Constants.ID, jobId)
-                     intent.putExtra(Constants.ELEMENT_TEXT, elementId)
-                     intent.putExtra(Constants.SOURCE, any.name)
-                     startActivityForResult(intent, 123)*/
                 }
                 Constants.ELEMENT_UPLOAD_IMAGE -> {
                     dialog.show()
@@ -403,8 +408,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 dialog.show()
                 if (imgpath.isNotEmpty()) {
                     mandatory!!.visibility = View.GONE
-                    // uploadImage!!.visibility = View.VISIBLE
-                    //stepImageMap[elementId.toString()] = imgpath
                     workFlowPresenter.addImage(jobid = jobId!!, elementId = elementId, file = Compressor(this).compressToFile(File(imgpath)))
                 }
                 CommonUtils.setUserImagebitmap(mContext, image!!, stream)
@@ -448,7 +451,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     override fun showFinishJobRes(res: SubmiPidRes) {
         if (res.success) {
             startActivity(Intent(this, TechJobsListActivity::class.java))
-            CommonUtils.saveJobStartTime("")
             finish()
         } else {
             toast(res.message)
@@ -458,10 +460,11 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
     override fun onBackPressed() {
         if (currentPosition != 0) {
-            setStep(currentPosition - 1)
             init()
+            setStep(currentPosition - 1)
             btn_next.visibility = View.VISIBLE
             btn_Finish.visibility = View.GONE
+            btn_submit.visibility = View.GONE
         }
 
         if (doubleBackToExitPressedOnce) {
@@ -476,10 +479,11 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         when (item.itemId) {
             android.R.id.home -> {
                 if (currentPosition != 0) {
-                    setStep(currentPosition - 1)
                     init()
+                    setStep(currentPosition - 1)
                     btn_next.visibility = View.VISIBLE
                     btn_Finish.visibility = View.GONE
+                    btn_submit.visibility = View.GONE
                 }
                 if (doubleBackToExitPressedOnce) {
                     super.onBackPressed()
@@ -516,7 +520,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                         // For example: Update the location of user on server
                     }
                 },
-                Looper.myLooper()
+                Looper.myLooper()!!
         )
     }
 

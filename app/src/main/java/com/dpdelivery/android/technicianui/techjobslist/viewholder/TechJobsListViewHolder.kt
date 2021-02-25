@@ -29,7 +29,13 @@ class TechJobsListViewHolder(override val containerView: View?, var context: Con
             } else {
                 tv_areavalue.text = item.customerAddress?.area?.description.toString()
             }
-
+            if (pos == 0) {
+                ll_mobile.visibility = View.VISIBLE
+                ll_alt_mobile.visibility = View.VISIBLE
+            } else {
+                ll_mobile.visibility = View.GONE
+                ll_alt_mobile.visibility = View.GONE
+            }
             if (!item.appointmentStartTime.isNullOrEmpty()) {
                 val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ROOT)
                 val output = SimpleDateFormat("d-MMM-yyyy", Locale.ROOT)

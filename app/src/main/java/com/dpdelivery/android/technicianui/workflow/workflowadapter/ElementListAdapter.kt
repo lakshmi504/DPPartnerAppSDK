@@ -3,6 +3,7 @@ package com.dpdelivery.android.technicianui.workflow.workflowadapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
@@ -20,9 +21,10 @@ import com.dpdelivery.android.utils.inflate
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.activity_work_flow.*
 import kotlinx.android.synthetic.main.item_element_list.*
+import java.util.*
 
 
-class ElementListAdapter(var context: Context, var adapterClickListener: IAdapterClickListener? = null, val stepMap: MutableMap<String, String>) : RecyclerView.Adapter<ElementListAdapter.ElementListViewHolder>() {
+class ElementListAdapter(var context: Context, var adapterClickListener: IAdapterClickListener? = null, val stepMap: MutableMap<String, String>, val submissionField: String) : RecyclerView.Adapter<ElementListAdapter.ElementListViewHolder>() {
 
     private var list: ArrayList<WorkFlowDataRes.WorkFlowDataResBody.Step.Template.Element>? = null
 
@@ -33,7 +35,7 @@ class ElementListAdapter(var context: Context, var adapterClickListener: IAdapte
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ElementListViewHolder {
         val view = parent.inflate(R.layout.item_element_list)
-        return ElementListViewHolder(view, adapterClickListener, stepMap)
+        return ElementListViewHolder(view, context, adapterClickListener, stepMap, submissionField)
     }
 
     override fun getItemCount() = if (list != null && list!!.size > 0) list!!.size else 0
@@ -46,13 +48,16 @@ class ElementListAdapter(var context: Context, var adapterClickListener: IAdapte
         holder.bind(context, holder, position)
     }
 
-    class ElementListViewHolder(override val containerView: View, var adapterClickListener: IAdapterClickListener? = null, val stepMap: MutableMap<String, String>) : RecyclerView.ViewHolder(containerView), LayoutContainer, AdapterView.OnItemSelectedListener {
+    class ElementListViewHolder(override val containerView: View, var context: Context, var adapterClickListener: IAdapterClickListener? = null, val stepMap: MutableMap<String, String>, val submissionField: String) : RecyclerView.ViewHolder(containerView), LayoutContainer, AdapterView.OnItemSelectedListener {
         @SuppressLint("ResourceAsColor")
         fun bind(context: Context, item: Any, pos: Int) {
             if (item is WorkFlowDataRes.WorkFlowDataResBody.Step.Template.Element) {
                 tv_name.text = item.name
                 if (item.showType == "VISIBLE" && item.workflowElementType == "MANUAL" && item.inputApi == "TEXT") {
                     et_add_text.visibility = View.VISIBLE
+                    if (item.name.toString() == "PaymentCollected") {
+                        et_add_text.inputType = InputType.TYPE_CLASS_NUMBER
+                    }
                     et_add_text!!.addTextChangedListener(object : TextWatcher {
                         override fun afterTextChanged(editable: Editable?) {
                             iv_mandatory.visibility = View.GONE
@@ -70,20 +75,34 @@ class ElementListAdapter(var context: Context, var adapterClickListener: IAdapte
                         et_add_text.setText(item.value.toString())
                     }
                 } else if (item.showType == "VISIBLE" && item.workflowElementType == "DROPDOWN" && item.inputApi == "TEXT") {
-                    if (!item.dropdownContents.isNullOrEmpty()) {
-                        ll_spinner_center.visibility = View.VISIBLE
-                        val adapterMode = ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, item.dropdownContents)
-                        adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                        spinner_center!!.adapter = adapterMode
-                        spinner_center.tag = item
-                        spinner_center!!.onItemSelectedListener = this
-                    }
                     et_add_text.visibility = View.VISIBLE
                     if (!item.value.isNullOrEmpty()) {
                         et_add_text.setText(item.value.toString())
                     }
                     et_add_text.background = null
                     et_add_text.isEnabled = false
+                    if (!item.dropdownContents.isNullOrEmpty()) {
+                        ll_spinner_center.visibility = View.VISIBLE
+                        for (i in item.dropdownContents.indices) {
+                            if (!item.value.isNullOrEmpty()) {
+                                if (item.dropdownContents[i].equals((item.value), true)) {
+                                    val adapterMode = ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, item.dropdownContents)
+                                    adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                                    spinner_center!!.adapter = adapterMode
+                                    spinner_center.tag = item
+                                    spinner_center!!.onItemSelectedListener = this
+                                    spinner_center.setSelection(i)
+                                }
+                            } else {
+                                val adapterMode = ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, item.dropdownContents)
+                                adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                                spinner_center!!.adapter = adapterMode
+                                spinner_center.tag = item
+                                spinner_center!!.onItemSelectedListener = this
+                                spinner_center.setSelection(0)
+                            }
+                        }
+                    }
                 } else if (item.showType == "VISIBLE" && item.workflowElementType == "MANUAL" && item.inputApi == "IMAGE") {
                     btn_add_image.visibility = View.VISIBLE
                     if (!item.value.isNullOrEmpty()) {
@@ -170,9 +189,40 @@ class ElementListAdapter(var context: Context, var adapterClickListener: IAdapte
             when (parent!!.id) {
                 R.id.spinner_center -> {
                     val item = parent.tag as WorkFlowDataRes.WorkFlowDataResBody.Step.Template.Element
-                    val selectedString = spinner_center!!.selectedItem.toString()
+                    val selectedString = item.dropdownContents?.get(position)
+                    selectedText(selectedString!!)
+                    iv_mandatory1.visibility = View.GONE
                     stepMap[item.id.toString()] = selectedString
                 }
+            }
+        }
+
+        private fun selectedText(selectedString: String) {
+            if (submissionField != selectedString) {
+                (context as WorkFlowActivity).btn_submit.visibility = View.VISIBLE
+                (context as WorkFlowActivity).btn_next.visibility = View.GONE
+                if ((context as WorkFlowActivity).btn_Finish.visibility == View.VISIBLE) {
+                    (context as WorkFlowActivity).btn_submit.visibility = View.GONE
+                }
+                (context as WorkFlowActivity).btn_submit.setOnClickListener {
+                    when {
+                        iv_mandatory.visibility == View.VISIBLE -> {
+                            Toast.makeText(context, "Please submit mandatory fields", Toast.LENGTH_SHORT).show()
+                        }
+                        iv_mandatory1.visibility == View.VISIBLE -> {
+                            Toast.makeText(context, "Please submit mandatory fields", Toast.LENGTH_SHORT).show()
+                        }
+                        iv_mandatory2.visibility == View.VISIBLE -> {
+                            Toast.makeText(context, "Please submit mandatory fields", Toast.LENGTH_SHORT).show()
+                        }
+                        else -> {
+                            (context as WorkFlowActivity).submit()
+                        }
+                    }
+                }
+            } else {
+                (context as WorkFlowActivity).btn_next.visibility = View.VISIBLE
+                (context as WorkFlowActivity).btn_submit.visibility = View.GONE
             }
         }
     }

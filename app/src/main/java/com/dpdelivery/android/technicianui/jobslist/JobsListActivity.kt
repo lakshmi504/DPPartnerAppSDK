@@ -2,6 +2,7 @@ package com.dpdelivery.android.technicianui.jobslist
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import com.dpdelivery.android.interfaces.PaginationScrollListener
 import com.dpdelivery.android.model.techres.ASGListRes
 import com.dpdelivery.android.model.techres.Job
 import com.dpdelivery.android.technicianui.base.TechBaseActivity
+import com.dpdelivery.android.technicianui.jobdetails.TechJobDetailsActivity
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.DateHelper
 import com.dpdelivery.android.utils.toast
@@ -26,8 +28,6 @@ import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
 import okhttp3.Headers
-import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.ceil
@@ -44,8 +44,6 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
     private var TOTAL_PAGES = 0
     private var currentPage = PAGE_START
     private var data: String? = null
-    val handler = Handler()
-    var refresh: Runnable? = null
     lateinit var dialog: Dialog
 
     @Inject
@@ -77,7 +75,7 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
         showBack()
         rv_asg_jobs_list.layoutManager = manager
         rv_asg_jobs_list.itemAnimator = DefaultItemAnimator()
-        adapterAsgJobsList = JobListAdapter(this, adapterClickListener = this)
+        adapterAsgJobsList = JobListAdapter(this, adapterClickListener = this, jobType = data!!)
         rv_asg_jobs_list.adapter = adapterAsgJobsList
         rv_asg_jobs_list.addOnScrollListener(object : PaginationScrollListener(manager) {
             override val totalPageCount: Int
@@ -123,8 +121,6 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
     private fun getMoreResults() {
         if (data.equals("ASG")) {
             if (CommonUtils.getRole() == "ROLE_Technician") {
-                //presenter.getMoreJobsList(currentPage, DateHelper.getCurrentDate(), data!!)
-            } else {
                 presenter.getMoreJobsList(currentPage, data!!, DateHelper.getCurrentDate())
             }
         } else {
@@ -155,26 +151,7 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
                 jobsList = res.jobs
                 if (data.equals("ASG")) {
                     if (CommonUtils.getRole() == "ROLE_Technician") {
-                        val startJobInput = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
-                        startJobInput.timeZone = TimeZone.getTimeZone("GMT")
-                        var startJobDate: Date? = null
-                        try {
-                            startJobDate = startJobInput.parse(jobsList[0]!!.appointmentStartTime!!)
-                        } catch (e: ParseException) {
-                            e.printStackTrace()
-                        }
-                        refresh = Runnable {
-                            val jobstarttime: Long = ((startJobDate!!.time)) - Date().time
-                            val diffInHours = jobstarttime / (60 * 60 * 1000) % 24
-
-                            when {
-                                diffInHours <= 1 -> {
-                                    adapterAsgJobsList.addAll(jobsList)
-                                }
-                            }
-                            // handler.postDelayed(refresh!!, 1000)
-                        }
-                        handler.post(refresh!!)
+                        adapterAsgJobsList.addAll(jobsList)
                         tv_total_jobs.text = res.total.toString()
                     } else {
                         rl_jobs.visibility = View.GONE
@@ -205,7 +182,6 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
             showViewState(MultiStateView.VIEW_STATE_CONTENT)
             res.jobs.withNotNullNorEmpty {
                 jobsList = res.jobs
-                //jobsList.sortWith(Comparator { listItem, t1 -> t1?.appointmentStartTime?.let { listItem?.appointmentStartTime?.compareTo(it) }!! })
                 adapterAsgJobsList.removeLoadingFooter()
                 isLoading = false
                 TOTAL_PAGES = ceil(res.total?.div(10)!!.toDouble()).toInt()
@@ -235,6 +211,22 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
     override fun onclick(any: Any, pos: Int, type: Any, op: String) {
         if (any is Job && type is View) {
             when (op) {
+                Constants.ASSIGN_JOB_DETAILS -> {
+                    if (CommonUtils.getRole() == "ROLE_Technician") {
+                        val intent = Intent(this, TechJobDetailsActivity::class.java)
+                        intent.putExtra(Constants.ID, any.id)
+                        intent.putExtra(Constants.POSITION, pos)
+                        intent.putExtra(Constants.STATUS, any.status!!.code)
+                        startActivity(intent)
+                    } else {
+                        val intent = Intent(this, TechJobDetailsActivity::class.java)
+                        intent.putExtra(Constants.ID, any.id)
+                        intent.putExtra(Constants.POSITION, pos)
+                        intent.putExtra(Constants.STATUS, any.status!!.code)
+                        startActivity(intent)
+                    }
+
+                }
                 Constants.CUST_PHONE -> {
                     dialog.show()
                     presenter.getVoipCall(caller = any.assignedTo!!.phoneNumber, receiver = any.customerPhone!!)

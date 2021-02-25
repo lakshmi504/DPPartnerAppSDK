@@ -1,12 +1,16 @@
 package com.dpdelivery.android.technicianui.jobdetails
 
+import android.Manifest
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -15,6 +19,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
+import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dpdelivery.android.R
@@ -33,6 +38,10 @@ import com.dpdelivery.android.technicianui.workflow.WorkFlowActivity
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.toast
 import com.dpdelivery.android.utils.withNotNullNorEmpty
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_assigned_job.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
@@ -51,8 +60,10 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
 
     lateinit var mContext: Context
     private var jobId: Int? = 0
+    private var position: Int? = 0
     private var workflowId: Int? = 0
     private var phone: String? = null
+    private var status: String? = null
     private var altPhone: String? = null
     private var statusCode: String? = null
     private var noteList: ArrayList<TechNote?>? = null
@@ -71,7 +82,15 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
     private var jobType: String? = null
     private var tech_phone: String? = null
     private var jobStartTime: String? = null
-    private var latLong: String = ""
+    private var cxLatLong: String = ""
+    private var cxlat: String = ""
+    private var cxLong: String = ""
+    private var latitude: String = ""
+    private var longitude: String = ""
+    private var LOCATION_PERMISSION_REQUEST_CODE = 123
+    val handler = Handler()
+    var refresh: Runnable? = null
+    private var diffInHours: Long = 0
 
     @Inject
     lateinit var detailsPresenter: TechJobDetailsPresenter
@@ -89,6 +108,17 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         setUpBottomNavView(false)
         if (intent != null) {
             jobId = intent.getIntExtra(Constants.ID, 0)
+            position = intent.getIntExtra(Constants.POSITION, 0)
+            status = intent.getStringExtra(Constants.STATUS)
+        }
+        if (CommonUtils.getRole() == "ROLE_Technician" && status == "ASG") {
+            if (position != 0) {
+                ll_mobile.visibility = View.GONE
+                ll_alt_mobile.visibility = View.GONE
+            } else {
+                ll_mobile.visibility = View.VISIBLE
+                ll_alt_mobile.visibility = View.VISIBLE
+            }
         }
         getAssignedJob()
         error_button.setOnClickListener(this)
@@ -108,6 +138,56 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         imageButton.setOnClickListener(this)
     }
 
+    /**
+     * Location
+     */
+    private fun setUpLocationListener() {
+        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        // for getting the current location update after every 2 seconds with high accuracy
+        val locationRequest = LocationRequest().setInterval(2000).setFastestInterval(2000)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+        fusedLocationProviderClient.requestLocationUpdates(
+                locationRequest,
+                object : LocationCallback() {
+                    override fun onLocationResult(locationResult: LocationResult) {
+                        super.onLocationResult(locationResult)
+                        for (location in locationResult.locations) {
+                            latitude = location.latitude.toString()
+                            longitude = location.longitude.toString()
+                        }
+                        // Few more things we can do here:
+                        // For example: Update the location of user on server
+                    }
+                },
+                Looper.myLooper()!!
+        )
+    }
+
+    override fun onStart() {
+        super.onStart()
+        when {
+            CommonUtils.isAccessFineLocationGranted(this) -> {
+                when {
+                    CommonUtils.isLocationEnabled(this) -> {
+                        setUpLocationListener()
+                    }
+                    else -> {
+                        CommonUtils.showGPSNotEnabledDialog(this)
+                    }
+                }
+            }
+            else -> {
+                CommonUtils.requestAccessFineLocationPermission(
+                        this,
+                        LOCATION_PERMISSION_REQUEST_CODE
+                )
+            }
+        }
+    }
+
     private fun getAssignedJob() {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
         Handler().postDelayed(Runnable {
@@ -120,6 +200,30 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
     override fun onResume() {
         super.onResume()
         detailsPresenter.takeView(this)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            LOCATION_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    when {
+                        CommonUtils.isLocationEnabled(this) -> {
+                            setUpLocationListener()
+                        }
+                        else -> {
+                            CommonUtils.showGPSNotEnabledDialog(this)
+                        }
+                    }
+                } else {
+                    Toast.makeText(
+                            this,
+                            getString(R.string.location_permission_not_granted),
+                            Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
     }
 
     override fun onClick(v: View?) {
@@ -155,7 +259,36 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
                 submitPid()
             }
             R.id.btn_start_job -> {
-                if (btn_start_job.visibility == View.VISIBLE) {
+                if (CommonUtils.getRole() == "ROLE_Technician") {
+                    if (btn_start_job.visibility == View.VISIBLE) {
+                        if (cxLatLong.isEmpty() || cxLatLong == "null" || cxLatLong == "0") {
+                            if (diffInHours <= 1) {
+                                startJob()
+                            } else {
+                                toast("You Can't Start Job before appointment start time")
+                            }
+                        } else {
+                            val loc1 = Location("")
+                            loc1.latitude = latitude.toDouble()
+                            loc1.longitude = longitude.toDouble()
+
+                            val loc2 = Location("")
+                            loc2.latitude = cxlat.toDouble()
+                            loc2.longitude = cxLong.toDouble()
+
+                            val distanceInMeters: Float = loc1.distanceTo(loc2)
+                            if (distanceInMeters > 250) {
+                                if (diffInHours <= 1) {
+                                    startJob()
+                                } else {
+                                    toast("You Can't Start Job before appointment start time")
+                                }
+                            } else {
+                                toast("Please reach customer place before start job")
+                            }
+                        }
+                    }
+                } else {
                     startJob()
                 }
             }
@@ -218,10 +351,10 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
                 }
             }
             R.id.imageButton -> {
-                if (latLong.isEmpty() || latLong == "null") {
+                if (cxLatLong.isEmpty() || cxLatLong == "null" || cxLatLong == "0") {
                     toast("Location is not set")
                 } else {
-                    val URL = "https://www.google.com/maps/dir/?api=1&travelmode=two-wheeler&zoom=12&destination=$latLong"
+                    val URL = "https://www.google.com/maps/dir/?api=1&travelmode=two-wheeler&zoom=12&destination=$cxLatLong"
                     val location = Uri.parse(URL)
                     val mapIntent = Intent(Intent.ACTION_VIEW, location)
                     mapIntent.setPackage("com.google.android.apps.maps")
@@ -389,6 +522,18 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
             tv_appt_start.text = res.appointmentStartTime
             tv_appt_end.text = res.appointmentEndTime
         }
+
+        //job assigned diff
+        val startJobInput = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
+        startJobInput.timeZone = TimeZone.getTimeZone("GMT")
+        var startJobDate: Date? = null
+        try {
+            startJobDate = startJobInput.parse(res.appointmentStartTime!!)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        val jobstarttime: Long = (startJobDate!!.time) - Date().time
+        diffInHours = jobstarttime / (60 * 60 * 1000) % 24
         deviceCode = res.installation?.deviceCode
         botId = res.bid + ""
         connectivity = res.connectivity
@@ -404,7 +549,16 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         }
         et_purifierid.setText(res.installation?.deviceCode)
         jobType = res.type.code
-        latLong = res.customerLatLong.toString()
+        cxLatLong = res.customerLatLong.toString()
+        if (cxLatLong != null) {
+            val st = StringTokenizer(cxLatLong, ",")
+            val result = ArrayList<String>()
+            while (st.hasMoreTokens()) {
+                result.add(st.nextToken().toString())
+            }
+            cxlat = result[0]
+            cxLong = result[1]
+        }
     }
 
     override fun showStartJobRes(startJobRes: StartJobRes) {
@@ -459,7 +613,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
     }
 
     override fun showErrorMsg(throwable: Throwable, apiType: String) {
-        toast(throwable.message.toString())
+        //toast(throwable.message.toString())
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
     }
 
