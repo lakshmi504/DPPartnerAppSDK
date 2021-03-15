@@ -396,8 +396,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
             dialog!!.dismiss()
         }
         (dialog!!.findViewById(R.id.btn_submit) as AppCompatButton).setOnClickListener {
-            showViewState(MultiStateView.VIEW_STATE_LOADING)
             if ((dialog!!.findViewById(R.id.et_note) as EditText).text!!.isNotEmpty()) {
+                showViewState(MultiStateView.VIEW_STATE_LOADING)
                 detailsPresenter.addNote(jobId!!, updateJobIp = UpdateJobIp(note = (dialog!!.findViewById(R.id.et_note) as EditText).text!!.toString()))
                 dialog!!.dismiss()
             } else {

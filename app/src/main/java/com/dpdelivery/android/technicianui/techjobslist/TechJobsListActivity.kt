@@ -163,7 +163,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
             res.jobs.withNotNullNorEmpty {
                 jobsList = res.jobs
                 adapterAsgJobsList.addList(jobsList)
-                tv_total_jobs.text = res.total.toString()
+               // tv_total_jobs.text = res.total.toString()
             }
         } else {
             showViewState(MultiStateView.VIEW_STATE_EMPTY)

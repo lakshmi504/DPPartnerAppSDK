@@ -1,14 +1,17 @@
 package com.dpdelivery.android.technicianui.finish
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -20,6 +23,7 @@ import android.widget.*
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.dpdelivery.android.R
 import com.dpdelivery.android.commonviews.MultiStateView
@@ -34,9 +38,12 @@ import com.dpdelivery.android.technicianui.sync.Command
 import com.dpdelivery.android.technicianui.sync.DatabaseHandler
 import com.dpdelivery.android.technicianui.sync.SyncActivity
 import com.dpdelivery.android.technicianui.techjobslist.TechJobsListActivity
-import com.dpdelivery.android.ui.location.LocationActivity
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.toast
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import kotlinx.android.synthetic.main.activity_finish_job.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.error_view.*
@@ -53,9 +60,9 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
 
     lateinit var mContext: Context
     private var address: String? = null
-    private val LOCATION_REQUEST_CODE = 6
-    private var latitude: Double = 0.toDouble()
-    private var longitude: Double = 0.toDouble()
+    private var LOCATION_PERMISSION_REQUEST_CODE = 123
+    private var latitude: String = ""
+    private var longitude: String = ""
     private var isLocationSet: Boolean = false
     private var isTDSSet: Boolean = false
     private var isPhotoSet: Boolean = false
@@ -103,7 +110,6 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         setTitle("Finish Job")
         showBack()
         setUpBottomNavView(false)
-        btn_location.setOnClickListener(this)
         btn_happy_code.setOnClickListener(this)
         btn_photo.setOnClickListener(this)
         btn_add_parts.setOnClickListener(this)
@@ -234,10 +240,6 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
 
     override fun onClick(v: View?) {
         when (v!!.id) {
-            R.id.btn_location -> {
-                val intent = Intent(context, LocationActivity::class.java)
-                startActivityForResult(intent, LOCATION_REQUEST_CODE)
-            }
             R.id.btn_happy_code -> {
                 showOtp()
             }
@@ -263,22 +265,7 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == LOCATION_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            address = data!!.getStringExtra("address")
-            latitude = data.getDoubleExtra("latitude", 0.00)
-            longitude = data.getDoubleExtra("longitude", 0.00)
-            Log.i(TAG, "LAT:$latitude .LONG$longitude")
-            locationtxt!!.text = address
-            locationtxt!!.setTextColor(ContextCompat.getColor(context, R.color.colorGreen))
-            isLocationSet = true
-            val sharedPreferenceslocation = getSharedPreferences("location$jobId", Context.MODE_PRIVATE)
-            val editorlocation = sharedPreferenceslocation.edit()
-            editorlocation.putString("location_txt", address)
-            editorlocation.putBoolean("location_type", isLocationSet)
-            editorlocation.putString("latitude", latitude.toString())
-            editorlocation.putString("longitude", longitude.toString())
-            editorlocation.apply()
-        } else if (requestCode == PHOTO_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == PHOTO_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             phototxt.text = getString(R.string.uploaded_photo)
             phototxt!!.setTextColor(ContextCompat.getColor(context, R.color.colorGreen))
             isPhotoSet = true
@@ -575,12 +562,80 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
             }
         }
     }
-
+    override fun onStart() {
+        super.onStart()
+        when {
+            CommonUtils.isAccessFineLocationGranted(this) -> {
+                when {
+                    CommonUtils.isLocationEnabled(this) -> {
+                        setUpLocationListener()
+                    }
+                    else -> {
+                        CommonUtils.showGPSNotEnabledDialog(this)
+                    }
+                }
+            }
+            else -> {
+                CommonUtils.requestAccessFineLocationPermission(
+                        this,
+                        LOCATION_PERMISSION_REQUEST_CODE
+                )
+            }
+        }
+    }
     override fun onResume() {
         super.onResume()
         presenter.takeView(this)
         updateLatestDetails(deviceCode)
         fetchItemsFromSharedPref()
+    }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            LOCATION_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    when {
+                        CommonUtils.isLocationEnabled(this) -> {
+                            setUpLocationListener()
+                        }
+                        else -> {
+                            CommonUtils.showGPSNotEnabledDialog(this)
+                        }
+                    }
+                } else {
+                    Toast.makeText(
+                            this,
+                            getString(R.string.location_permission_not_granted),
+                            Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    }
+
+    private fun setUpLocationListener() {
+        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        // for getting the current location update after every 2 seconds with high accuracy
+        val locationRequest = LocationRequest().setInterval(2000).setFastestInterval(2000)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+        fusedLocationProviderClient.requestLocationUpdates(
+                locationRequest,
+                object : LocationCallback() {
+                    override fun onLocationResult(locationResult: LocationResult) {
+                        super.onLocationResult(locationResult)
+                        for (location in locationResult.locations) {
+                            latitude = location.latitude.toString()
+                            longitude = location.longitude.toString()
+                        }
+                        // Few more things we can do here:
+                        // For example: Update the location of user on server
+                    }
+                },
+                Looper.myLooper()!!
+        )
     }
 
     private fun finishJob() {
@@ -588,10 +643,6 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         val output = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
         output.timeZone = TimeZone.getTimeZone("GMT")
         jobEndTime = output.format(currentTime)
-
-        val sharedPreferenceslocation = getSharedPreferences("location$jobId", Context.MODE_PRIVATE)
-        val latitude = sharedPreferenceslocation.getString("latitude", "")
-        val longitude = sharedPreferenceslocation.getString("longitude", "")
 
         val sharedPreferencestds = getSharedPreferences("tds$jobId", Context.MODE_PRIVATE)
         inputTds = sharedPreferencestds.getInt("input_tds", 0)
@@ -601,13 +652,13 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         if (amount.isNotEmpty()) {
             amountCollected = amount.toFloat()
         } else {
-            toast("Please check all the fields before submitting")
+            toast("Please check the fields before submitting")
         }
-        if (isLocationSet && isPhotoSet && isTDSSet && isOTPSet && amountCollected == 0f) {
+        if (isPhotoSet && isTDSSet && isOTPSet && amountCollected == 0f) {
             showViewState(MultiStateView.VIEW_STATE_LOADING)
             val finishJobIp = FinishJobIp(status = "COM",
-                    latitude = latitude.toString(),
-                    longitude = longitude.toString(),
+                    latitude = latitude,
+                    longitude = longitude,
                     inputTds = inputTds.toString(),
                     outputTds = outputTds.toString(),
                     happyCode = otptxt.text.toString(),
@@ -620,8 +671,8 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         } else if (isLocationSet && isPhotoSet && isTDSSet && isOTPSet && mode != "Payment Type" && amountCollected > 0f) {
             showViewState(MultiStateView.VIEW_STATE_LOADING)
             val finishJobIp = FinishJobIp(status = "COM",
-                    latitude = latitude.toString(),
-                    longitude = longitude.toString(),
+                    latitude = latitude,
+                    longitude = longitude,
                     inputTds = inputTds.toString(),
                     outputTds = outputTds.toString(),
                     happyCode = otptxt.text.toString(),
@@ -632,7 +683,7 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
                     spares = partsIdList!!)
             presenter.finishJob(jobId, finishJobIp)
         } else {
-            toast("Please check all the fields before submitting")
+            toast("Please check the fields before submitting")
         }
     }
 
@@ -713,17 +764,6 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
             phototxt!!.setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
         }
 
-        val sharedPreferenceslocation = getSharedPreferences("location$jobId", Context.MODE_PRIVATE)
-        isLocationSet = sharedPreferenceslocation.getBoolean("location_type", false)
-        if (isLocationSet) {
-            val data = sharedPreferenceslocation.getString("location_txt", "")
-            locationtxt!!.text = data
-            locationtxt!!.setTextColor(ContextCompat.getColor(context, R.color.colorGreen))
-        } else {
-            locationtxt!!.text = "Not Set"
-            locationtxt!!.setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
-        }
-
         val sharedPreferencestds = getSharedPreferences("tds$jobId", Context.MODE_PRIVATE)
         isTDSSet = sharedPreferencestds.getBoolean("tds_type", false)
         if (isTDSSet) {
@@ -752,11 +792,6 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         val photoEditor = sharedPreferencesPhoto.edit()
         photoEditor.clear()
         photoEditor.apply()
-
-        val sharedPreferencesLocation = getSharedPreferences("location$jobId", Context.MODE_PRIVATE)
-        val locationEditor = sharedPreferencesLocation.edit()
-        locationEditor.clear()
-        locationEditor.apply()
 
         val sharedPreferencesTds = getSharedPreferences("tds$jobId", Context.MODE_PRIVATE)
         val tdsEditor = sharedPreferencesTds.edit()

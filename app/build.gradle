@@ -16,15 +16,14 @@ android {
         applicationId "com.dpdelivery.android"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 14
-        versionName "3.2"
+        versionCode 16
+        versionName "3.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
     buildTypes {
         release {
-            shrinkResources true
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -32,9 +31,8 @@ android {
         experimental = true
     }
     lintOptions {
-        /* checkReleaseBuilds false
-         abortOnError false*/
-        disable 'MissingDefaultResource'
+        checkReleaseBuilds false
+        abortOnError false
     }
     compileOptions {
         sourceCompatibility = '1.8'
@@ -45,7 +43,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'org.jsoup:jsoup:1.10.3'
+    implementation 'org.jsoup:jsoup:1.13.1'
     //support lib
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.cardview:cardview:1.0.0'

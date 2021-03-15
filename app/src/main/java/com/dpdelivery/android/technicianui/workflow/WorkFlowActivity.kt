@@ -95,7 +95,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var mTemplateList: ArrayList<WorkFlowDataRes.WorkFlowDataResBody.Step.Template>? = null
     private var noteList: ArrayList<TechNote?>? = null
     private val stepMap: MutableMap<String, String> = mutableMapOf<String, String>()
-    private val stepImageMap: MutableMap<String, String> = mutableMapOf<String, String>()
+    private val stepsFinished: MutableMap<String, Boolean> = mutableMapOf<String, Boolean>()
     private val stepMapList = ArrayList<AddWorkFlowData.Data>()
     private var latitude: String = ""
     private var longitude: String = ""
@@ -127,6 +127,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         dialog = CommonUtils.progressDialog(context)
         btn_next.setOnClickListener(this)
         btn_Finish.setOnClickListener(this)
+        btn_submit.setOnClickListener(this)
         tv_view_notes.visibility = View.VISIBLE
         tv_view_notes.setOnClickListener(this)
     }
@@ -138,6 +139,27 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     showNotesList()   // for showing notes list
                 } else {
                     toast("No Notes Found")
+                }
+            }
+            R.id.btn_next -> {
+                if (stepsFinished.containsValue(false)) {
+                    Toast.makeText(context, "Please submit mandatory fields", Toast.LENGTH_SHORT).show()
+                } else {
+                    nextStep()
+                }
+            }
+            R.id.btn_Finish -> {
+                if (stepsFinished.containsValue(false)) {
+                    Toast.makeText(context, "Please submit mandatory fields", Toast.LENGTH_SHORT).show()
+                } else {
+                    finishJob()
+                }
+            }
+            R.id.btn_submit -> {
+                if (stepsFinished.containsValue(false)) {
+                    Toast.makeText(context, "Please submit mandatory fields", Toast.LENGTH_SHORT).show()
+                } else {
+                    submit()
                 }
             }
         }
@@ -174,7 +196,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
         recyclerView.apply {
             layoutManager = mLayoutManager
-            workFlowAdapter = TemplateListAdapter(mContext, adapterClickListener = this@WorkFlowActivity, stepMap = stepMap, submissionField = submissionField)
+            workFlowAdapter = TemplateListAdapter(mContext, adapterClickListener = this@WorkFlowActivity, stepMap = stepMap, stepsFinished = stepsFinished, submissionField = submissionField)
             adapter = workFlowAdapter
         }
         val recyclerViewState = recyclerView.layoutManager!!.onSaveInstanceState()
@@ -203,8 +225,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         if (mDataList != null && mDataList!!.isNotEmpty() && mDataList!!.size > position) {
             currentPosition = position
             stepMap.clear()
+            stepsFinished.clear()
             stepMapList.clear()
-            stepImageMap.clear()
             tv_nums.text = "" + (position + 1) + "."
             tv_step_name.text = mDataList?.get(position)?.name
             mTemplateList = mDataList?.get(position)?.templates
@@ -212,7 +234,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         }
     }
 
-    fun nextStep() {
+    private fun nextStep() {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
         for (mutableEntry in stepMap) {
             stepMapList.add(AddWorkFlowData.Data(elementId = mutableEntry.key, value = mutableEntry.value))
@@ -220,7 +242,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         workFlowPresenter.addWorkFlow(workFlow = AddWorkFlowData(data = stepMapList, jobId = jobId!!))
     }
 
-    fun submit() {
+    private fun submit() {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
         for (mutableEntry in stepMap) {
             stepMapList.add(AddWorkFlowData.Data(elementId = mutableEntry.key, value = mutableEntry.value))
@@ -228,7 +250,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         workFlowPresenter.addWorkFlowSubmit(workFlow = AddWorkFlowData(data = stepMapList, jobId = jobId!!))
     }
 
-    fun finishJob() {
+    private fun finishJob() {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
         for (mutableEntry in stepMap) {
             stepMapList.add(AddWorkFlowData.Data(elementId = mutableEntry.key, value = mutableEntry.value))
@@ -255,6 +277,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (res.success!!) {
             stepMap.clear()
+            stepsFinished.clear()
             stepMapList.clear()
             if (currentPosition < mDataList!!.size) {
                 setStep(currentPosition + 1)
@@ -273,6 +296,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (res.success!!) {
             stepMap.clear()
+            stepsFinished.clear()
             stepMapList.clear()
             startActivity(Intent(this, TechJobsListActivity::class.java))
             finish()
@@ -286,8 +310,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         if (res.success!!) {
             toast(res.message!!)
             stepMap.clear()
+            stepsFinished.clear()
             stepMapList.clear()
-            stepImageMap.clear()
 
             showViewState(MultiStateView.VIEW_STATE_LOADING)
             val currentTime = Date()
@@ -407,7 +431,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 image!!.setImageBitmap(bitmap)
                 dialog.show()
                 if (imgpath.isNotEmpty()) {
-                    mandatory!!.visibility = View.GONE
+                    mandatory!!.visibility = View.INVISIBLE
+                    stepsFinished[elementId.toString()] = true
                     workFlowPresenter.addImage(jobid = jobId!!, elementId = elementId, file = Compressor(this).compressToFile(File(imgpath)))
                 }
                 CommonUtils.setUserImagebitmap(mContext, image!!, stream)
