@@ -36,6 +36,7 @@ import com.dpdelivery.android.technicianui.finish.FinishJobActivity
 import com.dpdelivery.android.technicianui.scanner.ScannerActivity
 import com.dpdelivery.android.technicianui.workflow.WorkFlowActivity
 import com.dpdelivery.android.utils.CommonUtils
+import com.dpdelivery.android.utils.DateHelper
 import com.dpdelivery.android.utils.toast
 import com.dpdelivery.android.utils.withNotNullNorEmpty
 import com.google.android.gms.location.LocationCallback
@@ -77,8 +78,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
     private var city: String = ""
     private var state: String = ""
     private var zipcode: String = ""
-    private var botId: String? = null
-    private var connectivity: String? = null
+    private var botId: String = ""
+    private var connectivity: String = ""
     private var jobType: String? = null
     private var tech_phone: String? = null
     private var jobStartTime: String? = null
@@ -91,6 +92,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
     val handler = Handler()
     var refresh: Runnable? = null
     private var diffInHours: Long = 0
+    private var isActive: Boolean = false
 
     @Inject
     lateinit var detailsPresenter: TechJobDetailsPresenter
@@ -111,15 +113,15 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
             position = intent.getIntExtra(Constants.POSITION, 0)
             status = intent.getStringExtra(Constants.STATUS)
         }
-        if (CommonUtils.getRole() == "ROLE_Technician" && status == "ASG") {
-            if (position != 0) {
-                ll_mobile.visibility = View.GONE
-                ll_alt_mobile.visibility = View.GONE
-            } else {
-                ll_mobile.visibility = View.VISIBLE
-                ll_alt_mobile.visibility = View.VISIBLE
-            }
-        }
+        /* if (CommonUtils.getRole() == "ROLE_Technician" && status == "ASG") {
+             if (position == 0 && diffInHours <= 1) {
+                 ll_mobile.visibility = View.VISIBLE
+                 ll_alt_mobile.visibility = View.VISIBLE
+             } else {
+                 ll_mobile.visibility = View.GONE
+                 ll_alt_mobile.visibility = View.GONE
+             }
+         }*/
         getAssignedJob()
         error_button.setOnClickListener(this)
         empty_button.setOnClickListener(this)
@@ -144,8 +146,11 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
     private fun setUpLocationListener() {
         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         // for getting the current location update after every 2 seconds with high accuracy
-        val locationRequest = LocationRequest().setInterval(2000).setFastestInterval(2000)
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+        val locationRequest = LocationRequest.create().apply {
+            interval = 2000
+            fastestInterval = 2000
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return
         }
@@ -262,29 +267,34 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
                 if (CommonUtils.getRole() == "ROLE_Technician") {
                     if (btn_start_job.visibility == View.VISIBLE) {
                         if (cxLatLong.isEmpty() || cxLatLong == "null" || cxLatLong == "0") {
-                            if (diffInHours <= 1) {
-                                startJob()
-                            } else {
-                                toast("You Can't Start Job before appointment start time")
-                            }
+                            /* if (diffInHours <= 1) {
+                                 startJob()
+                             } else {
+                                 toast("You Can't Start Job before appointment start time")
+                             }*/
+                            startJob()
                         } else {
-                            val loc1 = Location("")
-                            loc1.latitude = latitude.toDouble()
-                            loc1.longitude = longitude.toDouble()
+                            if (latitude.isNotEmpty() && longitude.isNotEmpty()) {
+                                val loc1 = Location("")
+                                loc1.latitude = latitude.toDouble()
+                                loc1.longitude = longitude.toDouble()
+                                val loc2 = Location("")
+                                loc2.latitude = cxlat.toDouble()
+                                loc2.longitude = cxLong.toDouble()
 
-                            val loc2 = Location("")
-                            loc2.latitude = cxlat.toDouble()
-                            loc2.longitude = cxLong.toDouble()
-
-                            val distanceInMeters: Float = loc1.distanceTo(loc2)
-                            if (distanceInMeters > 250) {
-                                if (diffInHours <= 1) {
+                                val distanceInMeters: Float = loc1.distanceTo(loc2)
+                                if (distanceInMeters < 500) {
+                                    /*if (diffInHours <= 1) {
+                                        startJob()
+                                    } else {
+                                        toast("You Can't Start Job before appointment start time")
+                                    }*/
                                     startJob()
                                 } else {
-                                    toast("You Can't Start Job before appointment start time")
+                                    toast("Please reach customer place before start job")
                                 }
                             } else {
-                                toast("Please reach customer place before start job")
+                                startJob()
                             }
                         }
                     }
@@ -330,25 +340,14 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
                 addNote()
             }
             R.id.btn_select -> {
-                if (layout_ins.visibility == View.VISIBLE) {
-                    if (et_purifierid!!.text.toString().isNotEmpty() && tv_status!!.text.toString() == "ACTIVE") {
-                        startActivity(Intent(this, WorkFlowActivity::class.java).putExtra(Constants.ID, jobId).putExtra(Constants.DEVICE_CODE, et_purifierid.text.toString())
-                                .putExtra(Constants.BOT_ID, botId)
-                                .putExtra(Constants.CONNECTIVITY, connectivity)
-                                .putExtra(Constants.JOB_TYPE, jobType))
-                    } else {
-                        toast("Please verify fields before proceed.")
-                    }
-                } else {
-                    val intent = Intent(this, WorkFlowActivity::class.java)
-                    intent.putExtra(Constants.ID, jobId)
-                    intent.putExtra(Constants.DEVICE_CODE, deviceCode)
-                    intent.putExtra(Constants.BOT_ID, botId)
-                    intent.putExtra(Constants.CONNECTIVITY, connectivity)
-                    intent.putExtra(Constants.JOB_TYPE, jobType)
-                    intent.putParcelableArrayListExtra(Constants.NOTES, noteList)
-                    startActivity(intent)
-                }
+                val intent = Intent(this, WorkFlowActivity::class.java)
+                intent.putExtra(Constants.ID, jobId)
+                intent.putExtra(Constants.DEVICE_CODE, deviceCode)
+                intent.putExtra(Constants.BOT_ID, botId)
+                intent.putExtra(Constants.CONNECTIVITY, connectivity)
+                intent.putExtra(Constants.JOB_TYPE, jobType)
+                intent.putParcelableArrayListExtra(Constants.NOTES, noteList)
+                startActivity(intent)
             }
             R.id.imageButton -> {
                 if (cxLatLong.isEmpty() || cxLatLong == "null" || cxLatLong == "0") {
@@ -366,7 +365,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
 
     private fun startJob() {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
-        val currentTime = Date()
+        val currentTime = DateHelper.getCurrentDateTime()
         val output = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
         output.timeZone = TimeZone.getTimeZone("GMT")
         jobStartTime = output.format(currentTime)
@@ -409,13 +408,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
 
     private fun finishJob() {
         if (et_purifierid!!.text.toString().isNotEmpty() && tv_status!!.text.toString() == "ACTIVE") {
-            val intent = Intent(this, FinishJobActivity::class.java)
-            intent.putExtra(Constants.ID, jobId)
-            intent.putExtra(Constants.DEVICE_CODE, et_purifierid.text.toString())
-            intent.putExtra(Constants.BOT_ID, botId)
-            intent.putExtra(Constants.CONNECTIVITY, connectivity)
-            intent.putExtra(Constants.JOB_TYPE, jobType)
-            startActivity(intent)
+            isActive = true
+            getAssignedJob()
         } else {
             toast("Please verify fields before finish job.")
         }
@@ -442,11 +436,26 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
 
     override fun showAssignedJobRes(res: Job) {
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
+        if (isActive) {
+            botId = res.bid + ""
+            connectivity = res.connectivity + ""
+            if (botId != "null") {
+                val intent = Intent(this, FinishJobActivity::class.java)
+                intent.putExtra(Constants.ID, jobId)
+                intent.putExtra(Constants.DEVICE_CODE, et_purifierid.text.toString())
+                intent.putExtra(Constants.BOT_ID, botId)
+                intent.putExtra(Constants.CONNECTIVITY, connectivity)
+                intent.putExtra(Constants.JOB_TYPE, jobType)
+                startActivity(intent)
+            } else {
+                toast("Please wait BOT is Mapping to the Purifier")
+            }
+        }
         tv_job_id.text = res.id.toString()
         tv_job_type.text = res.type!!.description
         tv_name.text = res.customerName
         phone = res.customerPhone
-        if (phone!!.isNotEmpty()) {
+        if (!phone.isNullOrEmpty()) {
             try {
                 //tv_phone.text = phone?.replaceRange(5..9, "*****")
                 tv_phone.text = phone
@@ -455,7 +464,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
             }
         }
         altPhone = res.customerAltPhone
-        if (altPhone!!.isNotEmpty()) {
+        if (!altPhone.isNullOrEmpty()) {
             try {
                 // tv_alt_phone.text = altPhone?.replaceRange(5..9, "*****")
                 tv_alt_phone.text = altPhone
@@ -489,18 +498,20 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         tv_address.text = address
         tv_job_desc.text = res.description
 
-        if (!res.type.code.equals("INS") && (res.status.code.equals("INP"))) {
-            btn_start_job.visibility = View.GONE
-            finish_job.visibility = View.VISIBLE
-        } else if (res.type.code.equals("INS") && (res.status.code.equals("INP"))) {
-            btn_start_job.visibility = View.GONE
-            layout_ins.visibility = View.VISIBLE
-        } else if (res.status.code.equals("ASG")) {
+        if (res.status.code.equals("ASG")) {
             btn_start_job.visibility = View.VISIBLE
             ll_workflow.visibility = View.GONE
         } else {
             btn_start_job.visibility = View.GONE
         }
+
+        /*if (!res.type.code.equals("INS") && (res.status.code.equals("INP"))) {
+            btn_start_job.visibility = View.GONE
+            finish_job.visibility = View.VISIBLE
+        } else if (res.type.code.equals("INS") && (res.status.code.equals("INP"))) {
+            btn_start_job.visibility = View.GONE
+            layout_ins.visibility = View.VISIBLE
+        }*/
 
         if (!res.appointmentStartTime.isNullOrEmpty() || !res.appointmentEndTime.isNullOrEmpty()) {
             val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ROOT)
@@ -536,7 +547,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
         diffInHours = jobstarttime / (60 * 60 * 1000) % 24
         deviceCode = res.installation?.deviceCode
         botId = res.bid + ""
-        connectivity = res.connectivity
+        connectivity = res.connectivity + ""
         workflowId = res.workflowId
         if (workflowId != null) {
             if (!res.status.code.equals("ASG")) {
@@ -546,6 +557,13 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View, 
             finish_job.visibility = View.GONE
         } else {
             ll_workflow.visibility = View.GONE
+            if (!res.type.code.equals("INS") && (res.status.code.equals("INP"))) {
+                btn_start_job.visibility = View.GONE
+                finish_job.visibility = View.VISIBLE
+            } else if (res.type.code.equals("INS") && (res.status.code.equals("INP"))) {
+                btn_start_job.visibility = View.GONE
+                layout_ins.visibility = View.VISIBLE
+            }
         }
         et_purifierid.setText(res.installation?.deviceCode)
         jobType = res.type.code

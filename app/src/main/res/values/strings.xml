@@ -96,5 +96,6 @@
     <string name="enable_now">Enable Now</string>
     <string name="location_permission_not_granted">Location Permission not granted</string>
     <string name="please_add_your_input">Please add your input</string>
+    <string name="sync_now">Sync Now</string>
 
 </resources>

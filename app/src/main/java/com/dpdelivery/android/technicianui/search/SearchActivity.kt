@@ -15,6 +15,8 @@ import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.model.techres.ASGListRes
 import com.dpdelivery.android.model.techres.Job
+import com.dpdelivery.android.model.techres.StartJobRes
+import com.dpdelivery.android.model.techres.SubmiPidRes
 import com.dpdelivery.android.technicianui.jobdetails.TechJobDetailsActivity
 import com.dpdelivery.android.technicianui.techjobslist.TechJobsListContract
 import com.dpdelivery.android.technicianui.techjobslist.TechJobsListPresenter
@@ -107,6 +109,10 @@ class SearchActivity : DaggerAppCompatActivity(), TechJobsListContract.View, IAd
 
     }
 
+    override fun showUpdateJobRes(res: SubmiPidRes) {
+
+    }
+
     override fun showErrorMsg(throwable: Throwable, apiType: String) {
         toast(throwable.message.toString())
         multistateview2.viewState = MultiStateView.VIEW_STATE_ERROR
@@ -145,4 +151,7 @@ class SearchActivity : DaggerAppCompatActivity(), TechJobsListContract.View, IAd
         }
     }
 
+    override fun showAddNoteRes(res: StartJobRes) {
+
+    }
 }

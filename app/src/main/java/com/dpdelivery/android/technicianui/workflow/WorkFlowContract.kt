@@ -5,9 +5,8 @@ import com.dpdelivery.android.BaseView
 import com.dpdelivery.android.model.techinp.AddTextIp
 import com.dpdelivery.android.model.techinp.AddWorkFlowData
 import com.dpdelivery.android.model.techinp.FinishJobIp
-import com.dpdelivery.android.model.techres.AddTextRes
-import com.dpdelivery.android.model.techres.SubmiPidRes
-import com.dpdelivery.android.model.techres.WorkFlowDataRes
+import com.dpdelivery.android.model.techinp.SubmitPidIp
+import com.dpdelivery.android.model.techres.*
 import java.io.File
 
 interface WorkFlowContract {
@@ -19,6 +18,12 @@ interface WorkFlowContract {
         fun showWorkFlowDataSubmitRes(res: AddTextRes)
         fun showWorkFlowFinishDataRes(res: AddTextRes)
         fun showFinishJobRes(res: SubmiPidRes)
+        fun showSubmittedPidRes(submiPidRes: SubmiPidRes)
+        fun showRefreshPidRes(res: PIdStatusRes)
+        fun showSparePartsRes(res: ArrayList<SparePartsData>)
+        fun showPidDetailsRes(res: BLEDetailsRes)
+        fun showSyncRes(res: BLEDetailsRes)
+        fun showJobRes(res: Job)
     }
 
     interface Presenter : BasePresenter<View> {
@@ -29,5 +34,11 @@ interface WorkFlowContract {
         fun addFinishWorkFlow(workFlow: AddWorkFlowData)
         fun addImage(jobId: Int, elementId: Int, file: File)
         fun finishJob(jobId: Int, finishJobIp: FinishJobIp)
+        fun submitPid(submitPidIp: SubmitPidIp)
+        fun refreshPidStatus(purifierId: String)
+        fun getSparePartsList(functionName: String?)
+        fun getPidDetails(hashMap: HashMap<String, String>)
+        fun updateServerCmds(hashMap: HashMap<String, String>)
+        fun getJob(jobId: Int)
     }
 }

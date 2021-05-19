@@ -29,13 +29,27 @@ class TechJobsListViewHolder(override val containerView: View?, var context: Con
             } else {
                 tv_areavalue.text = item.customerAddress?.area?.description.toString()
             }
-            if (pos == 0) {
-                ll_mobile.visibility = View.VISIBLE
-                ll_alt_mobile.visibility = View.VISIBLE
-            } else {
-                ll_mobile.visibility = View.GONE
-                ll_alt_mobile.visibility = View.GONE
+            //job assigned diff
+            val startJobInput = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
+            startJobInput.timeZone = TimeZone.getTimeZone("GMT")
+            var startJobDate: Date? = null
+            try {
+                startJobDate = startJobInput.parse(item.appointmentStartTime!!)
+            } catch (e: ParseException) {
+                e.printStackTrace()
             }
+            val jobstarttime: Long = (startJobDate!!.time) - Date().time
+            val diffInHours = jobstarttime / (60 * 60 * 1000) % 24
+            /*if (CommonUtils.getRole() == "ROLE_Technician") {
+                if (pos == 0 && diffInHours <= 1) {
+                    ll_mobile.visibility = View.VISIBLE
+                    ll_alt_mobile.visibility = View.VISIBLE
+                } else {
+                    ll_mobile.visibility = View.GONE
+                    ll_alt_mobile.visibility = View.GONE
+                }
+            }*/
+
             if (!item.appointmentStartTime.isNullOrEmpty()) {
                 val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ROOT)
                 val output = SimpleDateFormat("d-MMM-yyyy", Locale.ROOT)
@@ -58,6 +72,15 @@ class TechJobsListViewHolder(override val containerView: View?, var context: Con
                 tv_appointmentdate.text = item.appointmentStartTime
             }
             tv_statusvalue.text = item.status?.description
+            /* if (item.workflowId != null) {
+                 ll_instatus.visibility = View.VISIBLE
+             } else {
+                 ll_instatus.visibility = View.GONE
+             }
+             tv_instatusvalue.paintFlags = tv_statusvalue.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+             tv_instatusvalue.setOnClickListener {
+                 adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.JOB_TYPE)
+             }*/
             val text = item.customerPhone
             if (text!!.isNotEmpty()) {
                 try {

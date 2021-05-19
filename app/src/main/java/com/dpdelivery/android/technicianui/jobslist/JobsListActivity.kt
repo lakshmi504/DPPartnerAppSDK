@@ -1,5 +1,6 @@
 package com.dpdelivery.android.technicianui.jobslist
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -8,6 +9,8 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.*
+import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dpdelivery.android.R
@@ -15,8 +18,12 @@ import com.dpdelivery.android.commonviews.MultiStateView
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.interfaces.PaginationScrollListener
+import com.dpdelivery.android.model.techinp.FinishJobIp
+import com.dpdelivery.android.model.techinp.UpdateJobIp
 import com.dpdelivery.android.model.techres.ASGListRes
 import com.dpdelivery.android.model.techres.Job
+import com.dpdelivery.android.model.techres.StartJobRes
+import com.dpdelivery.android.model.techres.SubmiPidRes
 import com.dpdelivery.android.technicianui.base.TechBaseActivity
 import com.dpdelivery.android.technicianui.jobdetails.TechJobDetailsActivity
 import com.dpdelivery.android.utils.CommonUtils
@@ -45,6 +52,8 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
     private var currentPage = PAGE_START
     private var data: String? = null
     lateinit var dialog: Dialog
+    private val statusFilterMode = ArrayList<String>()
+    private var statusFilter: String? = null
 
     @Inject
     lateinit var presenter: JobsListPresenter
@@ -65,12 +74,22 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
         dialog = CommonUtils.progressDialog(mContext)
         if (intent != null)
             data = intent.getStringExtra("filter")
-        if (data.equals("ASG")) {
-            setTitle("Assigned Jobs List")
-        } else if (data.equals("INP")) {
-            setTitle("In-Progress Jobs List")
-        } else if (data.equals("COM")) {
-            setTitle("Completed Jobs List")
+        when {
+            data.equals("ASG") -> {
+                setTitle("Assigned Jobs")
+            }
+            data.equals("INP") -> {
+                setTitle("In-Progress Jobs")
+            }
+            data.equals("COM") -> {
+                setTitle("Completed Jobs")
+            }
+            data.equals("PPN") -> {
+                setTitle("Postponed Jobs")
+            }
+            data.equals("CAN") -> {
+                setTitle("Cancelled Jobs")
+            }
         }
         showBack()
         rv_asg_jobs_list.layoutManager = manager
@@ -152,11 +171,10 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
                 if (data.equals("ASG")) {
                     if (CommonUtils.getRole() == "ROLE_Technician") {
                         adapterAsgJobsList.addAll(jobsList)
-                        tv_total_jobs.text = res.total.toString()
                     } else {
                         rl_jobs.visibility = View.GONE
                         TOTAL_PAGES = ceil(res.total?.toDouble()?.div(10.toDouble())!!.toDouble()).toInt()
-                        jobsList.sortWith(Comparator { listItem, t1 -> t1?.appointmentStartTime?.let { listItem?.appointmentStartTime?.compareTo(it) }!! })
+                        //jobsList.sortWith(Comparator { listItem, t1 -> t1?.appointmentStartTime?.let { listItem?.appointmentStartTime?.compareTo(it) }!! })
                         adapterAsgJobsList.addAll(jobsList)
                         if (currentPage < TOTAL_PAGES) adapterAsgJobsList.addLoadingFooter()
                         else isLastPage = true
@@ -164,7 +182,7 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
                 } else {
                     rl_jobs.visibility = View.GONE
                     TOTAL_PAGES = ceil(res.total?.toDouble()?.div(10.toDouble())!!.toDouble()).toInt()
-                    jobsList.sortWith(Comparator { listItem, t1 -> t1?.appointmentStartTime?.let { listItem?.appointmentStartTime?.compareTo(it) }!! })
+                    //jobsList.sortWith(Comparator { listItem, t1 -> t1?.appointmentStartTime?.let { listItem?.appointmentStartTime?.compareTo(it) }!! })
                     adapterAsgJobsList.addAll(jobsList)
                     if (currentPage < TOTAL_PAGES) adapterAsgJobsList.addLoadingFooter()
                     else isLastPage = true
@@ -235,7 +253,82 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
                     dialog.show()
                     presenter.getVoipCall(caller = any.assignedTo!!.phoneNumber, receiver = any.customerAltPhone!!)
                 }
+                Constants.JOB_TYPE -> {
+                    val statusDialog = Dialog(context, R.style.CustomDialogThemeLightBg)
+                    statusDialog.setContentView(R.layout.layout_status_change)
+                    statusDialog.setCancelable(true)
+                    (statusDialog.findViewById(R.id.btn_close) as ImageView).setOnClickListener {
+                        statusDialog.dismiss()
+                    }
+                    val statusFilterData = any.agentJobStatuses
+                    if (statusFilterData!!.isNotEmpty()) {
+                        statusFilterMode.clear()
+                        statusFilterMode.add("Select Status")
+                        for (item in statusFilterData) {
+                            statusFilterMode.add(item?.description!!)
+                        }
+                    }
+                    val spStatusFilter = (statusDialog.findViewById(R.id.sp_status_filter) as Spinner)
+                    val note = (statusDialog.findViewById(R.id.et_note) as EditText)
+                    (statusDialog.findViewById(R.id.tv_job_id) as TextView).text = any.id!!.toString()
+                    val adapterStatusMode = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, statusFilterMode)
+                    adapterStatusMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    spStatusFilter.adapter = adapterStatusMode
+                    spStatusFilter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                        override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                        }
+
+                        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                            statusFilter = spStatusFilter.selectedItem.toString()
+                            if (statusFilter != "Select Status") {
+                                for (statusCodes in statusFilterData) {
+                                    if (statusCodes!!.description == statusFilter) {
+                                        statusFilter = statusCodes.code
+                                        break
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                    if (!(context as Activity).isFinishing) {
+                        statusDialog.show()
+                    }
+                    (statusDialog.findViewById(R.id.btn_submit) as AppCompatButton).setOnClickListener {
+                        if (statusFilter != "Select Status") {
+                            if (note.text.toString().isNotEmpty()) {
+                                dialog.show()
+                                val jobStatus = FinishJobIp(status = statusFilter)
+                                presenter.addNote(any.id, updateJobIp = UpdateJobIp(note = note.text!!.toString()))
+                                presenter.updateJob(any.id, jobStatus)
+                                statusDialog.dismiss()
+                            } else {
+                                toast("Note should not be empty")
+                            }
+                        } else {
+                            toast("Please Select Status")
+                        }
+                    }
+                }
             }
+        }
+    }
+
+    override fun showAddNoteRes(res: StartJobRes) {
+        if (res.success!!) {
+            dialog.dismiss()
+        }
+    }
+    override fun showUpdateJobRes(res: SubmiPidRes) {
+        if (res.success) {
+            dialog.dismiss()
+            toast("Updated Successfully")
+            init()
+        } else {
+            toast(res.message)
+            dialog.dismiss()
+            showViewState(MultiStateView.VIEW_STATE_CONTENT)
         }
     }
 

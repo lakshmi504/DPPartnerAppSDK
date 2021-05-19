@@ -55,7 +55,8 @@
         android:text="00:00:60"
         android:textColor="@color/light_orange"
         android:textSize="@dimen/dimens_12sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone"/>
 
 
     <androidx.appcompat.widget.AppCompatButton

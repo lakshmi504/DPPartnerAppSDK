@@ -33,7 +33,8 @@
             android:fontFamily="@font/montserrat_regular"
             android:text="Total Assigned Jobs:"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/dimens_12sp" />
+            android:textSize="@dimen/dimens_12sp"
+            android:visibility="gone" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_total_jobs"
@@ -43,6 +44,7 @@
             android:layout_toEndOf="@id/total_jobs"
             android:fontFamily="@font/montserrat_regular"
             android:textColor="@color/colorBlack"
+            android:visibility="gone"
             android:textSize="@dimen/dimens_12sp" />
     </RelativeLayout>
 

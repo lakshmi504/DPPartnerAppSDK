@@ -5,6 +5,7 @@ import com.dpdelivery.android.api.ApiService
 import com.dpdelivery.android.model.techinp.AddTextIp
 import com.dpdelivery.android.model.techinp.AddWorkFlowData
 import com.dpdelivery.android.model.techinp.FinishJobIp
+import com.dpdelivery.android.model.techinp.SubmitPidIp
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.schedulers.BaseScheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -145,6 +146,106 @@ class WorkFlowPresenter @Inject constructor(
                                 { throwable ->
                                     view?.showErrorMsg(throwable)
                                 }))
+    }
+
+    override fun submitPid(submitPidIp: SubmitPidIp) {
+        view?.showProgress()
+        subscription.add(
+                apiService.submitPid(CommonUtils.getLoginToken(), submitPidIp)
+                        .subscribeOn(baseScheduler.io())
+                        .observeOn(baseScheduler.ui())
+                        .subscribe(
+                                { res ->
+                                    view?.showSubmittedPidRes(res)
+                                },
+                                { throwable ->
+                                    view?.showErrorMsg(throwable)
+                                }))
+    }
+
+    override fun refreshPidStatus(purifierId: String) {
+        view?.showProgress()
+        subscription.add(
+                apiService.refreshPidStatus(CommonUtils.getLoginToken(), deviceId = purifierId)
+                        .subscribeOn(baseScheduler.io())
+                        .observeOn(baseScheduler.ui())
+                        .subscribe(
+                                { res ->
+                                    view?.showRefreshPidRes(res)
+                                },
+                                { throwable ->
+                                    try {
+                                        view?.showErrorMsg(throwable)
+                                    } catch (e: Exception) {
+
+                                    }
+                                }))
+    }
+
+    override fun getSparePartsList(functionName: String?) {
+        view?.showProgress()
+        subscription.add(
+                apiService.getSpareParts(CommonUtils.getLoginToken(), functionName!!)
+                        .subscribeOn(baseScheduler.io())
+                        .observeOn(baseScheduler.ui())
+                        .subscribe(
+                                { res ->
+                                    view?.showSparePartsRes(res)
+                                },
+                                { throwable ->
+                                    view?.showErrorMsg(throwable)
+                                }))
+    }
+
+    override fun getPidDetails(hashMap: HashMap<String, String>) {
+        view?.showProgress()
+        subscription.add(
+                apiService.getBLEDetails(purifierid = hashMap)
+                        .subscribeOn(baseScheduler.io())
+                        .observeOn(baseScheduler.ui())
+                        .subscribe(
+                                { res ->
+                                    view?.showPidDetailsRes(res)
+                                },
+                                { throwable ->
+                                    view?.showErrorMsg(throwable)
+                                }))
+    }
+
+    override fun updateServerCmds(hashMap: HashMap<String, String>) {
+        view?.showProgress()
+        subscription.add(
+                apiService.updateServerCmds(params = hashMap)
+                        .subscribeOn(baseScheduler.io())
+                        .observeOn(baseScheduler.ui())
+                        .subscribe(
+                                { res ->
+                                    view?.showSyncRes(res)
+                                },
+                                { throwable ->
+                                    view?.showErrorMsg(throwable)
+                                }))
+    }
+
+    override fun getJob(jobId: Int) {
+        view?.showProgress()
+        try {
+            subscription.add(
+                    apiService.getAssignedJobById(CommonUtils.getLoginToken(), jobId = jobId)
+                            .subscribeOn(baseScheduler.io())
+                            .observeOn(baseScheduler.ui())
+                            .subscribe(
+                                    { res ->
+                                        view?.hideProgress()
+                                        view?.showJobRes(res)
+                                    },
+                                    { throwable ->
+                                        view?.hideProgress()
+                                        view?.showErrorMsg(throwable)
+                                    }))
+        } catch (e: KotlinNullPointerException) {
+
+        }
     }
 
     override fun dropView() {

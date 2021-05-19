@@ -3,6 +3,8 @@ package com.dpdelivery.android.technicianui.techjobslist
 import android.content.Context
 import com.dpdelivery.android.R
 import com.dpdelivery.android.api.ApiService
+import com.dpdelivery.android.model.techinp.FinishJobIp
+import com.dpdelivery.android.model.techinp.UpdateJobIp
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.schedulers.BaseScheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -90,6 +92,34 @@ class TechJobsListPresenter @Inject constructor(
                                 }))
     }
 
+    override fun updateJob(jobId: Int, finishJobIp: FinishJobIp) {
+        view?.showProgress()
+        subscription.add(
+                apiService.finishJob(CommonUtils.getLoginToken(), jobId, finishJobIp)
+                        .subscribeOn(baseScheduler.io())
+                        .observeOn(baseScheduler.ui())
+                        .subscribe(
+                                { res ->
+                                    view?.showUpdateJobRes(res)
+                                },
+                                { throwable ->
+                                    view?.showErrorMsg(throwable)
+                                }))
+    }
+    override fun addNote(jobId: Int, updateJobIp: UpdateJobIp) {
+        view?.showProgress()
+        subscription.add(
+                apiService.addNote(CommonUtils.getLoginToken(), jobId = jobId, updateJobIp = updateJobIp)
+                        .subscribeOn(baseScheduler.io())
+                        .observeOn(baseScheduler.ui())
+                        .subscribe(
+                                { res ->
+                                    view?.showAddNoteRes(res)
+                                },
+                                { throwable ->
+                                    view?.showErrorMsg(throwable)
+                                }))
+    }
     override fun dropView() {
         subscription.clear()
         this.view = null

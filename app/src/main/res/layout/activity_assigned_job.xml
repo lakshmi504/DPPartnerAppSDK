@@ -283,7 +283,6 @@
                     android:fontFamily="@font/montserrat_regular"
                     android:textSize="@dimen/dimens_14sp" />
 
-
                 <include
                     android:id="@+id/layout_ins"
                     layout="@layout/layout_type_installation"

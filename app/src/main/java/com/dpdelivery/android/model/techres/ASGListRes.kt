@@ -37,6 +37,8 @@ data class Job(
         val priority: Priority?,
         val spareParts: List<Any>?,
         val status: Status?,
+        val jobStatuses: ArrayList<JobStatuses?>?,
+        val agentJobStatuses: ArrayList<AgentJobStatuses?>?,
         val type: Type?,
         val customerLatLong: String?
 )
@@ -109,6 +111,20 @@ data class Priority(
 
 @Keep
 data class Status(
+        val code: String?,
+        val description: String?,
+        val id: Int?
+)
+
+@Keep
+data class JobStatuses(
+        val code: String?,
+        val description: String?,
+        val id: Int?
+)
+
+@Keep
+data class AgentJobStatuses(
         val code: String?,
         val description: String?,
         val id: Int?

@@ -70,10 +70,10 @@ interface ApiService {
     fun getMoreJobsList(@Header("Authorization") token: String, @Query("status") status: String, @Query("appointmentDate") appointmentDate: String, @Query("orderBy") orderBy: String, @Query("pageSize") pageSize: Int, @Query("page") page: Int): Observable<ASGListRes>
 
     @GET(ApiConstants.JOBS_LIST)
-    fun getAssignedJobs(@Header("Authorization") token: String, @Query("status") status: String, @Query("orderBy") orderBy: String, @Query("pageSize") pageSize: Int, @Query("page") page: Int): Observable<ASGListRes>
+    fun getAssignedJobs(@Header("Authorization") token: String, @Query("status") status: String, @Query("orderDir") orderDir: String, @Query("pageSize") pageSize: Int, @Query("page") page: Int): Observable<ASGListRes>
 
     @GET(ApiConstants.JOBS_LIST)
-    fun getMoreJobsList(@Header("Authorization") token: String, @Query("status") status: String, @Query("orderBy") orderBy: String, @Query("pageSize") pageSize: Int, @Query("page") page: Int): Observable<ASGListRes>
+    fun getMoreJobsList(@Header("Authorization") token: String, @Query("status") status: String, @Query("orderDir") orderDir: String, @Query("pageSize") pageSize: Int, @Query("page") page: Int): Observable<ASGListRes>
 
     @GET(ApiConstants.JOBS_LIST)
     fun getFilterJobs(@Header("Authorization") token: String, @Query("status") status: String, @Query("appointmentDate") appointmentDate: String, @Query("orderBy") orderBy: String, @Query("pageSize") pageSize: Int): Observable<ASGListRes>
@@ -102,6 +102,9 @@ interface ApiService {
 
     @GET(ApiConstants.SPARE_PARTS)
     fun getSpareParts(@Header("Authorization") token: String): Observable<ArrayList<SparePartsData>>
+
+    @GET
+    fun getSpareParts(@Header("Authorization") token: String, @Url url: String): Observable<ArrayList<SparePartsData>>
 
     @PUT(ApiConstants.FINISH_JOB + "{jobId}")
     fun finishJob(@Header("Authorization") token: String, @Path("jobId", encoded = true) jobId: Int, @Body finishJobIp: FinishJobIp): Observable<SubmiPidRes>

@@ -54,6 +54,14 @@ class CommonUtils {
             return SharedPreferenceManager.getPrefVal(SharedPreferenceManager.JOB_START_TIME, "", SharedPreferenceManager.VALUE_TYPE.STRING) as String
         }
 
+        fun saveBotId(string: String?) {
+            SharedPreferenceManager.setPrefVal(SharedPreferenceManager.BOT_ID, string!!, SharedPreferenceManager.VALUE_TYPE.STRING)
+        }
+
+        fun getBotId(): String {
+            return SharedPreferenceManager.getPrefVal(SharedPreferenceManager.BOT_ID, "", SharedPreferenceManager.VALUE_TYPE.STRING) as String
+        }
+
         fun showdatepicker(context: Context, listener: SelectedDateListener, dateValue: Long, s: String) {
             dateListener = listener
             val mYear: Int

@@ -12,7 +12,9 @@ data class WorkFlowDataRes(
     data class WorkFlowDataResBody(
             val steps: ArrayList<Step>?,
             val statusElementId: Int,
-            val submissionField: String
+            val submissionField: String,
+            val activationElementId: Int,
+            val syncElementId: Int
     ) {
         @Keep
         data class Step(
@@ -34,7 +36,6 @@ data class WorkFlowDataRes(
                         val optional: Boolean? = null,
                         val showType: String?,
                         val value: String? = "",
-                        var dataValue: String? = "",
                         val workflowElementType: String?
                 )
             }

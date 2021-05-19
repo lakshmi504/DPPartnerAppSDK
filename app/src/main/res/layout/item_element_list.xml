@@ -42,6 +42,16 @@
             android:visibility="gone" />
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivqrcodescan"
+            android:layout_width="@dimen/dimens_20"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/dimens_10"
+            android:layout_marginEnd="@dimen/dimens_10"
+            android:src="@drawable/qr"
+            android:visibility="gone" />
+
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_mandatory"
             android:layout_width="@dimen/dimens_10"
             android:layout_height="@dimen/dimens_10"
@@ -115,17 +125,180 @@
             android:layout_toEndOf="@id/btn_add_image"
             android:src="@drawable/ic_star"
             android:visibility="gone" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/btn_upload_image"
-            android:layout_width="@dimen/dimens_30"
-            android:layout_height="@dimen/dimens_30"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/dimens_10"
-            android:layout_marginTop="@dimen/dimens_10"
-            android:layout_toEndOf="@+id/iv_mandatory2"
-            android:src="@drawable/ic_upload_image"
-            android:visibility="gone" />
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_ins"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_semibold"
+                android:text="@string/pid"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimens_10"
+                android:gravity="center">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_purifier_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="@dimen/dimens_10"
+                    android:layout_marginBottom="@dimen/dimens_10"
+                    android:layout_toStartOf="@id/iv_qr_code"
+                    android:background="@drawable/bg_edit_text"
+                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:gravity="center"
+                    android:inputType="textCapCharacters"
+                    android:maxLength="10"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/dimens_12sp" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_qr_code"
+                    android:layout_width="@dimen/dimens_20"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/dimens_10"
+                    android:layout_marginEnd="@dimen/dimens_10"
+                    android:src="@drawable/qr" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_activate"
+            android:layout_width="@dimen/dimens_100"
+            android:layout_height="@dimen/dimens_30"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/btn_orange_bg"
+            android:fontFamily="@font/montserrat_regular"
+            android:gravity="center"
+            android:text="@string/activate"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_10"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_semibold"
+                android:text="@string/status"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/dimens_10"
+                    android:layout_toStartOf="@id/iv_refresh"
+                    android:background="@drawable/bg_edit_text"
+                    android:gravity="center"
+                    android:textSize="@dimen/dimens_14sp" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_refresh"
+                    android:layout_width="@dimen/dimens_30"
+                    android:layout_height="@dimen/dimens_30"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/dimens_10"
+                    android:src="@drawable/ic_refresh" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_spares"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <FrameLayout
+            android:id="@+id/ll_spinner_spares"
+            android:layout_width="@dimen/dimens_150"
+            android:layout_height="@dimen/dimens_30"
+            android:background="@drawable/btn_background_grey_border"
+            android:orientation="vertical">
+
+            <Spinner
+                android:id="@+id/spinner_spares"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dimens_4"
+                android:layout_marginBottom="@dimen/dimens_2"
+                android:background="@null" />
+
+            <ImageView
+                android:id="@+id/iv_spinner_spares"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|right"
+                android:layout_marginEnd="@dimen/dimens_4"
+                android:background="@drawable/ic_sidemenu_down_arrow" />
+
+        </FrameLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_sync"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/tv_sync"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/montserrat_regular"
+            android:gravity="center"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/dimens_12sp" />
+
+        <Button
+            android:id="@+id/btn_sync"
+            style="@style/finish_buttons_style"
+            android:text="@string/sync_now" />
+    </LinearLayout>
 
 </LinearLayout>

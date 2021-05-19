@@ -7,9 +7,9 @@
         android:id="@+id/ll_bg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dimens_8"
-        android:layout_marginEnd="@dimen/dimens_8"
-        android:layout_marginBottom="@dimen/dimens_8"
+        android:layout_marginStart="@dimen/dimens_5"
+        android:layout_marginEnd="@dimen/dimens_5"
+        android:layout_marginBottom="@dimen/dimens_5"
         android:background="@drawable/bg_edit_text"
         android:orientation="vertical">
 
@@ -266,6 +266,38 @@
                     android:fontFamily="@font/montserrat_regular"
                     android:textColor="@color/colorBlue"
                     android:textSize="@dimen/dimens_12sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_instatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimens_5"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/tv_instatus"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="In Status :"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/dimens_13sp" />
+
+                <TextView
+                    android:id="@+id/tv_instatusvalue"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="Update Status"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/dimens_12sp" />
+
             </LinearLayout>
 
         </LinearLayout>

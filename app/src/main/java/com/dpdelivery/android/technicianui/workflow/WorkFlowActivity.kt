@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.Matrix
 import android.media.ExifInterface
 import android.media.MediaScannerConnection
@@ -17,13 +18,16 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import android.text.InputFilter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -36,31 +40,38 @@ import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.model.techinp.AddWorkFlowData
 import com.dpdelivery.android.model.techinp.FinishJobIp
-import com.dpdelivery.android.model.techres.AddTextRes
-import com.dpdelivery.android.model.techres.SubmiPidRes
-import com.dpdelivery.android.model.techres.TechNote
-import com.dpdelivery.android.model.techres.WorkFlowDataRes
+import com.dpdelivery.android.model.techinp.SubmitPidIp
+import com.dpdelivery.android.model.techres.*
 import com.dpdelivery.android.technicianui.base.TechBaseActivity
+import com.dpdelivery.android.technicianui.scanner.ScannerActivity
+import com.dpdelivery.android.technicianui.sync.Command
+import com.dpdelivery.android.technicianui.sync.DatabaseHandler
+import com.dpdelivery.android.technicianui.sync.SyncActivity
 import com.dpdelivery.android.technicianui.techjobslist.TechJobsListActivity
 import com.dpdelivery.android.technicianui.workflow.workflowadapter.TemplateListAdapter
 import com.dpdelivery.android.utils.CommonUtils
+import com.dpdelivery.android.utils.DateHelper
 import com.dpdelivery.android.utils.toast
 import com.dpdelivery.android.utils.withNotNullNorEmpty
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.zxing.integration.android.IntentIntegrator
 import id.zelory.compressor.Compressor
 import kotlinx.android.synthetic.main.activity_work_flow.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.error_view.*
 import kotlinx.android.synthetic.main.item_element_list.view.*
 import kotlinx.android.synthetic.main.item_timeline.*
+import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.regex.Pattern
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -76,6 +87,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var currentPosition: Int = 0
     lateinit var manager: LinearLayoutManager
     lateinit var adapterNotesList: BasicAdapter
+    private var isSuccess: Boolean = false
 
     @Inject
     lateinit var workFlowPresenter: WorkFlowPresenter
@@ -89,7 +101,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     lateinit var dialog: Dialog
     lateinit var data: JSONObject
     private var image: AppCompatImageView? = null
-    private var uploadImage: AppCompatImageView? = null
     private var mandatory: AppCompatImageView? = null
     private var elementId: Int = 0
     private var mTemplateList: ArrayList<WorkFlowDataRes.WorkFlowDataResBody.Step.Template>? = null
@@ -100,8 +111,21 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var latitude: String = ""
     private var longitude: String = ""
     private var submissionField: String = ""
+    private var syncElementId: Int = 0
+    private var activationElementId: Int = 0
+    private var et_device_code: AppCompatEditText? = null
+    private var et_purifier_id: AppCompatEditText? = null
+    private var btn_activate: AppCompatButton? = null
+    private var iv_refresh: AppCompatImageView? = null
+    private var tv_status: AppCompatTextView? = null
     private var LOCATION_PERMISSION_REQUEST_CODE = 123
-
+    lateinit var partList: ArrayList<SparePartsData>
+    private var spinnerSpares: Spinner? = null
+    private var value: String? = null
+    lateinit var dbH: DatabaseHandler
+    private var ownerName: String = ""
+    private var synctext: TextView? = null
+    private var isSync: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -130,6 +154,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         btn_submit.setOnClickListener(this)
         tv_view_notes.visibility = View.VISIBLE
         tv_view_notes.setOnClickListener(this)
+        error_button.setOnClickListener(this)
+        dbH = DatabaseHandler(this)
     }
 
     override fun onClick(v: View?) {
@@ -143,24 +169,27 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             }
             R.id.btn_next -> {
                 if (stepsFinished.containsValue(false)) {
-                    Toast.makeText(context, "Please submit mandatory fields", Toast.LENGTH_SHORT).show()
+                    toast("Please submit mandatory fields")
                 } else {
                     nextStep()
                 }
             }
             R.id.btn_Finish -> {
                 if (stepsFinished.containsValue(false)) {
-                    Toast.makeText(context, "Please submit mandatory fields", Toast.LENGTH_SHORT).show()
+                    toast("Please submit mandatory fields")
                 } else {
                     finishJob()
                 }
             }
             R.id.btn_submit -> {
                 if (stepsFinished.containsValue(false)) {
-                    Toast.makeText(context, "Please submit mandatory fields", Toast.LENGTH_SHORT).show()
+                    toast("Please submit mandatory fields")
                 } else {
                     submit()
                 }
+            }
+            R.id.error_button -> {
+                init()
             }
         }
     }
@@ -196,7 +225,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
         recyclerView.apply {
             layoutManager = mLayoutManager
-            workFlowAdapter = TemplateListAdapter(mContext, adapterClickListener = this@WorkFlowActivity, stepMap = stepMap, stepsFinished = stepsFinished, submissionField = submissionField)
+            workFlowAdapter = TemplateListAdapter(mContext, adapterClickListener = this@WorkFlowActivity, stepMap = stepMap, stepsFinished = stepsFinished, submissionField = submissionField, activationElementId = activationElementId, syncElementId = syncElementId)
             adapter = workFlowAdapter
         }
         val recyclerViewState = recyclerView.layoutManager!!.onSaveInstanceState()
@@ -217,6 +246,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         if (res.success!!) {
             mDataList = res.body!!.steps
             submissionField = res.body.submissionField
+            activationElementId = res.body.activationElementId
+            syncElementId = res.body.syncElementId
             setStep(currentPosition)
         }
     }
@@ -230,7 +261,12 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             tv_nums.text = "" + (position + 1) + "."
             tv_step_name.text = mDataList?.get(position)?.name
             mTemplateList = mDataList?.get(position)?.templates
-            workFlowAdapter!!.addList(mTemplateList, submissionField)
+            workFlowAdapter!!.addList(mTemplateList, submissionField, activationElementId, syncElementId)
+            /*if (currentPosition == mDataList!!.size - 1) {
+                btn_next.visibility = View.GONE
+                btn_submit.visibility = View.GONE
+                btn_Finish.visibility = View.VISIBLE
+            }*/
         }
     }
 
@@ -261,13 +297,15 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     override fun onResume() {
         super.onResume()
         workFlowPresenter.takeView(this)
+        if (CommonUtils.hasUpdates) {
+            updateServerCmds()
+        }
     }
 
     override fun showAddTextRes(res: AddTextRes) {
         dialog.dismiss()
         if (res.success!!) {
             toast(res.message!!)
-            //init()
         } else {
             toast(res.message!!)
         }
@@ -308,19 +346,13 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     override fun showWorkFlowFinishDataRes(res: AddTextRes) {
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (res.success!!) {
-            toast(res.message!!)
-            stepMap.clear()
-            stepsFinished.clear()
-            stepMapList.clear()
-
             showViewState(MultiStateView.VIEW_STATE_LOADING)
-            val currentTime = Date()
+            val currentTime = DateHelper.getCurrentDateTime()
             val output = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
             output.timeZone = TimeZone.getTimeZone("GMT")
             val jobEndTime = output.format(currentTime)
             val finishJobIp = FinishJobIp(status = "COM", latitude = latitude, longitude = longitude, jobEndTime = jobEndTime)
             workFlowPresenter.finishJob(jobId!!, finishJobIp)
-
         } else {
             toast(res.message!!)
         }
@@ -328,7 +360,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
     override fun showErrorMsg(throwable: Throwable, apiType: String) {
         showViewState(MultiStateView.VIEW_STATE_ERROR)
-        error_textView.text = throwable.message.toString()
+        dialog.dismiss()
+        //error_textView.text = throwable.message.toString()
     }
 
     override fun showViewState(state: Int) {
@@ -340,7 +373,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             when (op) {
                 Constants.ELEMENT_IMAGE -> {
                     image = type.btn_add_image
-                    uploadImage = type.btn_upload_image
                     elementId = any.id
                     mandatory = type.iv_mandatory2
                     if (Build.VERSION.SDK_INT >= 21) {
@@ -357,13 +389,152 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                         Toast.makeText(baseContext, getString(R.string.permission_denied), Toast.LENGTH_LONG).show()
                     }
                 }
-                Constants.ELEMENT_UPLOAD_IMAGE -> {
+                Constants.SCAN_CODE -> {
+                    et_device_code = type.et_add_text
+                    IntentIntegrator(this).setCaptureActivity(ScannerActivity::class.java).initiateScan()
+                }
+                Constants.SCAN_QR_CODE -> {
+                    et_device_code = type.et_purifier_id
+                    IntentIntegrator(this).setCaptureActivity(ScannerActivity::class.java).initiateScan()
+                }
+                Constants.SUBMIT_PID -> {
                     dialog.show()
-                    if (imgpath.isNotEmpty()) {
-                        workFlowPresenter.addImage(jobid = jobId!!, elementId = any.id, file = Compressor(this).compressToFile(File(imgpath)))
-                    }
+                    et_purifier_id = type.et_purifier_id
+                    iv_refresh = type.iv_refresh
+                    btn_activate = type.btn_activate
+                    workFlowPresenter.submitPid(submitPidIp = SubmitPidIp(deviceCode = type.et_purifier_id.text.toString(), jobId = jobId!!))
+                }
+                Constants.REFRESH_STATUS -> {
+                    dialog.show()
+                    mandatory = type.iv_mandatory
+                    tv_status = type.tv_status
+                    et_purifier_id = type.et_purifier_id
+                    elementId = any.id
+                    deviceCode = type.et_purifier_id.text.toString()
+                    workFlowPresenter.refreshPidStatus(type.et_purifier_id.text.toString())
+                }
+                Constants.SPARE_PARTS -> {
+                    dialog.show()
+                    elementId = any.id
+                    value = any.value
+                    spinnerSpares = type.spinner_spares
+                    workFlowPresenter.getSparePartsList(any.functionName.toString())
+                }
+                Constants.SYNC -> {
+                    dialog.show()
+                    synctext = type.tv_sync
+                    elementId = any.id
+                    getPidDetails(deviceCode)
                 }
             }
+        }
+    }
+
+    private fun getPidDetails(deviceCode: String?) {
+        val params = HashMap<String, String>()
+        params["purifierid"] = deviceCode.toString()
+        workFlowPresenter.getPidDetails(params)
+    }
+
+    private fun updateServerCmds() {
+        showViewState(MultiStateView.VIEW_STATE_LOADING)
+        val params = HashMap<String, String>()
+        params["purifierid"] = deviceCode.toString()
+        params["currentliters"] = CommonUtils.current.toString() + ""
+        params["validity"] = CommonUtils.validity!!
+        params["flowlimit"] = CommonUtils.flowlimit.toString() + ""
+        params["status"] = CommonUtils.purifierStatus.toString() + ""
+        params["techApp"] = "1"
+
+        val ja = JSONArray()
+        try {
+            val list = dbH.allAcks
+            for (i in list.indices) {
+                val cmd = list[i]
+                val temp = JSONObject()
+                temp.put("cmdid", cmd.id)
+                temp.put("cmd", cmd.cmd)
+                temp.put("status", cmd.status)
+                ja.put(temp)
+            }
+            params["cmds"] = ja.toString()
+
+        } catch (e: Exception) {
+
+        }
+        workFlowPresenter.updateServerCmds(params)
+    }
+
+    override fun showPidDetailsRes(res: BLEDetailsRes) {
+        dialog.dismiss()
+        if (res.status.equals("OK")) {
+            if (isSync) {
+                synctext!!.text = res.output!!.lastsync.toString()
+                stepMap[elementId.toString()] = res.output.lastsync.toString()
+                stepsFinished[elementId.toString()] = true
+            } else {
+                ownerName = res.output?.owner!!
+                //synctext!!.text = res.output.lastsync.toString()
+                dbH.deleteAll()
+                val cmds = res.cmds
+                for (i in 0 until cmds!!.size) {
+                    val c = Command(cmds[i]!!.id!!, cmds[i]!!.cmd, "INIT")
+                    //Log.i("command", "INIT Command Found")
+                    dbH.addCommand(c)
+                    Log.i("SSyyzzzz", "added into table")
+                }
+                botId = CommonUtils.getBotId()
+                if (botId != null) {
+                    val botId = botId!!.substring(0, 2) + ":" + botId!!.substring(2, 4) + ":" + botId!!.substring(4, 6) + ":" + botId!!.substring(6, 8) + ":" + botId!!.substring(8, 10) + ":" + botId!!.substring(10, 12)
+                    startActivity(Intent(this, SyncActivity::class.java)
+                            .putExtra("botId", botId)
+                            .putExtra("purifierId", deviceCode)
+                            .putExtra("owner", ownerName))
+                } else {
+                    toast("Please Restart your app")
+                }
+            }
+        } else {
+            toast(res.output!!.message!!)
+        }
+    }
+
+    override fun showSyncRes(res: BLEDetailsRes) {
+        showViewState(MultiStateView.VIEW_STATE_CONTENT)
+        if (res.status.equals("OK")) {
+            dbH.clearAcks()
+            isSync = true
+            getPidDetails(deviceCode)
+            CommonUtils.resetUpdate()
+        } else {
+            toast(res.output!!.message!!)
+        }
+    }
+
+    override fun showSparePartsRes(res: ArrayList<SparePartsData>) {
+        dialog.dismiss()
+        if (res.isNotEmpty()) {
+            partList = res
+            if (partList.isNotEmpty()) {
+                val adapterMode = ArrayAdapter<SparePartsData>(context, android.R.layout.simple_spinner_item, partList)
+                adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinnerSpares!!.adapter = adapterMode
+                spinnerSpares!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                    }
+
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        val selectedString = partList[position].itemname
+                        stepMap[elementId.toString()] = selectedString
+                        stepsFinished[elementId.toString()] = true
+                    }
+
+                }
+            }
+
+        } else {
+            toast("No Spares Found")
         }
     }
 
@@ -382,6 +553,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
         if (resultCode == Activity.RESULT_OK && requestCode == CAMERA_REQUEST) {
             val f = File(mContext.getExternalFilesDir(null)!!.absolutePath)
             var dir = File(f, "DP Partner 2.0/Image")
@@ -440,6 +612,23 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 e.printStackTrace()
             }
         }
+        //We will get scan results here
+        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        //check for null
+        if (result != null) {
+            if (result.contents == null) {
+                Toast.makeText(this, "Scan Cancelled", Toast.LENGTH_SHORT).show()
+            } else {
+                val regex = "^[a-zA-Z0-9]+$"
+                val pattern = Pattern.compile(regex)
+                val matcher = pattern.matcher(result.contents)
+                if (matcher.matches()) {
+                    et_device_code!!.setText(result.contents)
+                } else
+                    toast("Purifier ID Is Not Valid")
+            }
+        }
+
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -475,12 +664,59 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
     override fun showFinishJobRes(res: SubmiPidRes) {
         if (res.success) {
+            stepMap.clear()
+            stepsFinished.clear()
+            stepMapList.clear()
+            CommonUtils.saveBotId("")
             startActivity(Intent(this, TechJobsListActivity::class.java))
             finish()
         } else {
             toast(res.message)
             showViewState(MultiStateView.VIEW_STATE_CONTENT)
         }
+    }
+
+    override fun showSubmittedPidRes(submiPidRes: SubmiPidRes) {
+        if (submiPidRes.success) {
+            dialog.dismiss()
+            try {
+                btn_activate!!.isEnabled = false
+                et_purifier_id!!.isEnabled = false
+                iv_refresh!!.isEnabled = true
+                toast(submiPidRes.message)
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            }
+        } else if (!submiPidRes.success) {
+            toast(submiPidRes.message)
+            dialog.dismiss()
+            isSuccess = submiPidRes.success
+            iv_refresh!!.isEnabled = false
+        }
+    }
+
+    override fun showRefreshPidRes(res: PIdStatusRes) {
+        try {
+            dialog.dismiss()
+            tv_status!!.filters = arrayOf<InputFilter>(InputFilter.AllCaps())
+            tv_status!!.text = res.description.toUpperCase()
+            tv_status!!.setTextColor(Color.RED)
+            if (tv_status!!.text.toString() == "ACTIVE") {
+                workFlowPresenter.getJob(jobId!!)
+                mandatory!!.visibility = View.INVISIBLE
+                stepMap[elementId.toString()] = et_purifier_id!!.text.toString()
+                stepsFinished[elementId.toString()] = true
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun showJobRes(res: Job) {
+        showViewState(MultiStateView.VIEW_STATE_CONTENT)
+        // botId = res.bid + ""
+        CommonUtils.saveBotId(res.bid + "")
+        connectivity = res.connectivity + ""
     }
 
     override fun onBackPressed() {
@@ -527,8 +763,11 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private fun setUpLocationListener() {
         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         // for getting the current location update after every 2 seconds with high accuracy
-        val locationRequest = LocationRequest().setInterval(2000).setFastestInterval(2000)
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+        val locationRequest = LocationRequest.create().apply {
+            interval = 2000
+            fastestInterval = 2000
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return
         }

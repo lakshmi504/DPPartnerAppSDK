@@ -1,5 +1,6 @@
 package com.dpdelivery.android.technicianui.techjobslist
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -9,17 +10,20 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.TextView
+import android.widget.*
+import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dpdelivery.android.R
 import com.dpdelivery.android.commonadapter.BasicAdapter
 import com.dpdelivery.android.commonviews.MultiStateView
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
+import com.dpdelivery.android.model.techinp.FinishJobIp
+import com.dpdelivery.android.model.techinp.UpdateJobIp
 import com.dpdelivery.android.model.techres.ASGListRes
 import com.dpdelivery.android.model.techres.Job
+import com.dpdelivery.android.model.techres.StartJobRes
+import com.dpdelivery.android.model.techres.SubmiPidRes
 import com.dpdelivery.android.technicianui.base.TechBaseActivity
 import com.dpdelivery.android.technicianui.jobdetails.TechJobDetailsActivity
 import com.dpdelivery.android.technicianui.jobslist.JobsListActivity
@@ -41,11 +45,15 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
     lateinit var adapterAsgJobsList: BasicAdapter
     lateinit var jobsList: ArrayList<Job?>
     private var filter: String? = null
+    private var statusFilter: String? = null
     lateinit var dialog: Dialog
 
     @Inject
     lateinit var presenter: TechJobsListPresenter
+
+    //private val filterMode: Array<String> = arrayOf<String>("Status Filter", "Assigned", "In-Progress", "Completed", "Postponed", "Cancelled")
     private val filterMode: Array<String> = arrayOf<String>("Status Filter", "Assigned", "In-Progress", "Completed")
+    private val statusFilterMode = ArrayList<String>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +64,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
 
     override fun init() {
         mContext = this
-        setTitle("Jobs List")
+        setTitle("Assigned Jobs")
         setUpBottomNavView(true)
         loadDefaultSpinner()
         search_filter.visibility = View.GONE
@@ -148,6 +156,12 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
                     "Completed" -> {
                         filter = "COM"
                     }
+                    "Postponed" -> {
+                        filter = "PPN"
+                    }
+                    "Cancelled" -> {
+                        filter = "CAN"
+                    }
                 }
                 if (filter != "Status Filter") {
                     startActivity(Intent(this, JobsListActivity::class.java).putExtra("filter", filter))
@@ -163,7 +177,6 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
             res.jobs.withNotNullNorEmpty {
                 jobsList = res.jobs
                 adapterAsgJobsList.addList(jobsList)
-               // tv_total_jobs.text = res.total.toString()
             }
         } else {
             showViewState(MultiStateView.VIEW_STATE_EMPTY)
@@ -219,7 +232,83 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
                     dialog.show()
                     presenter.getVoipCall(caller = any.assignedTo!!.phoneNumber, receiver = any.customerAltPhone!!)
                 }
+                Constants.JOB_TYPE -> {
+                    val statusDialog = Dialog(context, R.style.CustomDialogThemeLightBg)
+                    statusDialog.setContentView(R.layout.layout_status_change)
+                    statusDialog.setCancelable(true)
+                    (statusDialog.findViewById(R.id.btn_close) as ImageView).setOnClickListener {
+                        statusDialog.dismiss()
+                    }
+                    val statusFilterData = any.agentJobStatuses
+                    if (statusFilterData!!.isNotEmpty()) {
+                        statusFilterMode.clear()
+                        statusFilterMode.add("Select Status")
+                        for (item in statusFilterData) {
+                            statusFilterMode.add(item?.description!!)
+                        }
+                    }
+                    val spStatusFilter = (statusDialog.findViewById(R.id.sp_status_filter) as Spinner)
+                    val note = (statusDialog.findViewById(R.id.et_note) as EditText)
+                    (statusDialog.findViewById(R.id.tv_job_id) as TextView).text = any.id!!.toString()
+                    val adapterStatusMode = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, statusFilterMode)
+                    adapterStatusMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    spStatusFilter.adapter = adapterStatusMode
+                    spStatusFilter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                        override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                        }
+
+                        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                            statusFilter = spStatusFilter.selectedItem.toString()
+                            if (statusFilter != "Select Status") {
+                                for (statusCodes in statusFilterData) {
+                                    if (statusCodes!!.description == statusFilter) {
+                                        statusFilter = statusCodes.code
+                                        break
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                    if (!(context as Activity).isFinishing) {
+                        statusDialog.show()
+                    }
+                    (statusDialog.findViewById(R.id.btn_submit) as AppCompatButton).setOnClickListener {
+                        if (statusFilter != "Select Status") {
+                            if (note.text.toString().isNotEmpty()) {
+                                dialog.show()
+                                val jobStatus = FinishJobIp(status = statusFilter)
+                                presenter.addNote(any.id, updateJobIp = UpdateJobIp(note = note.text!!.toString()))
+                                presenter.updateJob(any.id, jobStatus)
+                                statusDialog.dismiss()
+                            } else {
+                                toast("Note should not be empty")
+                            }
+                        } else {
+                            toast("Please Select Status")
+                        }
+                    }
+                }
             }
+        }
+    }
+
+    override fun showAddNoteRes(res: StartJobRes) {
+        if (res.success!!) {
+            dialog.dismiss()
+        }
+    }
+
+    override fun showUpdateJobRes(res: SubmiPidRes) {
+        if (res.success) {
+            dialog.dismiss()
+            toast("Updated Successfully")
+            getAssignedJobsList()
+        } else {
+            toast(res.message)
+            dialog.dismiss()
+            showViewState(MultiStateView.VIEW_STATE_CONTENT)
         }
     }
 

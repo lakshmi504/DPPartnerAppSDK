@@ -10,7 +10,6 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
@@ -22,7 +21,6 @@ import android.view.Window
 import android.widget.*
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.dpdelivery.android.R
@@ -39,6 +37,7 @@ import com.dpdelivery.android.technicianui.sync.DatabaseHandler
 import com.dpdelivery.android.technicianui.sync.SyncActivity
 import com.dpdelivery.android.technicianui.techjobslist.TechJobsListActivity
 import com.dpdelivery.android.utils.CommonUtils
+import com.dpdelivery.android.utils.DateHelper
 import com.dpdelivery.android.utils.toast
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -51,7 +50,6 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -151,14 +149,16 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         })
         loadDefaultSpinner()
         dialog = progressDialog(mContext)
-        if (connectivity!!.contentEquals("BLE")) {
-            ll_sync.visibility = View.VISIBLE
-            val botId = botId!!.substring(0, 2) + ":" + botId!!.substring(2, 4) + ":" + botId!!.substring(4, 6) + ":" + botId!!.substring(6, 8) + ":" + botId!!.substring(8, 10) + ":" + botId!!.substring(10, 12)
-            btn_sync.setOnClickListener {
-                startActivity(Intent(this, SyncActivity::class.java)
-                        .putExtra("botId", botId)
-                        .putExtra("purifierId", deviceCode)
-                        .putExtra("owner", ownerName))
+        if (connectivity!!.isNotEmpty()) {
+            if (connectivity!!.contentEquals("BLE")) {
+                ll_sync.visibility = View.VISIBLE
+                val botId = botId!!.substring(0, 2) + ":" + botId!!.substring(2, 4) + ":" + botId!!.substring(4, 6) + ":" + botId!!.substring(6, 8) + ":" + botId!!.substring(8, 10) + ":" + botId!!.substring(10, 12)
+                btn_sync.setOnClickListener {
+                    startActivity(Intent(this, SyncActivity::class.java)
+                            .putExtra("botId", botId)
+                            .putExtra("purifierId", deviceCode)
+                            .putExtra("owner", ownerName))
+                }
             }
         }
     }
@@ -336,33 +336,33 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         val mView = layoutInflater.inflate(R.layout.layout_otp, null)
         val otp = mView.findViewById<AppCompatEditText>(R.id.output_otp)
         val submitBtn = mView.findViewById<AppCompatButton>(R.id.submitotpbutton)
-        val time = mView.findViewById<AppCompatTextView>(R.id.tv_time)
-        val resendCode = mView.findViewById<AppCompatTextView>(R.id.tv_resend)
+        /* val time = mView.findViewById<AppCompatTextView>(R.id.tv_time)
+         val resendCode = mView.findViewById<AppCompatTextView>(R.id.tv_resend)
 
-        object : CountDownTimer(60000, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                time.text = ("" + String.format(FORMAT,
-                        TimeUnit.MILLISECONDS.toHours(millisUntilFinished),
-                        (TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
-                                TimeUnit.MILLISECONDS.toHours(millisUntilFinished))),
-                        (TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
-                                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)))))
-            }
+         object : CountDownTimer(60000, 1000) {
+             override fun onTick(millisUntilFinished: Long) {
+                 time.text = ("" + String.format(FORMAT,
+                         TimeUnit.MILLISECONDS.toHours(millisUntilFinished),
+                         (TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
+                                 TimeUnit.MILLISECONDS.toHours(millisUntilFinished))),
+                         (TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+                                 TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)))))
+             }
 
-            override fun onFinish() {
-                time.text = getString(R.string.time_out)
-                resendCode.visibility = View.VISIBLE
-            }
-        }.start()
+             override fun onFinish() {
+                 time.text = getString(R.string.time_out)
+                 resendCode.visibility = View.VISIBLE
+             }
+         }.start()*/
 
         mBuilder.setView(mView)
         val dialog = mBuilder.create()
         dialog.setCanceledOnTouchOutside(false)
         dialog.show()
-        resendCode.setOnClickListener {
-            dialog.show()
-            presenter.reSendHappyCode(jobId)
-        }
+        /* resendCode.setOnClickListener {
+             dialog.show()
+             presenter.reSendHappyCode(jobId)
+         }*/
         submitBtn.setOnClickListener {
             if (otp.text.toString().isNotEmpty()) {
                 val ot = otp.text.toString()
@@ -562,6 +562,7 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
             }
         }
     }
+
     override fun onStart() {
         super.onStart()
         when {
@@ -583,12 +584,14 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
             }
         }
     }
+
     override fun onResume() {
         super.onResume()
         presenter.takeView(this)
         updateLatestDetails(deviceCode)
         fetchItemsFromSharedPref()
     }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
@@ -616,8 +619,11 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
     private fun setUpLocationListener() {
         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         // for getting the current location update after every 2 seconds with high accuracy
-        val locationRequest = LocationRequest().setInterval(2000).setFastestInterval(2000)
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+        val locationRequest = LocationRequest.create().apply {
+            interval = 2000
+            fastestInterval = 2000
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return
         }
@@ -639,7 +645,7 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
     }
 
     private fun finishJob() {
-        val currentTime = Date()
+        val currentTime = DateHelper.getCurrentDateTime()
         val output = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
         output.timeZone = TimeZone.getTimeZone("GMT")
         jobEndTime = output.format(currentTime)

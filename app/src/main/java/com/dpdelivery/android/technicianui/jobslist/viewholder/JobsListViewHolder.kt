@@ -25,15 +25,30 @@ class JobsListViewHolder(var view: View, private var adapterClickListener: IAdap
             } else {
                 view.tv_areavalue.text = item.customerAddress?.area?.description.toString()
             }
-            if (jobType == "ASG") {
-                if (pos == 0) {
-                    view.ll_mobile.visibility = View.VISIBLE
-                    view.ll_alt_mobile.visibility = View.VISIBLE
-                } else {
-                    view.ll_mobile.visibility = View.GONE
-                    view.ll_alt_mobile.visibility = View.GONE
-                }
+
+            //job assigned diff
+            val startJobInput = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
+            startJobInput.timeZone = TimeZone.getTimeZone("GMT")
+            var startJobDate: Date? = null
+            try {
+                startJobDate = startJobInput.parse(item.appointmentStartTime!!)
+            } catch (e: ParseException) {
+                e.printStackTrace()
             }
+            val jobstarttime: Long = (startJobDate!!.time) - Date().time
+            val diffInHours = jobstarttime / (60 * 60 * 1000) % 24
+
+            /*  if (CommonUtils.getRole() == "ROLE_Technician") {
+                  if (jobType == "ASG") {
+                      if (pos == 0 && diffInHours <= 1) {
+                          view.ll_mobile.visibility = View.VISIBLE
+                          view.ll_alt_mobile.visibility = View.VISIBLE
+                      } else {
+                          view.ll_mobile.visibility = View.GONE
+                          view.ll_alt_mobile.visibility = View.GONE
+                      }
+                  }
+              }*/
             if (!item.appointmentStartTime.isNullOrEmpty()) {
                 val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ROOT)
                 val output = SimpleDateFormat("d-MMM-yyyy", Locale.ROOT)
@@ -56,6 +71,15 @@ class JobsListViewHolder(var view: View, private var adapterClickListener: IAdap
                 view.tv_appointmentdate.text = item.appointmentStartTime
             }
             view.tv_statusvalue.text = item.status?.description
+            /*if ((jobType == "ASG" || jobType == "INP") && item.workflowId != null) {
+                view.ll_instatus.visibility = View.VISIBLE
+            } else {
+                view.ll_instatus.visibility = View.GONE
+            }
+            view.tv_instatusvalue.paintFlags = view.tv_statusvalue.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+            view.tv_instatusvalue.setOnClickListener {
+                adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.JOB_TYPE)
+            }*/
             val text = item.customerPhone
             if (text!!.isNotEmpty()) {
                 try {
