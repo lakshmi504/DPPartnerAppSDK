@@ -4,9 +4,9 @@ class ApiConstants {
     companion object {
 
         //const val BASE_URL = "http://f75175664e67.ngrok.io/"
-        const val BASE_URL = "http://staging.waterwalaprime.in:8080/"
+        //const val BASE_URL = "http://staging.waterwalaprime.in:8080/"
 
-        //const val BASE_URL = "http://test.waterwalaprime.in:8080/"
+        const val BASE_URL = "http://test.waterwalaprime.in:8080/"
         const val PRD_BASE_URL = "http://prd.waterwalaprime.in:8090/"
 
         // Delivery App Apis

@@ -17,6 +17,7 @@
 package com.dpdelivery.android.commonviews;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -175,6 +176,7 @@ public class CircleProgressBar extends AppCompatImageView {
         }
     }
 
+    @SuppressLint("WrongConstant")
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);

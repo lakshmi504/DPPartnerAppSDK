@@ -27,36 +27,35 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    androidExtensions {
-        experimental = true
-    }
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
+        disable 'MissingDefaultResource'
     }
     compileOptions {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
     }
 }
+androidExtensions {
+    experimental = true
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    //noinspection GradleDependency
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'org.jsoup:jsoup:1.13.1'
     //support lib
-    implementation 'androidx.appcompat:appcompat:1.3.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.palette:palette-ktx:1.0.0'
     implementation 'androidx.browser:browser:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.fragment:fragment-ktx:1.3.4'
+    implementation 'androidx.fragment:fragment-ktx:1.3.0'
 
-    //decode jwt
     implementation 'com.auth0.android:jwtdecode:1.4.0'
 
     //squareup
@@ -73,12 +72,11 @@ dependencies {
 
     // dependency injection
     implementation "com.google.dagger:dagger:$dagger2_version"
-    //noinspection OutdatedLibrary
-    implementation "com.google.dagger:dagger-android:$dagger2_version"
+    implementation "com.google.dagger:dagger-android:2.35.1"
     implementation "com.google.dagger:dagger-android-support:$dagger2_version"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'androidx.appcompat:appcompat:1.3.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.play:core-ktx:1.8.1'
     kapt "com.google.dagger:dagger-compiler:$dagger2_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger2_version"
@@ -87,22 +85,22 @@ dependencies {
     implementation 'javax.inject:javax.inject:1'
 
     /*google services*/
-    implementation 'com.google.android.gms:play-services-maps:17.0.1'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:18.0.0'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'com.google.android.libraries.places:places:2.4.0'
 
     //firebase
-    implementation "com.google.firebase:firebase-messaging:22.0.0"
-    implementation "com.google.firebase:firebase-core:19.0.0"
-    implementation 'com.google.firebase:firebase-auth:21.0.1'
+    implementation "com.google.firebase:firebase-messaging:21.0.1"
+    implementation "com.google.firebase:firebase-core:18.0.2"
+    implementation 'com.google.firebase:firebase-auth:20.0.2'
 
     //scanner
     implementation 'com.journeyapps:zxing-android-embedded:3.5.0'
 
-    implementation 'com.google.firebase:firebase-crashlytics:18.0.0'
-    implementation 'com.google.firebase:firebase-analytics:19.0.0'
+    implementation 'com.google.firebase:firebase-crashlytics:17.3.1'
+    implementation 'com.google.firebase:firebase-analytics:18.0.2'
 
     /*glide*/
     implementation "com.github.bumptech.glide:glide:$glide"
@@ -114,8 +112,6 @@ dependencies {
     implementation "com.facebook.stetho:stetho-okhttp3:$stethoVer"
     debugImplementation 'com.readystatesoftware.chuck:library:1.1.0'
 
-    implementation 'com.github.vipulasri:timelineview:1.1.5'
-
     //server date
     implementation 'commons-net:commons-net:3.6'
 
@@ -124,7 +120,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }
-
 apply plugin: 'com.google.gms.google-services'
 repositories {
     mavenCentral()

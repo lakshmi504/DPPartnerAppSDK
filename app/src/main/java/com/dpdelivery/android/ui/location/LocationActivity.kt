@@ -187,6 +187,7 @@ class LocationActivity : AppCompatActivity(), View.OnClickListener, OnMapReadyCa
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             REQUEST_LOCATION_CODE -> {
 
