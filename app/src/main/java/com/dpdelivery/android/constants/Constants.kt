@@ -2,7 +2,7 @@ package com.dpdelivery.android.constants
 
 class Constants {
     companion object {
-        const val ID = "ID"
+        const val ID = "jobId"
         const val JOB_DETAILS = "JOB_DETAILS"
         const val SOURCE = "SOURCE"
         const val PAYMENT_IMAGE = "PAYMENT_IMAGE"

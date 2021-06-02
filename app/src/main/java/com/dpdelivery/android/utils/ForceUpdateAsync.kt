@@ -10,7 +10,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatButton
 import com.dpdelivery.android.R
-import com.dpdelivery.android.ui.splash.SplashActivity
+import com.dpdelivery.android.screens.splash.SplashActivity
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import java.io.IOException

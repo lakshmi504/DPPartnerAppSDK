@@ -1,28 +1,18 @@
 package com.dpdelivery.android.di
 
-import com.dpdelivery.android.technicianui.base.TechBaseActivity
-import com.dpdelivery.android.technicianui.finish.FinishJobActivity
-import com.dpdelivery.android.technicianui.jobdetails.TechJobDetailsActivity
-import com.dpdelivery.android.technicianui.jobslist.JobsListActivity
-import com.dpdelivery.android.technicianui.photo.ImageActivity
-import com.dpdelivery.android.technicianui.scanner.ScannerActivity
-import com.dpdelivery.android.technicianui.search.SearchActivity
-import com.dpdelivery.android.technicianui.summary.SummaryActivity
-import com.dpdelivery.android.technicianui.sync.SyncActivity
-import com.dpdelivery.android.technicianui.techjobslist.TechJobsListActivity
-import com.dpdelivery.android.technicianui.workflow.WorkFlowActivity
-import com.dpdelivery.android.ui.base.BaseActivity
-import com.dpdelivery.android.ui.dashboard.DashBoardActivity
-import com.dpdelivery.android.ui.deliveryjob.DeliveryJobActivity
-import com.dpdelivery.android.ui.deliveryjob.ImagesActivity
-import com.dpdelivery.android.ui.deliveryjoblist.DeliveryJobListActivity
-import com.dpdelivery.android.ui.filteredjobs.FilteredJobsListActivity
-import com.dpdelivery.android.ui.location.LocationActivity
-import com.dpdelivery.android.ui.location.MapLocationActivity
-import com.dpdelivery.android.ui.login.LoginActivity
-import com.dpdelivery.android.ui.photo.PhotosActivity
-import com.dpdelivery.android.ui.search.DeliverySearchActivity
-import com.dpdelivery.android.ui.splash.SplashActivity
+import com.dpdelivery.android.screens.base.TechBaseActivity
+import com.dpdelivery.android.screens.finish.FinishJobActivity
+import com.dpdelivery.android.screens.jobdetails.TechJobDetailsActivity
+import com.dpdelivery.android.screens.jobslist.JobsListActivity
+import com.dpdelivery.android.screens.login.LoginActivity
+import com.dpdelivery.android.screens.photo.ImageActivity
+import com.dpdelivery.android.screens.scanner.ScannerActivity
+import com.dpdelivery.android.screens.search.SearchActivity
+import com.dpdelivery.android.screens.splash.SplashActivity
+import com.dpdelivery.android.screens.summary.SummaryActivity
+import com.dpdelivery.android.screens.sync.SyncActivity
+import com.dpdelivery.android.screens.techjobslist.TechJobsListActivity
+import com.dpdelivery.android.screens.workflow.WorkFlowActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -30,40 +20,10 @@ import dagger.android.ContributesAndroidInjector
 abstract class MyActivityBuilder {
 
     @ContributesAndroidInjector()
-    internal abstract fun baseActivity(): BaseActivity
-
-    @ContributesAndroidInjector()
     internal abstract fun splashactivity(): SplashActivity
 
     @ContributesAndroidInjector()
     internal abstract fun loginActivity(): LoginActivity
-
-    @ContributesAndroidInjector()
-    internal abstract fun deliveryJobListActivity(): DeliveryJobListActivity
-
-    @ContributesAndroidInjector()
-    internal abstract fun deliveryJobActivity(): DeliveryJobActivity
-
-    @ContributesAndroidInjector()
-    internal abstract fun locationActivity(): LocationActivity
-
-    @ContributesAndroidInjector()
-    internal abstract fun mapLocationActivity(): MapLocationActivity
-
-    @ContributesAndroidInjector()
-    internal abstract fun photoActivity(): PhotosActivity
-
-    @ContributesAndroidInjector()
-    internal abstract fun imagesActivity(): ImagesActivity
-
-    @ContributesAndroidInjector()
-    internal abstract fun dashBoardActivity(): DashBoardActivity
-
-    @ContributesAndroidInjector()
-    internal abstract fun filteredJobsListActivity(): FilteredJobsListActivity
-
-    @ContributesAndroidInjector()
-    internal abstract fun deliverySearchActivity(): DeliverySearchActivity
 
     @ContributesAndroidInjector()
     internal abstract fun techBaseActivity(): TechBaseActivity

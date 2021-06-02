@@ -41,33 +41,48 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" /> <!-- [START fcm_default_icon] -->
+        <!--
+                    Set color used with incoming notification messages. This is used when no color is set for the incoming
+                    notification message. See README(https://goo.gl/6BKBk7) for more.
+        -->
+        <!-- [START fcm_default_channel] -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_dp_delivery" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorBlue" /> <!-- [END fcm_default_icon] -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" /> <!-- [END fcm_default_channel] -->
+        <service
+            android:name=".screens.fcm.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
-            android:name=".technicianui.summary.SummaryActivity"
+            android:name=".screens.summary.SummaryActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".ui.search.DeliverySearchActivity"
+            android:name=".screens.search.SearchActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".ui.filteredjobs.FilteredJobsListActivity"
+            android:name=".screens.jobslist.JobsListActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".technicianui.search.SearchActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
-            tools:ignore="LockedOrientationActivity" />
-        <activity
-            android:name=".technicianui.jobslist.JobsListActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
-            tools:ignore="LockedOrientationActivity" />
-        <activity
-            android:name=".technicianui.photo.ImageActivity"
+            android:name=".screens.photo.ImageActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />
@@ -90,12 +105,12 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".ui.login.LoginActivity"
+            android:name=".screens.login.LoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".ui.splash.SplashActivity"
+            android:name=".screens.splash.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize">
             <intent-filter>
@@ -106,80 +121,50 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.base.BaseActivity"
-            android:theme="@style/AppTheme" />
-        <activity android:name=".ui.deliveryjob.DeliveryJobActivity" />
-        <activity
-            android:name=".ui.deliveryjoblist.DeliveryJobListActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/noAnimTheme"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
-            tools:ignore="LockedOrientationActivity" />
-        <activity
-            android:name=".ui.dashboard.DashBoardActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/noAnimTheme"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
-            tools:ignore="LockedOrientationActivity" />
-        <activity
-            android:name=".ui.deliveryjob.ImagesActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
-            tools:ignore="LockedOrientationActivity" />
-        <activity
-            android:name=".ui.photo.PhotosActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
-            tools:ignore="LockedOrientationActivity" />
-        <activity
-            android:name=".ui.location.MapLocationActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
-            tools:ignore="LockedOrientationActivity" />
-        <activity
-            android:name=".ui.location.LocationActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
-            tools:ignore="LockedOrientationActivity" />
-        <activity
-            android:name=".technicianui.base.TechBaseActivity"
+            android:name=".screens.base.TechBaseActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".technicianui.jobdetails.TechJobDetailsActivity"
+            android:name=".screens.jobdetails.TechJobDetailsActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity">
+            <intent-filter>
+                <action android:name="com.dppartner.android.JobDetails" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".screens.techjobslist.TechJobsListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".screens.scanner.ScannerActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".technicianui.techjobslist.TechJobsListActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
-            tools:ignore="LockedOrientationActivity" />
-        <activity
-            android:name=".technicianui.scanner.ScannerActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
-            tools:ignore="LockedOrientationActivity" />
-        <activity
-            android:name=".technicianui.finish.FinishJobActivity"
+            android:name=".screens.finish.FinishJobActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />
 
         <service
-            android:name=".technicianui.sync.BluetoothLeService"
+            android:name=".screens.sync.BluetoothLeService"
             android:enabled="true" />
 
         <activity
-            android:name=".technicianui.sync.SyncActivity"
+            android:name=".screens.sync.SyncActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />
-
         <activity
-            android:name=".technicianui.workflow.WorkFlowActivity"
+            android:name=".screens.workflow.WorkFlowActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />

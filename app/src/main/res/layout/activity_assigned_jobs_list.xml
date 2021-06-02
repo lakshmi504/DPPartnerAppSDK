@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
     android:orientation="vertical"
-    tools:context=".technicianui.techjobslist.TechJobsListActivity">
+    tools:context=".screens.techjobslist.TechJobsListActivity">
 
     <include
         android:id="@+id/search_filter"

@@ -98,4 +98,10 @@
     <string name="please_add_your_input">Please add your input</string>
     <string name="sync_now">Sync Now</string>
 
+    <!--fcm-->
+    <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="account">Account</string>
+
+
 </resources>

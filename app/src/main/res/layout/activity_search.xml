@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
     android:orientation="vertical"
-    tools:context=".technicianui.search.SearchActivity">
+    tools:context=".screens.search.SearchActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"

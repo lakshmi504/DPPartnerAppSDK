@@ -11,16 +11,8 @@ class SharedPreferenceManager {
 
     companion object {
         val PREFERENCE_NAME = "app_pref"
-        val IS_LOGED_IN = "IS_LOGED_IN"
         val TOKEN = "token"
-        val ROLE = "ROLE"
-        val SEARCHED_ADDRESS = "SEARCHED_ADDRESS"
-        val SEARCHED_LAT = "SEARCHED_LAT"
-        val SEARCHED_LONG = "SEARCHED_LONG"
-        val SEARCHED_AREA = "SEARCHED_AREA"
-        val SEARCHED_CITY = "SEARCHED_CITY"
         val TRANSACTION_IMAGE = "TRANSACTION_IMAGE"
-        val DELIVERED_IMAGE = "DELIVERED_IMAGE"
         val CURRENT_VERSION = "CURRENT_VERSION"
 
         val KEY_HASUPDATE = "hasupdate"
@@ -31,15 +23,18 @@ class SharedPreferenceManager {
         val KEY_STATUS = "purifierstatus"
         val KEY_CMDS = "cmds"
         val KEY_PREPAID = "prepaid"
-        val JOB_START_TIME = "JOB_START_TIME"
         val BOT_ID = "BOT_ID"
+        val USER_NAME = "USER_NAME"
 
         fun clearPreferences() {
             getPrefs().edit().clear().apply()
         }
 
         private fun getPrefs(): SharedPreferences {
-            return MyApplication.myApplication.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
+            return MyApplication.myApplication.getSharedPreferences(
+                PREFERENCE_NAME,
+                Context.MODE_PRIVATE
+            )
         }
 
         fun setPrefVal(key: String, value: Any, vType: VALUE_TYPE) {
@@ -80,13 +75,6 @@ class SharedPreferenceManager {
         fun get(key: String, defaultValue: Boolean = false): Boolean {
             return getPrefs().getBoolean(key, defaultValue)
         }
-
-        fun isLogIn(): Boolean {
-            return getPrefVal(IS_LOGED_IN, false, VALUE_TYPE.BOOLEAN) as Boolean
-        }
-
-        fun getlat(): String = get(SEARCHED_LAT, "")!!
-        fun getlng(): String = get(SEARCHED_LONG, "")!!
 
     }
 
