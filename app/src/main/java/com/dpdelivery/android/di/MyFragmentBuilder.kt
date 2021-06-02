@@ -1,6 +1,6 @@
 package com.dpdelivery.android.di
 
-import com.dpdelivery.android.technicianui.finish.SparePartsFragment
+import com.dpdelivery.android.screens.finish.SparePartsFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
