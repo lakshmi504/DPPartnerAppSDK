@@ -127,6 +127,8 @@ class SearchActivity : DaggerAppCompatActivity(), TechJobsListContract.View, IAd
                     toast(throwable.message.toString())
                 }
             }
+        } else {
+            toast(throwable.message.toString())
         }
     }
 

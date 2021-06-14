@@ -225,6 +225,8 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
                     toast(throwable.message.toString())
                 }
             }
+        } else {
+            toast(throwable.message.toString())
         }
     }
 

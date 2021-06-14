@@ -13,7 +13,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <uses-feature
@@ -166,6 +165,41 @@
         <activity
             android:name=".screens.workflow.WorkFlowActivity"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".screens.returnableInventory.ReturnableInventoryActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".screens.usableinventory.UsableInventoryActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".screens.inventory.InventoryActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".screens.account.AccountActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".screens.earningsdetails.DetailEarningsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/noAnimTheme"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
+
+        <activity
+            android:name=".screens.confirmresults.ConfirmScanResultsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />
 

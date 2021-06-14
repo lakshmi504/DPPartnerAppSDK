@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/tv_version"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_10"
+                android:layout_marginTop="@dimen/dimens_20"
+                android:layout_marginEnd="@dimen/dimens_40"
+                android:background="@drawable/bg_edit_text"
+                android:orientation="vertical"
+                android:padding="@dimen/dimens_10">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimens_5"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:text="Name:"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="@dimen/dimens_12sp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dimens_5"
+                        android:fontFamily="@font/montserrat_regular"
+                        android:textAllCaps="true"
+                        android:textColor="@color/colorBlackOverlay"
+                        android:textSize="@dimen/dimens_12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_mobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimens_5"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:text="Phone:"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="@dimen/dimens_12sp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_mobile_no"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dimens_5"
+                        android:fontFamily="@font/montserrat_regular"
+                        android:text="9876543210"
+                        android:textColor="@color/colorBlackOverlay"
+                        android:textSize="@dimen/dimens_12sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimens_10" />
+        </LinearLayout>
+
+
+    </ScrollView>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_version"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/dimens_10"
+        android:fontFamily="@font/montserrat_regular"
+        android:gravity="center"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/dimens_8sp" />
+
+</RelativeLayout>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".screens.inventory.InventoryActivity">
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/et_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_margin="@dimen/dimens_10"
+        android:background="@drawable/btn_background_grey_border"
+        android:drawableEnd="@drawable/ic_search"
+        android:fontFamily="@font/montserrat_regular"
+        android:gravity="center"
+        android:hint="Search"
+        android:textSize="@dimen/dimens_12sp"
+        android:padding="@dimen/dimens_8"
+        android:textColor="@color/colorBlack"
+        android:textColorHint="@color/colorBlackOverlay"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_inventory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/et_search"
+        tools:listitem="@layout/item_inventory" />
+
+</RelativeLayout>

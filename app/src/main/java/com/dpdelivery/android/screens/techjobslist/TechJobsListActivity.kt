@@ -81,6 +81,13 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         dialog = CommonUtils.progressDialog(context)
     }
 
+    override fun onStart() {
+        super.onStart()
+        forceUpdate()
+        loadDefaultSpinner()
+        getPartnerDetails()
+    }
+
     private fun forceUpdate() {
         val packageManager = this.packageManager
         var packageInfo: PackageInfo? = null
@@ -116,6 +123,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
 
     override fun showPartnerDetails(res: PartnerDetailsRes) {
         CommonUtils.saveUserName(res.username)
+        CommonUtils.saveRole(res.role)
         getDeviceToken()
     }
 
@@ -172,9 +180,6 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         super.onResume()
         presenter.takeView(this)
         bottom_navigation.selectedItemId = R.id.action_jobs
-        forceUpdate()
-        loadDefaultSpinner()
-        getPartnerDetails()
         getAssignedJobsList()
     }
 
@@ -185,8 +190,8 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         when (parent!!.id) {
             R.id.sp_filter -> {
-                (parent.getChildAt(0) as TextView).setTextColor(Color.WHITE)
-                (parent.getChildAt(0) as TextView).textSize = 14f
+                (parent.getChildAt(0) as? TextView)?.setTextColor(Color.WHITE)
+                (parent.getChildAt(0) as? TextView)?.textSize = 14f
                 filter = sp_filter!!.selectedItem.toString()
                 when (filter) {
                     "In-Progress" -> {
@@ -261,6 +266,9 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
                     toast(throwable.message.toString())
                 }
             }
+        } else {
+            showViewState(MultiStateView.VIEW_STATE_ERROR)
+            toast(throwable.message.toString())
         }
     }
 

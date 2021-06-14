@@ -23,5 +23,6 @@ class ApiConstants {
         const val VOIP_CALL = "https://api-voice.kaleyra.com/v1/"
         const val UPDATE_TOKEN = "notification/user"
         const val PARTNER_DETAILS = "auth/me"
+        const val EARNINGS = "earnings/entries"
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#F3710E</color>
-    <color name="colorPrimaryDark">#F3710E</color>
+    <color name="colorPrimary">#952AD3</color>
+    <color name="colorPrimaryDark">#952AD3</color>
     <color name="colorAccent">#F3710E</color>
 
 
@@ -15,7 +15,7 @@
     <color name="colorLightGrey">#EBE8E8</color>
     <color name="colorBlackOverlay">#66000000</color>
     <color name="colorBlacklight">#CD0C0C0C</color>
-    <color name="colorGreen">#347E38</color>
+    <color name="colorGreen">#74CEA7</color>
     <color name="app_text_grey">#808B8D</color>
 
     <color name="halfWhite">#FBFBFB</color>
@@ -25,7 +25,7 @@
 
     <color name="recharge_orange">#F3710E</color>
     <color name="light_orange">#CA6315</color>
-    <color name="color_red">#E84235</color>
+    <color name="color_red">#E25C5C</color>
     <color name="light_blue">#96DCF7</color>
     <color name="recharge_green">#59E299</color>
     <color name="recharge_blue">#00AEEF</color>

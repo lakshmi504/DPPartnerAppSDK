@@ -100,8 +100,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
-        android:background="@color/colorWhite"
+        android:background="@color/colorPrimary"
         app:itemIconTint="@drawable/bottom_nav_item_color_state"
+        app:itemTextColor="@drawable/bottom_nav_item_color_state"
         app:labelVisibilityMode="labeled"
         app:layout_behavior="com.dpdelivery.android.commonviews.BottomNavigationBehavior"
         app:menu="@menu/tech_bottom_nav_items" />

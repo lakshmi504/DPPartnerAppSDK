@@ -9,10 +9,17 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_summary"
+        android:id="@+id/action_inventory"
+        android:enabled="true"
+        android:icon="@drawable/ic_jobs_list"
+        android:title="@string/inventory"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_earnings"
         android:enabled="true"
         android:icon="@drawable/summary"
-        android:title="@string/summary"
+        android:title="@string/my_earnings"
         app:showAsAction="ifRoom" />
 
 </menu>

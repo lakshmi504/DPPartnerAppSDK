@@ -38,7 +38,6 @@ import com.dpdelivery.android.screens.sync.DatabaseHandler
 import com.dpdelivery.android.screens.sync.SyncActivity
 import com.dpdelivery.android.screens.techjobslist.TechJobsListActivity
 import com.dpdelivery.android.utils.CommonUtils
-import com.dpdelivery.android.utils.DateHelper
 import com.dpdelivery.android.utils.SharedPreferenceManager
 import com.dpdelivery.android.utils.toast
 import com.google.android.gms.location.LocationCallback
@@ -57,7 +56,8 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 
-class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.OnItemSelectedListener, FinishJobContract.View {
+class FinishJobActivity : TechBaseActivity(), View.OnClickListener,
+    AdapterView.OnItemSelectedListener, FinishJobContract.View {
 
     lateinit var mContext: Context
     private var address: String? = null
@@ -93,7 +93,19 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
     lateinit var presenter: FinishJobPresenter
     private val TAG = FinishJobActivity::class.java.simpleName
     private var mode: String? = null
-    private val paymentMode: Array<String> = arrayOf<String>("Payment Type", "Cash", "Card", "PayTM", "InstaMojo", "EazyPay-Paytm", "EazyPay-GPay", "EazyPay-PhonePay", "BankTransfer", "Cheque", "Other")
+    private val paymentMode: Array<String> = arrayOf<String>(
+        "Payment Type",
+        "Cash",
+        "Card",
+        "PayTM",
+        "InstaMojo",
+        "EazyPay-Paytm",
+        "EazyPay-GPay",
+        "EazyPay-PhonePay",
+        "BankTransfer",
+        "Cheque",
+        "Other"
+    )
     lateinit var partList: ArrayList<SparePartsData>
     private var amountCollected: Float = 0.0f
     private var syncAt: String? = null
@@ -155,12 +167,20 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         if (connectivity!!.isNotEmpty()) {
             if (connectivity!!.contentEquals("BLE")) {
                 ll_sync.visibility = View.VISIBLE
-                val botId = botId!!.substring(0, 2) + ":" + botId!!.substring(2, 4) + ":" + botId!!.substring(4, 6) + ":" + botId!!.substring(6, 8) + ":" + botId!!.substring(8, 10) + ":" + botId!!.substring(10, 12)
+                val botId = botId!!.substring(0, 2) + ":" + botId!!.substring(
+                    2,
+                    4
+                ) + ":" + botId!!.substring(4, 6) + ":" + botId!!.substring(
+                    6,
+                    8
+                ) + ":" + botId!!.substring(8, 10) + ":" + botId!!.substring(10, 12)
                 btn_sync.setOnClickListener {
-                    startActivity(Intent(this, SyncActivity::class.java)
+                    startActivity(
+                        Intent(this, SyncActivity::class.java)
                             .putExtra("botId", botId)
                             .putExtra("purifierId", deviceCode)
-                            .putExtra("owner", ownerName))
+                            .putExtra("owner", ownerName)
+                    )
                 }
             }
         }
@@ -280,7 +300,8 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
     }
 
     private fun loadDefaultSpinner() {
-        val adapterMode = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, paymentMode)
+        val adapterMode =
+            ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, paymentMode)
         adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         sp_mode!!.adapter = adapterMode
         sp_mode.onItemSelectedListener = this
@@ -371,7 +392,8 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
                 val ot = otp.text.toString()
                 otptxt!!.text = ot
                 isOTPSet = true
-                val sharedPreferenceshappycode = getSharedPreferences("happycode$jobId", Context.MODE_PRIVATE)
+                val sharedPreferenceshappycode =
+                    getSharedPreferences("happycode$jobId", Context.MODE_PRIVATE)
                 val editorhappycode = sharedPreferenceshappycode.edit()
                 editorhappycode.putBoolean("otp_type", isOTPSet)
                 editorhappycode.putString("otp", ot)
@@ -397,7 +419,8 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
 
         submitBtn.setOnClickListener {
             if (inputTDS.text.toString().isNotEmpty() && outputTDS.text.toString().isNotEmpty()) {
-                tdsTxt!!.text = "Input TDS :" + inputTDS.text.toString() + " Output TDS :" + outputTDS.text.toString()
+                tdsTxt!!.text =
+                    "Input TDS :" + inputTDS.text.toString() + " Output TDS :" + outputTDS.text.toString()
                 inputTds = Integer.parseInt(inputTDS.text.toString())
                 outputTds = Integer.parseInt(outputTDS.text.toString())
                 isTDSSet = true
@@ -455,17 +478,21 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         prepareSelectedItemsList(listView, partList)
         fetchItemsAndSet(listView, partList, selectedItems, selectedItemsid)
 
-        listView.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-            selectedItem = (view as TextView).text.toString()
-            selectedItemid = partsList[position].itemid.toString()
-            if (selectedItems.contains(selectedItem!!) && selectedItemsid.contains(selectedItemid!!)) {
-                selectedItems.remove(selectedItem!!)
-                selectedItemsid.remove(selectedItemid!!)
-            } else {
-                selectedItems.add(selectedItem!!)
-                selectedItemsid.add(selectedItemid!!)
+        listView.onItemClickListener =
+            AdapterView.OnItemClickListener { parent, view, position, id ->
+                selectedItem = (view as TextView).text.toString()
+                selectedItemid = partsList[position].itemid.toString()
+                if (selectedItems.contains(selectedItem!!) && selectedItemsid.contains(
+                        selectedItemid!!
+                    )
+                ) {
+                    selectedItems.remove(selectedItem!!)
+                    selectedItemsid.remove(selectedItemid!!)
+                } else {
+                    selectedItems.add(selectedItem!!)
+                    selectedItemsid.add(selectedItemid!!)
+                }
             }
-        }
 
         dialog.setOnCancelListener {
             selectedItems.clear()
@@ -491,7 +518,8 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
                 }
             }
 
-            val sharedPreferences = getSharedPreferences("DrinkPrimeParts_$jobId.txt", Context.MODE_PRIVATE)
+            val sharedPreferences =
+                getSharedPreferences("DrinkPrimeParts_$jobId.txt", Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
             editor.putString("items", items)
             editor.putString("itemsid", itemsid)
@@ -503,14 +531,17 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
     }
 
     private fun prepareSelectedItemsList(chl: ListView, purifierParts: ArrayList<SparePartsData>) {
-        val sharedPreferences = getSharedPreferences("DrinkPrimeParts_$jobId.txt", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            getSharedPreferences("DrinkPrimeParts_$jobId.txt", Context.MODE_PRIVATE)
         temp = sharedPreferences.getString("items", "Nothing")
         tempid = sharedPreferences.getString("itemsid", "Nothing")
 
         if (temp == "Nothing") temp = ""
         if (tempid == "Nothing") tempid = ""
 
-        val aList = ArrayList(Arrays.asList(*temp!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()))
+        val aList =
+            ArrayList(Arrays.asList(*temp!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                .toTypedArray()))
         aList.remove("")
         for (i in aList.indices) {
             if (!selectedItems.contains(aList[i].toString())) {
@@ -518,7 +549,9 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
 
             }
         }
-        val aListId = ArrayList(Arrays.asList(*tempid!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()))
+        val aListId =
+            ArrayList(Arrays.asList(*tempid!!.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                .toTypedArray()))
         aListId.remove("")
         for (i in aListId.indices) {
             if (!selectedItemsid.contains(aListId[i].toString())) {
@@ -540,7 +573,12 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         }
     }
 
-    private fun fetchItemsAndSet(chl: ListView, purifierParts: ArrayList<SparePartsData>, selectedItems: ArrayList<String>, selectedItemsid: ArrayList<String>) {
+    private fun fetchItemsAndSet(
+        chl: ListView,
+        purifierParts: ArrayList<SparePartsData>,
+        selectedItems: ArrayList<String>,
+        selectedItemsid: ArrayList<String>
+    ) {
         var item: String
         var itemid: String
         for (i in selectedItems.indices) {
@@ -581,8 +619,8 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
             }
             else -> {
                 CommonUtils.requestAccessFineLocationPermission(
-                        this,
-                        LOCATION_PERMISSION_REQUEST_CODE
+                    this,
+                    LOCATION_PERMISSION_REQUEST_CODE
                 )
             }
         }
@@ -595,7 +633,11 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         fetchItemsFromSharedPref()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             LOCATION_PERMISSION_REQUEST_CODE -> {
@@ -610,9 +652,9 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
                     }
                 } else {
                     Toast.makeText(
-                            this,
-                            getString(R.string.location_permission_not_granted),
-                            Toast.LENGTH_LONG
+                        this,
+                        getString(R.string.location_permission_not_granted),
+                        Toast.LENGTH_LONG
                     ).show()
                 }
             }
@@ -627,28 +669,35 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
             fastestInterval = 2000
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             return
         }
         fusedLocationProviderClient.requestLocationUpdates(
-                locationRequest,
-                object : LocationCallback() {
-                    override fun onLocationResult(locationResult: LocationResult) {
-                        super.onLocationResult(locationResult)
-                        for (location in locationResult.locations) {
-                            latitude = location.latitude.toString()
-                            longitude = location.longitude.toString()
-                        }
-                        // Few more things we can do here:
-                        // For example: Update the location of user on server
+            locationRequest,
+            object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
+                    super.onLocationResult(locationResult)
+                    for (location in locationResult.locations) {
+                        latitude = location.latitude.toString()
+                        longitude = location.longitude.toString()
                     }
-                },
-                Looper.myLooper()!!
+                    // Few more things we can do here:
+                    // For example: Update the location of user on server
+                }
+            },
+            Looper.myLooper()!!
         )
     }
 
     private fun finishJob() {
-        val currentTime = DateHelper.getCurrentDateTime()
+        val currentTime = Date()
         val output = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
         output.timeZone = TimeZone.getTimeZone("GMT")
         jobEndTime = output.format(currentTime)
@@ -665,31 +714,35 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         }
         if (isPhotoSet && isTDSSet && isOTPSet && amountCollected == 0f) {
             showViewState(MultiStateView.VIEW_STATE_LOADING)
-            val finishJobIp = FinishJobIp(status = "COM",
-                    latitude = latitude,
-                    longitude = longitude,
-                    inputTds = inputTds.toString(),
-                    outputTds = outputTds.toString(),
-                    happyCode = otptxt.text.toString(),
-                    amountCollected = amountCollected,
-                    deviceCode = deviceCode!!,
-                    jobEndTime = jobEndTime.toString(),
-                    paymentType = "",
-                    spares = partsIdList!!)
+            val finishJobIp = FinishJobIp(
+                status = "COM",
+                latitude = latitude,
+                longitude = longitude,
+                inputTds = inputTds.toString(),
+                outputTds = outputTds.toString(),
+                happyCode = otptxt.text.toString(),
+                amountCollected = amountCollected,
+                deviceCode = deviceCode!!,
+                jobEndTime = jobEndTime.toString(),
+                paymentType = "",
+                spares = partsIdList!!
+            )
             presenter.finishJob(jobId, finishJobIp)
         } else if (isLocationSet && isPhotoSet && isTDSSet && isOTPSet && mode != "Payment Type" && amountCollected > 0f) {
             showViewState(MultiStateView.VIEW_STATE_LOADING)
-            val finishJobIp = FinishJobIp(status = "COM",
-                    latitude = latitude,
-                    longitude = longitude,
-                    inputTds = inputTds.toString(),
-                    outputTds = outputTds.toString(),
-                    happyCode = otptxt.text.toString(),
-                    amountCollected = amountCollected,
-                    paymentType = mode.toString(),
-                    deviceCode = deviceCode!!,
-                    jobEndTime = jobEndTime.toString(),
-                    spares = partsIdList!!)
+            val finishJobIp = FinishJobIp(
+                status = "COM",
+                latitude = latitude,
+                longitude = longitude,
+                inputTds = inputTds.toString(),
+                outputTds = outputTds.toString(),
+                happyCode = otptxt.text.toString(),
+                amountCollected = amountCollected,
+                paymentType = mode.toString(),
+                deviceCode = deviceCode!!,
+                jobEndTime = jobEndTime.toString(),
+                spares = partsIdList!!
+            )
             presenter.finishJob(jobId, finishJobIp)
         } else {
             toast("Please check the fields before submitting")
@@ -720,6 +773,8 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
                     toast(throwable.message.toString())
                 }
             }
+        } else {
+            toast(throwable.message.toString())
         }
         if (dialog.isShowing) {
             dialog.dismiss()
@@ -738,12 +793,14 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
         dialog.setContentView(inflate)
         dialog.setCancelable(false)
         dialog.window!!.setBackgroundDrawable(
-                ColorDrawable(Color.TRANSPARENT))
+            ColorDrawable(Color.TRANSPARENT)
+        )
         return dialog
     }
 
     fun fetchItemsFromSharedPref() {
-        val sharedPreferences = getSharedPreferences("DrinkPrimeParts_$jobId.txt", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            getSharedPreferences("DrinkPrimeParts_$jobId.txt", Context.MODE_PRIVATE)
         val fetchedItemsName = sharedPreferences.getString("items", "")
         val s = sharedPreferences.getString("itemsid", "")
         val spareParts = fetchedItemsName!!.replace("[", "")
@@ -762,7 +819,8 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
             add_parts_txt!!.setTextColor(ContextCompat.getColor(context, R.color.colorGreen))
         }
 
-        val sharedPreferenceshappycode = getSharedPreferences("happycode$jobId", Context.MODE_PRIVATE)
+        val sharedPreferenceshappycode =
+            getSharedPreferences("happycode$jobId", Context.MODE_PRIVATE)
         isOTPSet = sharedPreferenceshappycode.getBoolean("otp_type", false)
         val otp = sharedPreferenceshappycode.getString("otp", "")
         if (isOTPSet) {
@@ -797,12 +855,14 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener, AdapterView.
     }
 
     private fun clearPreferences() {
-        val sharedPreferences = getSharedPreferences("DrinkPrimeParts_$jobId.txt", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            getSharedPreferences("DrinkPrimeParts_$jobId.txt", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.clear()
         editor.apply()
 
-        val sharedPreferencesHappyCode = getSharedPreferences("happycode$jobId", Context.MODE_PRIVATE)
+        val sharedPreferencesHappyCode =
+            getSharedPreferences("happycode$jobId", Context.MODE_PRIVATE)
         val happyCodeEditor = sharedPreferencesHappyCode.edit()
         happyCodeEditor.clear()
         happyCodeEditor.apply()

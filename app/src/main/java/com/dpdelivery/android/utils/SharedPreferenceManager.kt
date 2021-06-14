@@ -25,6 +25,7 @@ class SharedPreferenceManager {
         val KEY_PREPAID = "prepaid"
         val BOT_ID = "BOT_ID"
         val USER_NAME = "USER_NAME"
+        val ROLE = "ROLE"
 
         fun clearPreferences() {
             getPrefs().edit().clear().apply()

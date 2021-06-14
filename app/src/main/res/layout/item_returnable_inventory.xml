@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dimens_2"
+    android:background="@drawable/btn_background_grey_border"
+    android:gravity="center"
+    android:padding="@dimen/dimens_8">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_pid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:fontFamily="@font/montserrat_semibold"
+        android:text="123qdwe"
+        android:textColor="@color/colorBlack" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_return"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dimens_25"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/dimens_10"
+        android:layout_toEndOf="@id/tv_pid"
+        android:background="@drawable/btn_grey_bg"
+        android:text="Return"
+        android:fontFamily="@font/montserrat_regular"
+        android:textColor="@color/colorWhite"
+        android:visibility="visible" />
+</RelativeLayout>

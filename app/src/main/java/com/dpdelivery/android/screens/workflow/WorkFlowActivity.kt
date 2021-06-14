@@ -392,7 +392,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (res.success!!) {
             showViewState(MultiStateView.VIEW_STATE_LOADING)
-            val currentTime = DateHelper.getCurrentDateTime()
+            val currentTime = Date()
             val output = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
             output.timeZone = TimeZone.getTimeZone("GMT")
             val jobEndTime = output.format(currentTime)
@@ -422,6 +422,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     toast(throwable.message.toString())
                 }
             }
+        } else {
+            toast(throwable.message.toString())
         }
         dialog.dismiss()
         //error_textView.text = throwable.message.toString()

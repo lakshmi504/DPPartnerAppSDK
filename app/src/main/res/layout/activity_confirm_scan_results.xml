@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".screens.confirmresults.ConfirmScanResultsActivity">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/btn_confirm"
+        android:layout_marginStart="@dimen/dimens_20"
+        android:layout_marginEnd="@dimen/dimens_20"
+        android:layout_marginBottom="@dimen/dimens_40"
+        android:background="@drawable/btn_background_grey_border"
+        android:fontFamily="@font/montserrat_regular"
+        android:gravity="center"
+        android:padding="@dimen/dimens_10"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/dimens_12sp" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="@dimen/dimens_20"
+        android:layout_marginEnd="@dimen/dimens_20"
+        android:background="@drawable/btn_background"
+        android:fontFamily="@font/montserrat_regular"
+        android:text="Confirm"
+        android:textColor="@color/colorWhite" />
+
+
+</RelativeLayout>

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.location.LocationManager
+import android.net.ConnectivityManager
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.widget.ImageView
@@ -17,6 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.dpdelivery.android.MyApplication
 import com.dpdelivery.android.R
 import java.io.ByteArrayOutputStream
 
@@ -34,6 +36,22 @@ class CommonUtils {
         fun saveLoginToken(string: String?) {
             SharedPreferenceManager.setPrefVal(
                 SharedPreferenceManager.TOKEN,
+                string!!,
+                SharedPreferenceManager.VALUE_TYPE.STRING
+            )
+        }
+
+        fun getRole(): String {
+            return SharedPreferenceManager.getPrefVal(
+                SharedPreferenceManager.ROLE,
+                "",
+                SharedPreferenceManager.VALUE_TYPE.STRING
+            ) as String
+        }
+
+        fun saveRole(string: String?) {
+            SharedPreferenceManager.setPrefVal(
+                SharedPreferenceManager.ROLE,
                 string!!,
                 SharedPreferenceManager.VALUE_TYPE.STRING
             )
@@ -125,6 +143,14 @@ class CommonUtils {
 
         fun getCopyRightSymbol(context: Context, text: String): String {
             return context.getString(R.string.copyright) + text
+        }
+
+        fun getRupeesSymbol(context: Context, price: String): String {
+            return context.getString(R.string.plus_symbol) + price
+        }
+
+        fun getMinusRupeesSymbol(context: Context, price: String): String {
+            return context.getString(R.string.minus_symbol) + price
         }
 
         fun setStatus(
@@ -267,6 +293,13 @@ class CommonUtils {
                     context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                 }
                 .show()
+        }
+
+        fun isConnected(): Boolean {
+            val cm =
+                MyApplication.context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val activeNetwork = cm.activeNetworkInfo
+            return activeNetwork != null && activeNetwork.isConnectedOrConnecting
         }
 
     }
