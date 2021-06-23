@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dpdelivery.android.R
 import com.dpdelivery.android.interfaces.IAdapterClickListener
-import com.dpdelivery.android.screens.earningsdetails.viewholder.DetailEarningsViewHolder
+import com.dpdelivery.android.screens.payout.viewholder.DetailEarningsViewHolder
 import com.dpdelivery.android.screens.finish.viewholder.SparePartsViewHolder
 import com.dpdelivery.android.screens.inventory.viewholder.InventoryViewHolder
 import com.dpdelivery.android.screens.jobdetails.TechNotesListViewHolder

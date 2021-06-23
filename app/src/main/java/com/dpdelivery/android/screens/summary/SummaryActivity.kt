@@ -20,6 +20,7 @@ import com.dpdelivery.android.utils.SharedPreferenceManager
 import com.dpdelivery.android.utils.toast
 import kotlinx.android.synthetic.main.activity_summary.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
+import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
 import retrofit2.HttpException
 import java.util.*
@@ -75,13 +76,13 @@ class SummaryActivity : TechBaseActivity(), SummaryContract.View, IAdapterClickL
     }
 
     override fun showSummaryRes(res: SummaryRes) {
-        showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (res.success!!) {
+            showViewState(MultiStateView.VIEW_STATE_CONTENT)
             summaryListLastMonth = res.body?.result?.lastMonth!!
             summaryListThisMonth = res.body.result.thisMonth!!
             if (summaryListLastMonth.isEmpty() && summaryListThisMonth.isEmpty()) {
-                tv_no_data.visibility = View.VISIBLE
-                tv_summary.visibility = View.GONE
+                showViewState(MultiStateView.VIEW_STATE_EMPTY)
+                empty_button.visibility = View.GONE
             }
             if (summaryListThisMonth.isNotEmpty()) {
                 tv_this_month.visibility = View.VISIBLE
@@ -92,7 +93,8 @@ class SummaryActivity : TechBaseActivity(), SummaryContract.View, IAdapterClickL
                 adapterSummaryLastMonth.addList(summaryListLastMonth)
             }
         } else {
-            toast(res.message!!)
+            showViewState(MultiStateView.VIEW_STATE_ERROR)
+            error_textView.text = res.message
         }
     }
 
@@ -111,7 +113,8 @@ class SummaryActivity : TechBaseActivity(), SummaryContract.View, IAdapterClickL
                 }
             }
         } else {
-            toast(throwable.message.toString())
+            showViewState(MultiStateView.VIEW_STATE_ERROR)
+            error_textView.text = throwable.message
         }
     }
 

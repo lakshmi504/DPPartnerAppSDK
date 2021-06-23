@@ -23,6 +23,7 @@ import com.dpdelivery.android.model.techinp.FinishJobIp
 import com.dpdelivery.android.model.techinp.UpdateJobIp
 import com.dpdelivery.android.model.techinp.UpdateTokenIP
 import com.dpdelivery.android.model.techres.*
+import com.dpdelivery.android.screens.account.AccountActivity
 import com.dpdelivery.android.screens.base.TechBaseActivity
 import com.dpdelivery.android.screens.jobdetails.TechJobDetailsActivity
 import com.dpdelivery.android.screens.jobslist.JobsListActivity
@@ -38,6 +39,7 @@ import okhttp3.Headers
 import retrofit2.HttpException
 import java.util.*
 import javax.inject.Inject
+
 
 class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAdapterClickListener,
     View.OnClickListener,
@@ -69,16 +71,21 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
 
     override fun init() {
         mContext = this
-        setTitle("Assigned Jobs")
         setUpBottomNavView(true)
         loadDefaultSpinner()
-        search_filter.visibility = View.GONE
-        tv_search.setOnClickListener(this)
+        iv_search.setOnClickListener(this)
+        iv_account.setOnClickListener(this)
         error_button.setOnClickListener(this)
         empty_button.setOnClickListener(this)
-        tv_search.visibility = View.VISIBLE
+        iv_search.visibility = View.VISIBLE
+        iv_account.visibility = View.VISIBLE
+        iv_account.setOnClickListener(this)
         sp_filter.visibility = View.VISIBLE
         dialog = CommonUtils.progressDialog(context)
+        refreshView.setOnRefreshListener { // Load data to your RecyclerView
+            refreshView.isRefreshing = false
+            getAssignedJobsList()
+        }
     }
 
     override fun onStart() {
@@ -122,8 +129,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
     }
 
     override fun showPartnerDetails(res: PartnerDetailsRes) {
-        CommonUtils.saveUserName(res.username)
-        CommonUtils.saveRole(res.role)
+        CommonUtils.saveUserDetails(res)
         getDeviceToken()
     }
 
@@ -135,7 +141,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
             val token = it.result
             val msg = getString(R.string.msg_token_fmt, token)
             Log.d("msg", msg)
-            updateDeviceToken(token)
+            //updateDeviceToken(token)
         }
     }
 
@@ -159,6 +165,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
             ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, filterMode)
         adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         sp_filter!!.adapter = adapterMode
+        sp_filter.setSelection(0, false)
         sp_filter.onItemSelectedListener = this
     }
 
@@ -170,8 +177,11 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
             R.id.empty_button -> {
                 getAssignedJobsList()
             }
-            R.id.tv_search -> {
+            R.id.iv_search -> {
                 startActivity(Intent(this, SearchActivity::class.java))
+            }
+            R.id.iv_account -> {
+                startActivity(Intent(this, AccountActivity::class.java))
             }
         }
     }
@@ -233,22 +243,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         } else {
             showViewState(MultiStateView.VIEW_STATE_EMPTY)
             empty_textView.text = "No Jobs Found"
-            empty_button.text = "Back to list"
-        }
-    }
-
-    override fun showJobsListRes(res: ASGListRes) {
-        if (res.jobs!!.isNotEmpty()) {
-            showViewState(MultiStateView.VIEW_STATE_CONTENT)
-            res.jobs.withNotNullNorEmpty {
-                jobsList = res.jobs
-                adapterAsgJobsList.addList(jobsList)
-                rl_jobs.visibility = View.GONE
-            }
-        } else {
-            showViewState(MultiStateView.VIEW_STATE_EMPTY)
-            empty_textView.text = "No Jobs Found"
-            empty_button.text = "Back to list"
+            empty_button.visibility = View.GONE
         }
     }
 
@@ -266,9 +261,6 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
                     toast(throwable.message.toString())
                 }
             }
-        } else {
-            showViewState(MultiStateView.VIEW_STATE_ERROR)
-            toast(throwable.message.toString())
         }
     }
 

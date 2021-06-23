@@ -172,4 +172,11 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Observable<PartnerDetailsRes>
 
+    @GET(ApiConstants.EARNINGS)
+    fun getPayoutDetails(
+        @Header("Authorization") token: String,
+        @Query("startDate") startDate: String,
+        @Query("endDate") endDate: String
+    ): Observable<EarningsRes>
+
 }

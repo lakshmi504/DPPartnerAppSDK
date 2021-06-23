@@ -68,7 +68,6 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
     override fun init() {
         mContext = this
         setUpBottomNavView(false)
-        search_filter.visibility = View.GONE
         error_button.setOnClickListener(this)
         empty_button.setOnClickListener(this)
         manager = LinearLayoutManager(this)
@@ -160,20 +159,8 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
             res.jobs.withNotNullNorEmpty {
                 jobsList = res.jobs
                 if (data.equals("ASG")) {
-                    /*if (CommonUtils.getRole() == "ROLE_Technician") {
-                        adapterAsgJobsList.addAll(jobsList)
-                    } else {
-                        rl_jobs.visibility = View.GONE
-                        TOTAL_PAGES =
-                            ceil(res.total?.toDouble()?.div(10.toDouble())!!.toDouble()).toInt()
-                        //jobsList.sortWith(Comparator { listItem, t1 -> t1?.appointmentStartTime?.let { listItem?.appointmentStartTime?.compareTo(it) }!! })
-                        adapterAsgJobsList.addAll(jobsList)
-                        if (currentPage < TOTAL_PAGES) adapterAsgJobsList.addLoadingFooter()
-                        else isLastPage = true
-                    }*/
                     adapterAsgJobsList.addAll(jobsList)
                 } else {
-                    rl_jobs.visibility = View.GONE
                     TOTAL_PAGES =
                         ceil(res.total?.toDouble()?.div(10.toDouble())!!.toDouble()).toInt()
                     //jobsList.sortWith(Comparator { listItem, t1 -> t1?.appointmentStartTime?.let { listItem?.appointmentStartTime?.compareTo(it) }!! })

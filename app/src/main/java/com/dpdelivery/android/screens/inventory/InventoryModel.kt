@@ -5,6 +5,7 @@ package com.dpdelivery.android.screens.inventory
  */
 data class InventoryModel(
     val name: String? = null,
-    val new: String? = null,
-    val toReturn: String? = null
+    val picked_up: String? = null,
+    val to_be_pick_up: String? = null,
+    val to_be_Returned: String? = null
 )

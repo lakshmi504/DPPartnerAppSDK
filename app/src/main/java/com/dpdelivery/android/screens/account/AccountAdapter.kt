@@ -11,7 +11,7 @@ import com.dpdelivery.android.R
 import com.dpdelivery.android.commonadapter.BaseViewholder
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.model.techres.AccountModel
-import com.dpdelivery.android.screens.earningsdetails.DetailEarningsActivity
+import com.dpdelivery.android.screens.payout.DetailEarningsActivity
 import com.dpdelivery.android.screens.summary.SummaryActivity
 
 class AccountAdapter(var mCtx: Context, private val accountList: AccountModel) :

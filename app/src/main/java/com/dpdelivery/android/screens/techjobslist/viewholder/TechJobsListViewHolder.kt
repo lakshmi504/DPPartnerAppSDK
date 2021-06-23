@@ -6,6 +6,8 @@ import android.content.Intent
 import android.graphics.Paint
 import android.net.Uri
 import android.view.View
+import androidx.core.content.ContextCompat
+import com.dpdelivery.android.R
 import com.dpdelivery.android.commonadapter.BaseViewholder
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
@@ -22,10 +24,11 @@ class TechJobsListViewHolder(override val containerView: View?, var context: Con
     override fun bind(context: Context, item: Any, pos: Int) {
         if (item is Job) {
             tv_jobtypevalue.text = item.type?.description
+            tv_jobtypevalue.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
             tv_jobidvalue.text = item.id.toString()
             tv_namevalue.text = item.customerName
             if (item.customerAddress?.area?.description.isNullOrEmpty()) {
-                tv_areavalue.text = " "
+                tv_areavalue.text = ""
             } else {
                 tv_areavalue.text = item.customerAddress?.area?.description.toString()
             }
@@ -33,7 +36,7 @@ class TechJobsListViewHolder(override val containerView: View?, var context: Con
             if (!item.appointmentStartTime.isNullOrEmpty()) {
                 val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ROOT)
                 val output = SimpleDateFormat("d-MMM-yyyy", Locale.ROOT)
-                val time = SimpleDateFormat("hh:mm a", Locale.ROOT)
+                val time = SimpleDateFormat("hha", Locale.ROOT)
                 input.timeZone = TimeZone.getTimeZone("IST")
                 var d: Date? = null
                 var d1: Date? = null
@@ -47,7 +50,7 @@ class TechJobsListViewHolder(override val containerView: View?, var context: Con
                 val startTime = time.format(d)
                 val endTime = time.format(d1!!)
                 tv_appointmentdate.text = formatted
-                appointmenttimevalue.text = "$startTime - $endTime"
+                appointmenttimevalue.text = "$startTime to $endTime".toLowerCase(Locale.ROOT)
             } else {
                 tv_appointmentdate.text = item.appointmentStartTime
             }

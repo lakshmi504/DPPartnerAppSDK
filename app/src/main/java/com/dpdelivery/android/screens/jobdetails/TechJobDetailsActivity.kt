@@ -245,7 +245,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
                     .initiateScan()
             }
             R.id.iv_call -> { //call function
-                if (phone!!.isNotEmpty()) {
+                if (phone?.isNotEmpty()!!) {
                     val url = "tel:$phone"
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
                     startActivity(intent)
@@ -254,7 +254,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
                 }
             }
             R.id.iv_alt_call -> {  // for call function(alt number)
-                if (altPhone!!.isNotEmpty()) {
+                if (altPhone != null) {
                     val url = "tel:$altPhone"
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
                     startActivity(intent)
@@ -466,10 +466,10 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
 
             }
         }
-        altPhone = res.customerAltPhone
-        if (!altPhone.isNullOrEmpty()) {
+        if (res.customerAltPhone != null) {
             try {
                 // tv_alt_phone.text = altPhone?.replaceRange(5..9, "*****")
+                altPhone = res.customerAltPhone
                 tv_alt_phone.text = altPhone
             } catch (e: Exception) {
 
@@ -548,6 +548,11 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             if (!res.status.code.equals("ASG")) {
                 ll_workflow.visibility = View.VISIBLE
             }
+           /* if (res.status.code.equals("ASG") || (res.status.code.equals("COM"))) {
+                ll_workflow.visibility = View.GONE
+            } else {
+                ll_workflow.visibility = View.VISIBLE
+            }*/
             btn_finish_job.visibility = View.GONE
             finish_job.visibility = View.GONE
         } else {

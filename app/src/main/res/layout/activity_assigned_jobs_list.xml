@@ -3,49 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite"
+    android:background="#E4E4E4"
     android:orientation="vertical"
     tools:context=".screens.techjobslist.TechJobsListActivity">
 
-    <include
-        android:id="@+id/search_filter"
-        layout="@layout/layout_search_filter" />
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_asg_jobs_list"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refreshView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimens_8"
-        android:scrollbarStyle="insideOverlay"
-        android:scrollbars="vertical" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dimens_10">
 
-    <RelativeLayout
-        android:id="@+id/rl_jobs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dimens_10">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/total_jobs"
-            android:layout_width="wrap_content"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_asg_jobs_list"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat_regular"
-            android:text="Total Assigned Jobs:"
-            android:textColor="@color/colorBlack"
-            android:textSize="@dimen/dimens_12sp"
-            android:visibility="gone" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_total_jobs"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dimens_5"
-            android:layout_toEndOf="@id/total_jobs"
-            android:fontFamily="@font/montserrat_regular"
-            android:textColor="@color/colorBlack"
-            android:visibility="gone"
-            android:textSize="@dimen/dimens_12sp" />
-    </RelativeLayout>
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbars="vertical" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </LinearLayout>

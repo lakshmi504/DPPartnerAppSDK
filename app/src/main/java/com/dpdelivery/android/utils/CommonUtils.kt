@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.dpdelivery.android.MyApplication
 import com.dpdelivery.android.R
+import com.dpdelivery.android.model.techres.PartnerDetailsRes
 import java.io.ByteArrayOutputStream
 
 class CommonUtils {
@@ -41,20 +42,30 @@ class CommonUtils {
             )
         }
 
+        fun saveUserDetails(res: PartnerDetailsRes) {
+            SharedPreferenceManager.setPrefVal(
+                SharedPreferenceManager.ROLE,
+                res.role,
+                SharedPreferenceManager.VALUE_TYPE.STRING
+            )
+            SharedPreferenceManager.setPrefVal(
+                SharedPreferenceManager.USER_NAME,
+                res.username,
+                SharedPreferenceManager.VALUE_TYPE.STRING
+            )
+            SharedPreferenceManager.setPrefVal(
+                SharedPreferenceManager.NAME,
+                res.firstname,
+                SharedPreferenceManager.VALUE_TYPE.STRING
+            )
+        }
+
         fun getRole(): String {
             return SharedPreferenceManager.getPrefVal(
                 SharedPreferenceManager.ROLE,
                 "",
                 SharedPreferenceManager.VALUE_TYPE.STRING
             ) as String
-        }
-
-        fun saveRole(string: String?) {
-            SharedPreferenceManager.setPrefVal(
-                SharedPreferenceManager.ROLE,
-                string!!,
-                SharedPreferenceManager.VALUE_TYPE.STRING
-            )
         }
 
         fun getUserName(): String {
@@ -65,12 +76,12 @@ class CommonUtils {
             ) as String
         }
 
-        fun saveUserName(string: String?) {
-            SharedPreferenceManager.setPrefVal(
-                SharedPreferenceManager.USER_NAME,
-                string!!,
+        fun getName(): String {
+            return SharedPreferenceManager.getPrefVal(
+                SharedPreferenceManager.NAME,
+                "",
                 SharedPreferenceManager.VALUE_TYPE.STRING
-            )
+            ) as String
         }
 
         fun saveBotId(string: String?) {
@@ -145,12 +156,24 @@ class CommonUtils {
             return context.getString(R.string.copyright) + text
         }
 
-        fun getRupeesSymbol(context: Context, price: String): String {
+        fun getRupeesSymbol(context: Context, price: Double): String {
             return context.getString(R.string.plus_symbol) + price
         }
 
-        fun getMinusRupeesSymbol(context: Context, price: String): String {
+        fun getMinusRupeesSymbol(context: Context, price: Double): String {
             return context.getString(R.string.minus_symbol) + price
+        }
+
+        fun getPickUpText(context: Context, text: String): String {
+            return context.getString(R.string.picked_up) + text
+        }
+
+        fun getToBePickUpText(context: Context, text: String): String {
+            return context.getString(R.string.to_be_pickup) + text
+        }
+
+        fun getReturnText(context: Context, text: String): String {
+            return context.getString(R.string.to_be_return) + text
         }
 
         fun setStatus(

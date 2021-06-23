@@ -24,7 +24,8 @@ class Constants {
         const val SYNC = "SYNC"
         const val MY_EARNINGS = "My Earnings"
         const val SUMMARY = "Job Summary"
-        const val USABLE_INVENTORY = "USABLE_INVENTORY"
+        const val PICKED_UP_INVENTORY = "PICKED_UP_INVENTORY"
+        const val TO_BE_PICKED_UP_INVENTORY = "TO_BE_PICKED_UP_INVENTORY"
         const val RETURNABLE_INVENTORY = "RETURNABLE_INVENTORY"
     }
 }

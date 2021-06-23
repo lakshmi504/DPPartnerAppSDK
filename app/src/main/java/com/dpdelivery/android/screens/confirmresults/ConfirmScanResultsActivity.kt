@@ -14,6 +14,8 @@ import kotlinx.android.synthetic.main.app_bar_tech_base.*
 class ConfirmScanResultsActivity : TechBaseActivity() {
 
     lateinit var mContext: Context
+    lateinit var pageTitle: String
+    lateinit var itemName: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         LayoutInflater.from(context)
@@ -23,15 +25,22 @@ class ConfirmScanResultsActivity : TechBaseActivity() {
 
     private fun init() {
         mContext = this
-        setTitle("Usable Inventory")
-        setUpBottomNavView(false)
+        setTitle("Inventory")
+        setUpBottomNavView(true)
         showBack()
         intent.extras.apply {
             val content = intent.getStringExtra("result")
+            pageTitle = intent?.getStringExtra("title").toString()
+            itemName = intent?.getStringExtra("item_name").toString()
             tv_result.text = content
         }
         btn_confirm.setOnClickListener {
-            startActivity(Intent(this, UsableInventoryActivity::class.java))
+            startActivity(
+                Intent(this, UsableInventoryActivity::class.java).putExtra(
+                    "title",
+                    pageTitle
+                ).putExtra("item_name", itemName)
+            )
             finish()
         }
     }

@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
+import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dpdelivery.android.R
 import com.dpdelivery.android.commonviews.MultiStateView
@@ -13,7 +13,6 @@ import com.dpdelivery.android.model.techres.AccountModel
 import com.dpdelivery.android.model.techres.PartnerDetailsRes
 import com.dpdelivery.android.screens.base.TechBaseActivity
 import com.dpdelivery.android.screens.login.LoginActivity
-import com.dpdelivery.android.screens.techjobslist.TechJobsListActivity
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.DateHelper
 import com.dpdelivery.android.utils.SharedPreferenceManager
@@ -46,12 +45,6 @@ class AccountActivity : TechBaseActivity(), AccountContract.View {
         setTitle("Account")
         setUpBottomNavView(false)
         showBack()
-        iv_logout.visibility = View.VISIBLE
-        iv_logout.setOnClickListener {
-            SharedPreferenceManager.clearPreferences()
-            startActivity(Intent(this, LoginActivity::class.java))
-            finishAffinity()
-        }
         error_button.setOnClickListener {
             getPartnerDetails()
         }
@@ -127,12 +120,18 @@ class AccountActivity : TechBaseActivity(), AccountContract.View {
         multistateview.viewState = state
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     override fun onBackPressed() {
         super.onBackPressed()
-        val intent = Intent(this, TechJobsListActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
-        overridePendingTransition(0, 0)
         finish()
     }
 }

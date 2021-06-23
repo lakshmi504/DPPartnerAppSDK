@@ -23,6 +23,8 @@ import java.util.regex.Pattern
 class UsableInventoryActivity : TechBaseActivity(), IAdapterClickListener {
 
     lateinit var mContext: Context
+    lateinit var pageTitle: String
+    lateinit var itemName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,9 +35,14 @@ class UsableInventoryActivity : TechBaseActivity(), IAdapterClickListener {
 
     private fun init() {
         mContext = this
-        setTitle("Usable Inventory")
-        setUpBottomNavView(false)
+        intent.extras.apply {
+            pageTitle = intent?.getStringExtra("title").toString()
+            itemName = intent?.getStringExtra("item_name").toString()
+            setTitle(pageTitle)
+        }
+        setUpBottomNavView(true)
         showBack()
+        tv_item_name.text = itemName
         getNewInventoryItems()
     }
 
@@ -47,17 +54,29 @@ class UsableInventoryActivity : TechBaseActivity(), IAdapterClickListener {
             BasicAdapter(context, R.layout.item_usable_inventory, adapterClickListener = this)
         rv_usable_inventory.adapter = adapterInventory
         val inventoryList = ArrayList<UsableInventoryModel>()
-        inventoryList.add(UsableInventoryModel(itemName = "SYNCTEST20"))
-        inventoryList.add(UsableInventoryModel(itemName = "DRINKPRIME"))
-        inventoryList.add(UsableInventoryModel(itemName = ""))
-        inventoryList.add(UsableInventoryModel(itemName = ""))
-        adapterInventory.addList(inventoryList)
+        when (pageTitle) {
+            "Picked Up Items" -> {
+                inventoryList.add(UsableInventoryModel(itemName = "SYNCTEST20"))
+                inventoryList.add(UsableInventoryModel(itemName = "DRINKPRIME"))
+                adapterInventory.addList(inventoryList)
+            }
+            "To be picked up" -> {
+                inventoryList.add(UsableInventoryModel(itemName = ""))
+                inventoryList.add(UsableInventoryModel(itemName = ""))
+                adapterInventory.addList(inventoryList)
+            }
+            "To be returned" -> {
+                inventoryList.add(UsableInventoryModel(itemName = "SYNCTEST20"))
+                inventoryList.add(UsableInventoryModel(itemName = "DRINKPRIME"))
+                adapterInventory.addList(inventoryList)
+            }
+        }
     }
 
     override fun onclick(any: Any, pos: Int, type: Any, op: String) {
         if (any is UsableInventoryModel) {
             when (op) {
-                Constants.USABLE_INVENTORY -> {
+                Constants.PICKED_UP_INVENTORY -> {
                     IntentIntegrator(this).setOrientationLocked(false)
                         .setCaptureActivity(ScannerActivity::class.java)
                         .initiateScan()
@@ -86,7 +105,9 @@ class UsableInventoryActivity : TechBaseActivity(), IAdapterClickListener {
                             this,
                             ConfirmScanResultsActivity::class.java
                         ).putExtra("result", result.contents)
+                            .putExtra("title", pageTitle).putExtra("item_name", itemName)
                     )
+                    finish()
                 } else
                     toast("Purifier ID Is Not Valid")
             }
@@ -94,6 +115,11 @@ class UsableInventoryActivity : TechBaseActivity(), IAdapterClickListener {
             // This is important, otherwise the result will not be passed to the fragment
             super.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //bottom_navigation.selectedItemId = R.id.action_inventory
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

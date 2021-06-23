@@ -15,7 +15,6 @@ import android.media.ExifInterface
 import android.media.MediaScannerConnection
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.text.InputFilter
@@ -92,7 +91,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     @Inject
     lateinit var workFlowPresenter: WorkFlowPresenter
     private var mDataList: ArrayList<WorkFlowDataRes.WorkFlowDataResBody.Step>? = null
-    private var doubleBackToExitPressedOnce = false
     private val CAMERA_REQUEST = 0
     private val PHOTO_FILE_NAME = UUID.randomUUID().toString() + ".jpeg"
     private lateinit var bitmap: Bitmap
@@ -842,44 +840,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         connectivity = res.connectivity + ""
     }
 
-    override fun onBackPressed() {
-        if (currentPosition != 0) {
-            init()
-            setStep(currentPosition - 1)
-            btn_next.visibility = View.VISIBLE
-            btn_Finish.visibility = View.GONE
-            btn_submit.visibility = View.GONE
-        }
-
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed()
-            return
-        }
-        this.doubleBackToExitPressedOnce = true
-        Handler().postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                if (currentPosition != 0) {
-                    init()
-                    setStep(currentPosition - 1)
-                    btn_next.visibility = View.VISIBLE
-                    btn_Finish.visibility = View.GONE
-                    btn_submit.visibility = View.GONE
-                }
-                if (doubleBackToExitPressedOnce) {
-                    super.onBackPressed()
-                }
-                this.doubleBackToExitPressedOnce = true
-                Handler().postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
-                return true
-            }
-            else -> return super.onOptionsItemSelected(item)
-        }
-    }
-
     /**
      * Location
      */
@@ -940,4 +900,33 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                if (currentPosition > 0) {
+                    init()
+                    setStep(currentPosition - 1)
+                    btn_next.visibility = View.VISIBLE
+                    btn_Finish.visibility = View.GONE
+                    btn_submit.visibility = View.GONE
+                } else {
+                    finish()
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onBackPressed() {
+        if (currentPosition > 0) {
+            init()
+            setStep(currentPosition - 1)
+            btn_next.visibility = View.VISIBLE
+            btn_Finish.visibility = View.GONE
+            btn_submit.visibility = View.GONE
+        } else {
+            finish()
+        }
+    }
 }

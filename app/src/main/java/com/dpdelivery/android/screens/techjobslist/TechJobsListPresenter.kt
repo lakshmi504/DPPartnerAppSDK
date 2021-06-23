@@ -40,7 +40,7 @@ class TechJobsListPresenter @Inject constructor(
                 .subscribe(
                     { res ->
                         view?.hideProgress()
-                        view?.showJobsListRes(res)
+                        view?.showAsgJobsListRes(res)
                     },
                     { throwable ->
                         view?.hideProgress()

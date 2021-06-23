@@ -3,7 +3,7 @@ package com.dpdelivery.android.di
 import com.dpdelivery.android.screens.account.AccountActivity
 import com.dpdelivery.android.screens.base.TechBaseActivity
 import com.dpdelivery.android.screens.confirmresults.ConfirmScanResultsActivity
-import com.dpdelivery.android.screens.earningsdetails.DetailEarningsActivity
+import com.dpdelivery.android.screens.payout.DetailEarningsActivity
 import com.dpdelivery.android.screens.finish.FinishJobActivity
 import com.dpdelivery.android.screens.inventory.InventoryActivity
 import com.dpdelivery.android.screens.jobdetails.TechJobDetailsActivity

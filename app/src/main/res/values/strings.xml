@@ -77,11 +77,11 @@
     <string name="search_for_job_id_name">Search for Job Id/Name</string>
     <string name="time_out">TimeOut!</string>
     <string name="no_data_found">No Data Found</string>
-    <string name="jobs_list">Jobs List</string>
+    <string name="jobs_list">Jobs</string>
     <string name="summary">Summary</string>
     <string name="copyright">&#169;DP Partner 2.0\u0020</string>
-    <string name="plus_symbol">+ </string>
-    <string name="minus_symbol">- </string>
+    <string name="plus_symbol">+ \u20B9</string>
+    <string name="minus_symbol">- \u20B9</string>
 
     <string name="connecting_to_your_prime_device">Connecting to the Purifier…</string>
     <string name="ble_not_supported">BLE is not supported</string>
@@ -108,11 +108,13 @@
     <string name="my_earnings">My Earnings</string>
     <string name="debit">Debit:</string>
     <string name="credit">Credit:</string>
-    <string name="rs">Rs.</string>
+    <string name="rs">\u20B9 </string>
     <string name="track_date">Track your progress from any date:</string>
     <string name="summary_text">This is your job summary. Seems like you are moving ahead like a King!</string>
     <string name="this_month">This Month</string>
     <string name="last_month">Last Month</string>
-
+    <string name="picked_up">Picked up -&#160;</string>
+    <string name="to_be_pickup">To be picked up -&#160;</string>
+    <string name="to_be_return">To be returned -&#160;</string>
 
 </resources>

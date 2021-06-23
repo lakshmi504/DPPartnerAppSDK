@@ -180,7 +180,7 @@
         <activity
             android:name=".screens.inventory.InventoryActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
+            android:theme="@style/noAnimTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />
         <activity
@@ -190,7 +190,7 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".screens.earningsdetails.DetailEarningsActivity"
+            android:name=".screens.payout.DetailEarningsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/noAnimTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"

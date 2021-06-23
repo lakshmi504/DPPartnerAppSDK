@@ -15,9 +15,10 @@ import androidx.multidex.MultiDex
 import com.dpdelivery.android.MyApplication
 import com.dpdelivery.android.R
 import com.dpdelivery.android.commonviews.BottomNavigationViewHelper
-import com.dpdelivery.android.screens.earningsdetails.DetailEarningsActivity
 import com.dpdelivery.android.screens.inventory.InventoryActivity
+import com.dpdelivery.android.screens.payout.DetailEarningsActivity
 import com.dpdelivery.android.screens.techjobslist.TechJobsListActivity
+import com.dpdelivery.android.screens.usableinventory.UsableInventoryActivity
 import com.dpdelivery.android.utils.makeVisible
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -80,8 +81,8 @@ open class TechBaseActivity : DaggerAppCompatActivity(),
     }
 
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
-        removeItemsUnderline(bottom_navigation); // remove underline from all items
-        underlineMenuItem(menuItem); // underline selected item
+        /* removeItemsUnderline(bottom_navigation); // remove underline from all items
+         underlineMenuItem(menuItem); // underline selected item*/
         when (menuItem.itemId) {
             R.id.action_jobs -> {
                 if (!myApp.currAct.contentEquals(TechJobsListActivity::class.java.simpleName)) {
