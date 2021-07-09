@@ -11,7 +11,6 @@ import com.dpdelivery.android.R
 import com.dpdelivery.android.commonadapter.BaseViewholder
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.model.techres.AccountModel
-import com.dpdelivery.android.screens.payout.DetailEarningsActivity
 import com.dpdelivery.android.screens.summary.SummaryActivity
 
 class AccountAdapter(var mCtx: Context, private val accountList: AccountModel) :
@@ -34,12 +33,12 @@ class AccountAdapter(var mCtx: Context, private val accountList: AccountModel) :
         override fun bind(context: Context, item: Any, pos: Int) {
             val titleName = itemView.findViewById(R.id.tv_title) as AppCompatTextView
             when (item.toString()) {
-                Constants.MY_EARNINGS -> {
+                /*Constants.MY_EARNINGS -> {
                     titleName.text = Constants.MY_EARNINGS
                     itemView.setOnClickListener(View.OnClickListener {
                         context.startActivity(Intent(context, DetailEarningsActivity::class.java))
                     })
-                }
+                }*/
 
                 Constants.SUMMARY -> {
                     titleName.text = Constants.SUMMARY

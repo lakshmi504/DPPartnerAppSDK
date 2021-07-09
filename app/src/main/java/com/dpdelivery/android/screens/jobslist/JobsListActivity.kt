@@ -67,7 +67,7 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
 
     override fun init() {
         mContext = this
-        setUpBottomNavView(false)
+        setUpBottomNavView(true)
         error_button.setOnClickListener(this)
         empty_button.setOnClickListener(this)
         manager = LinearLayoutManager(this)
@@ -301,11 +301,14 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
                         if (statusFilter != "Select Status") {
                             if (note.text.toString().isNotEmpty()) {
                                 dialog.show()
-                                val jobStatus = FinishJobIp(status = statusFilter)
-                                presenter.addNote(
+                                val jobStatus = FinishJobIp(
+                                    status = statusFilter,
+                                    note = note.text!!.toString()
+                                )
+                               /* presenter.addNote(
                                     any.id,
                                     updateJobIp = UpdateJobIp(note = note.text!!.toString())
-                                )
+                                )*/
                                 presenter.updateJob(any.id, jobStatus)
                                 statusDialog.dismiss()
                             } else {

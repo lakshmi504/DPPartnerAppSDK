@@ -11,14 +11,12 @@ interface FinishJobContract {
     interface View : BaseView {
         fun showSparePartsRes(res: ArrayList<SparePartsData>)
         fun showFinishJobRes(res: SubmiPidRes)
-        fun reSendHappyCodeRes(res: SubmiPidRes)
         fun showPidDetailsRes(res: BLEDetailsRes)
         fun showSyncRes(res: BLEDetailsRes)
     }
 
     interface Presenter : BasePresenter<View> {
         fun getSparePartsList()
-        fun reSendHappyCode(jobId: Int)
         fun finishJob(jobId: Int, finishJobIp: FinishJobIp)
         fun getPidDetails(hashMap: HashMap<String, String>)
         fun updateServerCmds(hashMap: HashMap<String, String>)

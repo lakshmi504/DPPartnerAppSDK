@@ -27,5 +27,6 @@ class Constants {
         const val PICKED_UP_INVENTORY = "PICKED_UP_INVENTORY"
         const val TO_BE_PICKED_UP_INVENTORY = "TO_BE_PICKED_UP_INVENTORY"
         const val RETURNABLE_INVENTORY = "RETURNABLE_INVENTORY"
+        const val REMOVE_INVENTORY = "REMOVE_INVENTORY"
     }
 }

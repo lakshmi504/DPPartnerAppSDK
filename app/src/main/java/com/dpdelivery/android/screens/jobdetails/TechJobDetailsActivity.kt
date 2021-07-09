@@ -45,7 +45,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.zxing.integration.android.IntentIntegrator
-import kotlinx.android.synthetic.main.activity_assigned_job.*
+import kotlinx.android.synthetic.main.activity_tech_job_details.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
@@ -98,7 +98,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LayoutInflater.from(context).inflate(R.layout.activity_assigned_job, tech_layout_container)
+        LayoutInflater.from(context)
+            .inflate(R.layout.activity_tech_job_details, tech_layout_container)
         init()
     }
 
@@ -106,7 +107,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         mContext = this
         setTitle("Job Details")
         showBack()
-        setUpBottomNavView(false)
+        setUpBottomNavView(true)
         if (intent != null) {
             val data = intent.getStringExtra(Constants.ID)
             jobId = Integer.parseInt(data!!)
@@ -115,9 +116,9 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         error_button.setOnClickListener(this)
         empty_button.setOnClickListener(this)
         ivqrcodescan.setOnClickListener(this)
-        iv_call.setOnClickListener(this)
+        tv_phone.setOnClickListener(this)
         dialog = CommonUtils.progressDialog(mContext)
-        iv_alt_call.setOnClickListener(this)
+        tv_alt_phone.setOnClickListener(this)
         btn_activate.setOnClickListener(this)
         btn_start_job.setOnClickListener(this)
         btn_finish_job.setOnClickListener(this)
@@ -126,7 +127,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         btn_add_note.setOnClickListener(this)
         finish_job.setOnClickListener(this)
         btn_select.setOnClickListener(this)
-        imageButton.setOnClickListener(this)
+        tv_address.setOnClickListener(this)
     }
 
     /**
@@ -201,6 +202,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
     override fun onResume() {
         super.onResume()
         detailsPresenter.takeView(this)
+        bottom_navigation.menu.getItem(0).isCheckable = false
     }
 
     override fun onRequestPermissionsResult(
@@ -244,7 +246,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
                     .setCaptureActivity(ScannerActivity::class.java)
                     .initiateScan()
             }
-            R.id.iv_call -> { //call function
+            R.id.tv_phone -> { //call function
                 if (phone?.isNotEmpty()!!) {
                     val url = "tel:$phone"
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
@@ -253,7 +255,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
                      detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = phone!!)*/
                 }
             }
-            R.id.iv_alt_call -> {  // for call function(alt number)
+            R.id.tv_alt_phone -> {  // for call function(alt number)
                 if (altPhone != null) {
                     val url = "tel:$altPhone"
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
@@ -337,7 +339,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
                 intent.putParcelableArrayListExtra(Constants.NOTES, noteList)
                 startActivity(intent)
             }
-            R.id.imageButton -> {
+            R.id.tv_address -> {
                 if (cxLatLong.isEmpty() || cxLatLong == "null" || cxLatLong == "0") {
                     toast("Location is not set")
                 } else {
@@ -457,16 +459,17 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         tv_job_id.text = res.id.toString()
         tv_job_type.text = res.type!!.description
         tv_name.text = res.customerName
-        phone = res.customerPhone
-        if (!phone.isNullOrEmpty()) {
+
+        if (!res.customerPhone.isNullOrEmpty()) {
             try {
                 //tv_phone.text = phone?.replaceRange(5..9, "*****")
+                phone = res.customerPhone
                 tv_phone.text = phone
             } catch (e: Exception) {
 
             }
         }
-        if (res.customerAltPhone != null) {
+        if (!res.customerAltPhone.isNullOrEmpty()) {
             try {
                 // tv_alt_phone.text = altPhone?.replaceRange(5..9, "*****")
                 altPhone = res.customerAltPhone
@@ -474,6 +477,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             } catch (e: Exception) {
 
             }
+        } else {
+            ll_alt_mobile.visibility = View.GONE
         }
         statusCode = res.status!!.code
         noteList = res.notes
@@ -548,13 +553,13 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             if (!res.status.code.equals("ASG")) {
                 ll_workflow.visibility = View.VISIBLE
             }
-           /* if (res.status.code.equals("ASG") || (res.status.code.equals("COM"))) {
+            if (res.status.code.equals("ASG") || (res.status.code.equals("COM"))) {
                 ll_workflow.visibility = View.GONE
             } else {
                 ll_workflow.visibility = View.VISIBLE
-            }*/
-            btn_finish_job.visibility = View.GONE
-            finish_job.visibility = View.GONE
+            }
+            /*btn_finish_job.visibility = View.GONE
+            finish_job.visibility = View.GONE*/
         } else {
             ll_workflow.visibility = View.GONE
             if (!res.type.code.equals("INS") && (res.status.code.equals("INP"))) {
@@ -644,7 +649,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
                 }
             }
         } else {
-            //toast(throwable.message.toString())
+            /*showViewState(MultiStateView.VIEW_STATE_ERROR)
+            toast(throwable.message.toString())*/
         }
     }
 

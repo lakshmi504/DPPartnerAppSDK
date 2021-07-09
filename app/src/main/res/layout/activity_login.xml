@@ -1,108 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite">
 
-    <RelativeLayout
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:layout_above="@id/ll_login"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/dimens_40"
+        android:layout_marginEnd="@dimen/dimens_40"
+        android:layout_marginBottom="@dimen/dimens_20"
+        android:src="@mipmap/start" />
 
-        <androidx.cardview.widget.CardView style="@style/DashboardCardViewStyle">
+    <LinearLayout
+        android:id="@+id/ll_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="@dimen/dimens_40"
+        android:layout_marginEnd="@dimen/dimens_40"
+        android:orientation="vertical">
 
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:theme="@style/ProgressBarTheme"
-                android:visibility="gone" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/stolzl_medium"
+            android:text="User Name"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/dimens_12sp" />
 
-            <LinearLayout
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:background="@drawable/bg_edit_text_stroke"
+            android:fontFamily="@font/stolzl_regular"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/dimens_12sp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_20"
+            android:fontFamily="@font/stolzl_medium"
+            android:text="Password"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/dimens_12sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="visible">
+                android:background="@drawable/bg_edit_text_stroke"
+                android:fontFamily="@font/stolzl_regular"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimens_60"
-                    android:background="@drawable/bg_login"
-                    android:paddingStart="@dimen/dimens_10"
-                    android:paddingTop="@dimen/dimens_15"
-                    android:paddingEnd="@dimen/dimens_10"
-                    android:paddingBottom="@dimen/dimens_15">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_show_password"
+                android:layout_width="@dimen/dimens_20"
+                android:layout_height="@dimen/dimens_20"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/dimens_10" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:fontFamily="@font/montserrat_semibold"
-                        android:gravity="center"
-                        android:text="Welcome!"
-                        android:textColor="@color/colorBlack"
-                        android:textSize="@dimen/dimens_16sp" />
-                </LinearLayout>
+        </RelativeLayout>
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/imageView1"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimens_60"
-                    android:layout_gravity="center"
-                    android:src="@mipmap/start" />
+    </LinearLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimens_20"
-                    android:layout_marginEnd="@dimen/dimens_20"
-                    android:hint="@string/email"
-                    android:theme="@style/EditTextTheme">
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_login"
+        android:layout_width="@dimen/dimens_100"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_login"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="@dimen/dimens_40"
+        android:layout_marginTop="@dimen/dimens_30"
+        android:layout_marginEnd="@dimen/dimens_40"
+        android:background="@drawable/btn_theme_bg"
+        android:fontFamily="@font/stolzl_regular"
+        android:gravity="center"
+        android:padding="@dimen/dimens_5"
+        android:text="Log In"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/dimens_12sp" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_email"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text"
-                        android:maxLines="1" />
 
-                </com.google.android.material.textfield.TextInputLayout>
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:theme="@style/ProgressBarTheme"
+        android:visibility="gone" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimens_20"
-                    android:layout_marginTop="@dimen/dimens_10"
-                    android:layout_marginEnd="@dimen/dimens_20"
-                    android:hint="@string/password"
-                    android:theme="@style/EditTextTheme"
-                    app:passwordToggleDrawable="@drawable/password_eye_toggle"
-                    app:passwordToggleEnabled="true">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_password"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPassword"
-                        android:maxLines="1" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btn_login"
-                    android:layout_width="@dimen/dimens_100"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/dimens_10"
-                    android:background="@drawable/btn_background"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:gravity="center"
-                    android:padding="@dimen/dimens_10"
-                    android:text="Sign In"
-                    android:textColor="#fff"
-                    android:textSize="@dimen/dimens_12sp" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-    </RelativeLayout>
-</ScrollView>
+</RelativeLayout>

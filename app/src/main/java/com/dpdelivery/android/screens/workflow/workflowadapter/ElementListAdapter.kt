@@ -24,7 +24,15 @@ import kotlinx.android.synthetic.main.item_element_list.*
 import java.util.*
 
 
-class ElementListAdapter(var context: Context, var adapterClickListener: IAdapterClickListener? = null, val stepMap: MutableMap<String, String>, val stepsFinished: MutableMap<String, Boolean>, var submissionField: String, var activationElementId: Int, var syncElementId: Int) : RecyclerView.Adapter<ElementListAdapter.ElementListViewHolder>() {
+class ElementListAdapter(
+    var context: Context,
+    var adapterClickListener: IAdapterClickListener? = null,
+    val stepMap: MutableMap<String, String>,
+    val stepsFinished: MutableMap<String, Boolean>,
+    var submissionField: String,
+    var activationElementId: Int,
+    var syncElementId: Int
+) : RecyclerView.Adapter<ElementListAdapter.ElementListViewHolder>() {
 
     private var list: ArrayList<WorkFlowDataRes.WorkFlowDataResBody.Step.Template.Element>? = null
 
@@ -35,7 +43,16 @@ class ElementListAdapter(var context: Context, var adapterClickListener: IAdapte
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ElementListViewHolder {
         val view = parent.inflate(R.layout.item_element_list)
-        return ElementListViewHolder(view, context, adapterClickListener, stepMap, stepsFinished, submissionField, activationElementId, syncElementId)
+        return ElementListViewHolder(
+            view,
+            context,
+            adapterClickListener,
+            stepMap,
+            stepsFinished,
+            submissionField,
+            activationElementId,
+            syncElementId
+        )
     }
 
     override fun getItemCount() = if (list != null && list!!.size > 0) list!!.size else 0
@@ -48,20 +65,35 @@ class ElementListAdapter(var context: Context, var adapterClickListener: IAdapte
         holder.bind(context, holder, position)
     }
 
-    class ElementListViewHolder(override val containerView: View, var context: Context, var adapterClickListener: IAdapterClickListener? = null, val stepMap: MutableMap<String, String>, val stepsFinished: MutableMap<String, Boolean>, val submissionField: String, val activationElementId: Int, val syncElementId: Int) : RecyclerView.ViewHolder(containerView), LayoutContainer, AdapterView.OnItemSelectedListener {
+    class ElementListViewHolder(
+        override val containerView: View,
+        var context: Context,
+        var adapterClickListener: IAdapterClickListener? = null,
+        val stepMap: MutableMap<String, String>,
+        val stepsFinished: MutableMap<String, Boolean>,
+        val submissionField: String,
+        val activationElementId: Int,
+        val syncElementId: Int
+    ) : RecyclerView.ViewHolder(containerView), LayoutContainer,
+        AdapterView.OnItemSelectedListener {
         @SuppressLint("ResourceAsColor")
         fun bind(context: Context, item: Any, pos: Int) {
             if (item is WorkFlowDataRes.WorkFlowDataResBody.Step.Template.Element) {
-                tv_name.text = item.name
                 //TEXT
                 if (item.showType == "VISIBLE" && item.workflowElementType == "MANUAL" && item.inputApi == "TEXT") {
+                    tv_name.text = item.name
                     if (item.name.toString() == "PaymentCollected") {
                         et_add_text.inputType = InputType.TYPE_CLASS_NUMBER
                     }
                     if (item.name.toString() == "DeviceCode") {
                         ivqrcodescan.visibility = View.VISIBLE
                         ivqrcodescan.setOnClickListener {
-                            adapterClickListener?.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.SCAN_CODE)
+                            adapterClickListener?.onclick(
+                                any = item,
+                                pos = pos,
+                                type = itemView,
+                                op = Constants.SCAN_CODE
+                            )
                         }
                     }
                     when {
@@ -71,23 +103,47 @@ class ElementListAdapter(var context: Context, var adapterClickListener: IAdapte
                             layout_ins.visibility = View.VISIBLE
                             btn_activate.setOnClickListener {
                                 when {
-                                    et_purifier_id!!.text.toString().trim { it <= ' ' }.isEmpty() -> {
-                                        Toast.makeText(context, "Purifier Id is required", Toast.LENGTH_SHORT).show()
+                                    et_purifier_id!!.text.toString().trim { it <= ' ' }
+                                        .isEmpty() -> {
+                                        Toast.makeText(
+                                            context,
+                                            "Purifier Id is required",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
                                     et_purifier_id!!.text!!.length != 10 -> {
-                                        Toast.makeText(context, "Invalid Purifier Id", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            context,
+                                            "Invalid Purifier Id",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                         iv_refresh!!.isEnabled = false
                                     }
                                     else -> {
-                                        adapterClickListener?.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.SUBMIT_PID)
+                                        adapterClickListener?.onclick(
+                                            any = item,
+                                            pos = pos,
+                                            type = itemView,
+                                            op = Constants.SUBMIT_PID
+                                        )
                                     }
                                 }
                             }
                             iv_qr_code.setOnClickListener {
-                                adapterClickListener?.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.SCAN_QR_CODE)
+                                adapterClickListener?.onclick(
+                                    any = item,
+                                    pos = pos,
+                                    type = itemView,
+                                    op = Constants.SCAN_QR_CODE
+                                )
                             }
                             iv_refresh.setOnClickListener {
-                                adapterClickListener?.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.REFRESH_STATUS)
+                                adapterClickListener?.onclick(
+                                    any = item,
+                                    pos = pos,
+                                    type = itemView,
+                                    op = Constants.REFRESH_STATUS
+                                )
                             }
 
                         }
@@ -95,7 +151,12 @@ class ElementListAdapter(var context: Context, var adapterClickListener: IAdapte
                             et_add_text.visibility = View.GONE
                             ll_sync.visibility = View.VISIBLE
                             btn_sync.setOnClickListener {
-                                adapterClickListener?.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.SYNC)
+                                adapterClickListener?.onclick(
+                                    any = item,
+                                    pos = pos,
+                                    type = itemView,
+                                    op = Constants.SYNC
+                                )
                             }
                         }
                         else -> {
@@ -108,11 +169,21 @@ class ElementListAdapter(var context: Context, var adapterClickListener: IAdapte
 
                                 }
 
-                                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                                override fun beforeTextChanged(
+                                    p0: CharSequence?,
+                                    p1: Int,
+                                    p2: Int,
+                                    p3: Int
+                                ) {
 
                                 }
 
-                                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                                override fun onTextChanged(
+                                    p0: CharSequence?,
+                                    p1: Int,
+                                    p2: Int,
+                                    p3: Int
+                                ) {
                                     if (!item.optional!! && p0.toString().isEmpty()) {
                                         stepsFinished[item.id.toString()] = false
                                         iv_mandatory.visibility = View.VISIBLE
@@ -144,12 +215,7 @@ class ElementListAdapter(var context: Context, var adapterClickListener: IAdapte
                 }
                 //DROPDOWN
                 if (item.showType == "VISIBLE" && item.workflowElementType == "DROPDOWN" && item.inputApi == "TEXT") {
-                    et_add_text.visibility = View.VISIBLE
-                    if (!item.value.isNullOrEmpty()) {
-                        et_add_text.setText(item.value.toString())
-                    }
-                    et_add_text.background = null
-                    et_add_text.isEnabled = false
+                    tv_name.text = item.name
 
                     if (!item.optional!!) {
                         iv_mandatory1.visibility = View.VISIBLE
@@ -168,7 +234,11 @@ class ElementListAdapter(var context: Context, var adapterClickListener: IAdapte
                         for (i in item.dropdownContents.indices) {
                             if (!item.value.isNullOrEmpty()) {
                                 if (item.dropdownContents[i].equals((item.value), true)) {
-                                    val adapterMode = ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, item.dropdownContents)
+                                    val adapterMode = ArrayAdapter<String>(
+                                        context,
+                                        android.R.layout.simple_spinner_item,
+                                        item.dropdownContents
+                                    )
                                     adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                                     spinner_center!!.adapter = adapterMode
                                     spinner_center.tag = item
@@ -176,7 +246,11 @@ class ElementListAdapter(var context: Context, var adapterClickListener: IAdapte
                                     spinner_center.setSelection(i)
                                 }
                             } else {
-                                val adapterMode = ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, item.dropdownContents)
+                                val adapterMode = ArrayAdapter<String>(
+                                    context,
+                                    android.R.layout.simple_spinner_item,
+                                    item.dropdownContents
+                                )
                                 adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                                 spinner_center!!.adapter = adapterMode
                                 spinner_center.tag = item
@@ -189,6 +263,7 @@ class ElementListAdapter(var context: Context, var adapterClickListener: IAdapte
                 //IMAGE
                 if (item.showType == "VISIBLE" && item.workflowElementType == "MANUAL" && item.inputApi == "IMAGE") {
                     btn_add_image.visibility = View.VISIBLE
+                    tv_name.text = item.name
                     if (!item.value.isNullOrEmpty()) {
                         CommonUtils.setImage(context, btn_add_image, item.value)
                         iv_mandatory2.visibility = View.INVISIBLE
@@ -206,12 +281,18 @@ class ElementListAdapter(var context: Context, var adapterClickListener: IAdapte
                         stepsFinished[item.id.toString()] = true
                     }
                     btn_add_image.setOnClickListener {
-                        adapterClickListener?.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.ELEMENT_IMAGE)
+                        adapterClickListener?.onclick(
+                            any = item,
+                            pos = pos,
+                            type = itemView,
+                            op = Constants.ELEMENT_IMAGE
+                        )
                     }
                 }
                 //API_INPUT
                 if (item.showType == "VISIBLE" && item.workflowElementType == "API_INPUT" && item.inputApi == "TEXT") {
                     ll_spares.visibility = View.VISIBLE
+                    tv_name.text = item.name
                     if (!item.optional!!) {
                         iv_mandatory.visibility = View.VISIBLE
                         stepsFinished[item.id.toString()] = false
@@ -225,11 +306,17 @@ class ElementListAdapter(var context: Context, var adapterClickListener: IAdapte
                         stepsFinished[item.id.toString()] = true
                     }
                     ll_spinner_spares.setOnClickListener {
-                        adapterClickListener?.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.SPARE_PARTS)
+                        adapterClickListener?.onclick(
+                            any = item,
+                            pos = pos,
+                            type = itemView,
+                            op = Constants.SPARE_PARTS
+                        )
                     }
                 }
                 //MASKED
                 if (item.showType == "MASKED" && item.inputApi == "TEXT") {
+                    tv_name.text = item.name
                     if (item.value!!.isNotEmpty()) {
                         et_add_text.visibility = View.VISIBLE
                         val text = item.value
@@ -241,10 +328,12 @@ class ElementListAdapter(var context: Context, var adapterClickListener: IAdapte
                 if (item.showType == "MASKED" && item.inputApi == "TEXT" && item.workflowElementType == "DROPDOWN") {
                     ll_spinner_center.visibility = View.VISIBLE
                     ll_spinner_center.isEnabled = false
+                    tv_name.text = item.name
                 }
                 //DISABLED
                 if (item.showType == "DISABLED" && item.inputApi == "TEXT" && item.workflowElementType == "MANUAL") {
                     et_add_text.visibility = View.VISIBLE
+                    tv_name.text = item.name
                     if (!item.value.isNullOrEmpty()) {
                         et_add_text.setText(item.value.toString())
                     } else {
@@ -263,11 +352,12 @@ class ElementListAdapter(var context: Context, var adapterClickListener: IAdapte
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             when (parent!!.id) {
                 R.id.spinner_center -> {
-                    val item = parent.tag as WorkFlowDataRes.WorkFlowDataResBody.Step.Template.Element
+                    val item =
+                        parent.tag as WorkFlowDataRes.WorkFlowDataResBody.Step.Template.Element
                     val selectedString = item.dropdownContents?.get(position)
                     selectedText(selectedString!!)
                     iv_mandatory1.visibility = View.INVISIBLE
-                    stepMap[item.id.toString()] = selectedString!!
+                    stepMap[item.id.toString()] = selectedString
                     stepsFinished[item.id.toString()] = true
                 }
             }

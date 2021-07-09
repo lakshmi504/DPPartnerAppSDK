@@ -1,5 +1,6 @@
 package com.dpdelivery.android.screens.base
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.text.style.UnderlineSpan
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.multidex.MultiDex
@@ -16,9 +18,10 @@ import com.dpdelivery.android.MyApplication
 import com.dpdelivery.android.R
 import com.dpdelivery.android.commonviews.BottomNavigationViewHelper
 import com.dpdelivery.android.screens.inventory.InventoryActivity
+import com.dpdelivery.android.screens.login.LoginActivity
 import com.dpdelivery.android.screens.payout.DetailEarningsActivity
 import com.dpdelivery.android.screens.techjobslist.TechJobsListActivity
-import com.dpdelivery.android.screens.usableinventory.UsableInventoryActivity
+import com.dpdelivery.android.utils.SharedPreferenceManager
 import com.dpdelivery.android.utils.makeVisible
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -74,6 +77,22 @@ open class TechBaseActivity : DaggerAppCompatActivity(),
         }
     }
 
+    fun logOut() {
+        val dialog = Dialog(context, R.style.CustomDialogThemeLightBg)
+        dialog.setContentView(R.layout.dialog_logout)
+        dialog.setCancelable(true)
+        dialog.show()
+        (dialog.findViewById(R.id.tv_confirm) as TextView).setOnClickListener {
+            SharedPreferenceManager.clearPreferences()
+            startActivity(Intent(this, LoginActivity::class.java))
+            finishAffinity()
+            dialog.dismiss()
+        }
+        (dialog.findViewById(R.id.tv_cancel) as TextView).setOnClickListener {
+            dialog.dismiss()
+        }
+    }
+
     fun setUpBottomNavView(needToShow: Boolean = true) {
         BottomNavigationViewHelper.removeShiftMode(bottom_navigation)
         bottom_navigation.setOnNavigationItemSelectedListener(this)
@@ -81,8 +100,6 @@ open class TechBaseActivity : DaggerAppCompatActivity(),
     }
 
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
-        /* removeItemsUnderline(bottom_navigation); // remove underline from all items
-         underlineMenuItem(menuItem); // underline selected item*/
         when (menuItem.itemId) {
             R.id.action_jobs -> {
                 if (!myApp.currAct.contentEquals(TechJobsListActivity::class.java.simpleName)) {
@@ -109,18 +126,5 @@ open class TechBaseActivity : DaggerAppCompatActivity(),
             }
         }
         return true
-    }
-
-    private fun removeItemsUnderline(bottomNavigationView: BottomNavigationView) {
-        for (i in 0 until bottomNavigationView.menu.size()) {
-            val item = bottomNavigationView.menu.getItem(i)
-            item.title = item.title.toString()
-        }
-    }
-
-    private fun underlineMenuItem(item: MenuItem) {
-        val content = SpannableString(item.title)
-        content.setSpan(UnderlineSpan(), 0, content.length, 0)
-        item.title = content
     }
 }

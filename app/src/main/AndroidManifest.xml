@@ -167,13 +167,9 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />
+
         <activity
-            android:name=".screens.returnableInventory.ReturnableInventoryActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
-            tools:ignore="LockedOrientationActivity" />
-        <activity
-            android:name=".screens.usableinventory.UsableInventoryActivity"
+            android:name=".screens.inventoryDetails.InventoryDetailsActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />
@@ -197,7 +193,7 @@
             tools:ignore="LockedOrientationActivity" />
 
         <activity
-            android:name=".screens.confirmresults.ConfirmScanResultsActivity"
+            android:name=".screens.confirmpickupinventory.ConfirmScanResultsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"

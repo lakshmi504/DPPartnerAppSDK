@@ -57,15 +57,19 @@ class JobsListViewHolder(
             }
             view.tv_statusvalue.text = item.status?.description
 
-            /*if ((jobType == "ASG" || jobType == "INP") && item.workflowId != null) {
-                view.ll_instatus.visibility = View.VISIBLE
+          /*  if ((jobType == "INP") && item.workflowId != null) {
+                view.btn_update_status.visibility = View.VISIBLE
             } else {
-                view.ll_instatus.visibility = View.GONE
-            }
-            view.tv_instatusvalue.paintFlags = view.tv_statusvalue.paintFlags or Paint.UNDERLINE_TEXT_FLAG
-            view.tv_instatusvalue.setOnClickListener {
-                adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.JOB_TYPE)
+                view.btn_update_status.visibility = View.INVISIBLE
             }*/
+            view.btn_update_status.setOnClickListener {
+                adapterClickListener.onclick(
+                    any = item,
+                    pos = pos,
+                    type = itemView,
+                    op = Constants.JOB_TYPE
+                )
+            }
             val text = item.customerPhone
             if (text!!.isNotEmpty()) {
                 try {
@@ -87,8 +91,7 @@ class JobsListViewHolder(
             }
 
             if (item.customerAltPhone.isNullOrEmpty()) {
-                view.tv_alternate_no.visibility = View.GONE
-                view.alternate_no.visibility = View.GONE
+                view.ll_alt_mobile.visibility = View.GONE
             } else {
                 val altPhone = item.customerAltPhone
                 try {
@@ -109,10 +112,10 @@ class JobsListViewHolder(
                     //adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.ALT_CUST_PHONE)
                 }
             }
-            view.ll_bg.setOnClickListener {
+            view.btn_know_more.setOnClickListener {
                 adapterClickListener.onclick(
                     any = item,
-                    pos = adapterPosition,
+                    pos = pos,
                     type = itemView,
                     op = Constants.ASSIGN_JOB_DETAILS
                 )

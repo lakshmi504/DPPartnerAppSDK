@@ -54,6 +54,11 @@ class CommonUtils {
                 SharedPreferenceManager.VALUE_TYPE.STRING
             )
             SharedPreferenceManager.setPrefVal(
+                SharedPreferenceManager.USER_ID,
+                res.id,
+                SharedPreferenceManager.VALUE_TYPE.INTEGER
+            )
+            SharedPreferenceManager.setPrefVal(
                 SharedPreferenceManager.NAME,
                 res.firstname,
                 SharedPreferenceManager.VALUE_TYPE.STRING
@@ -82,6 +87,14 @@ class CommonUtils {
                 "",
                 SharedPreferenceManager.VALUE_TYPE.STRING
             ) as String
+        }
+
+        fun getId(): Int {
+            return SharedPreferenceManager.getPrefVal(
+                SharedPreferenceManager.USER_ID,
+                0,
+                SharedPreferenceManager.VALUE_TYPE.INTEGER
+            ) as Int
         }
 
         fun saveBotId(string: String?) {
@@ -317,14 +330,6 @@ class CommonUtils {
                 }
                 .show()
         }
-
-        fun isConnected(): Boolean {
-            val cm =
-                MyApplication.context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val activeNetwork = cm.activeNetworkInfo
-            return activeNetwork != null && activeNetwork.isConnectedOrConnecting
-        }
-
     }
 }
 

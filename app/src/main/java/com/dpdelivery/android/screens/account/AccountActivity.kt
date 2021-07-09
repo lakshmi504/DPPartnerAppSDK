@@ -56,7 +56,7 @@ class AccountActivity : TechBaseActivity(), AccountContract.View {
         rv_account.setHasFixedSize(true)
         rv_account.isFocusable = false
         accountList = ArrayList<String>()
-        accountList.add(Constants.MY_EARNINGS)
+        //accountList.add(Constants.MY_EARNINGS)
         accountList.add(Constants.SUMMARY)
 
         val accountAdapter = AccountAdapter(mContext, AccountModel(accountList, "Account"))

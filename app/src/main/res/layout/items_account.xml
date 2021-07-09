@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
-        android:fontFamily="@font/montserrat_semibold"
+        android:fontFamily="@font/stolzl_medium"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/dimens_12sp" />
 

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/dimens_20"
-    android:layout_marginTop="@dimen/dimens_10"
+    android:layout_marginTop="@dimen/dimens_5"
     android:layout_marginEnd="@dimen/dimens_20"
     android:layout_marginBottom="@dimen/dimens_5"
     android:background="@drawable/bg_outline_curve"
@@ -14,10 +14,19 @@
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dimens_10"
+        android:layout_marginBottom="@dimen/dimens_5"
         android:fontFamily="@font/stolzl_medium"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/dimens_14sp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_item_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimens_5"
+        android:fontFamily="@font/stolzl_regular"
+        android:textColor="@color/colorBlackOverlay"
+        android:textSize="@dimen/dimens_12sp" />
 
     <LinearLayout
         android:layout_width="match_parent"

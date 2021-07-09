@@ -2,22 +2,21 @@ package com.dpdelivery.android.di
 
 import com.dpdelivery.android.screens.account.AccountActivity
 import com.dpdelivery.android.screens.base.TechBaseActivity
-import com.dpdelivery.android.screens.confirmresults.ConfirmScanResultsActivity
-import com.dpdelivery.android.screens.payout.DetailEarningsActivity
+import com.dpdelivery.android.screens.confirmpickupinventory.ConfirmScanResultsActivity
 import com.dpdelivery.android.screens.finish.FinishJobActivity
 import com.dpdelivery.android.screens.inventory.InventoryActivity
 import com.dpdelivery.android.screens.jobdetails.TechJobDetailsActivity
 import com.dpdelivery.android.screens.jobslist.JobsListActivity
 import com.dpdelivery.android.screens.login.LoginActivity
+import com.dpdelivery.android.screens.payout.DetailEarningsActivity
 import com.dpdelivery.android.screens.photo.ImageActivity
-import com.dpdelivery.android.screens.returnableInventory.ReturnableInventoryActivity
 import com.dpdelivery.android.screens.scanner.ScannerActivity
 import com.dpdelivery.android.screens.search.SearchActivity
 import com.dpdelivery.android.screens.splash.SplashActivity
 import com.dpdelivery.android.screens.summary.SummaryActivity
 import com.dpdelivery.android.screens.sync.SyncActivity
 import com.dpdelivery.android.screens.techjobslist.TechJobsListActivity
-import com.dpdelivery.android.screens.usableinventory.UsableInventoryActivity
+import com.dpdelivery.android.screens.inventoryDetails.InventoryDetailsActivity
 import com.dpdelivery.android.screens.workflow.WorkFlowActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -68,10 +67,7 @@ abstract class MyActivityBuilder {
     internal abstract fun inventoryActivity(): InventoryActivity
 
     @ContributesAndroidInjector()
-    internal abstract fun newInventoryActivity(): UsableInventoryActivity
-
-    @ContributesAndroidInjector()
-    internal abstract fun returnInventoryActivity(): ReturnableInventoryActivity
+    internal abstract fun newInventoryActivity(): InventoryDetailsActivity
 
     @ContributesAndroidInjector()
     internal abstract fun ConfirmScanResultsActivity(): ConfirmScanResultsActivity

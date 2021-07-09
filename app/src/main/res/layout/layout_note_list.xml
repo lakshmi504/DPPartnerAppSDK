@@ -22,7 +22,7 @@
                     android:id="@+id/tv_notes_List"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_semibold"
+                    android:fontFamily="@font/stolzl_medium"
                     android:gravity="center"
                     android:text="Notes"
                     android:textColor="@color/colorBlue"

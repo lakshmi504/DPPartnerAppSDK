@@ -18,7 +18,11 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TechJobsListViewHolder(override val containerView: View?, var context: Context, private var adapterClickListener: IAdapterClickListener) : BaseViewholder(containerView), LayoutContainer {
+class TechJobsListViewHolder(
+    override val containerView: View?,
+    var context: Context,
+    private var adapterClickListener: IAdapterClickListener
+) : BaseViewholder(containerView), LayoutContainer {
 
     @SuppressLint("SetTextI18n")
     override fun bind(context: Context, item: Any, pos: Int) {
@@ -55,15 +59,19 @@ class TechJobsListViewHolder(override val containerView: View?, var context: Con
                 tv_appointmentdate.text = item.appointmentStartTime
             }
             tv_statusvalue.text = item.status?.description
-            /* if (item.workflowId != null) {
-                 ll_instatus.visibility = View.VISIBLE
-             } else {
-                 ll_instatus.visibility = View.GONE
-             }
-             tv_instatusvalue.paintFlags = tv_statusvalue.paintFlags or Paint.UNDERLINE_TEXT_FLAG
-             tv_instatusvalue.setOnClickListener {
-                 adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.JOB_TYPE)
-             }*/
+           /* if (item.workflowId != null) {
+                btn_update_status.visibility = View.VISIBLE
+            } else {
+                btn_update_status.visibility = View.INVISIBLE
+            }*/
+            btn_update_status.setOnClickListener {
+                adapterClickListener.onclick(
+                    any = item,
+                    pos = pos,
+                    type = itemView,
+                    op = Constants.JOB_TYPE
+                )
+            }
             val text = item.customerPhone
             if (text!!.isNotEmpty()) {
                 try {
@@ -86,8 +94,7 @@ class TechJobsListViewHolder(override val containerView: View?, var context: Con
             }
 
             if (item.customerAltPhone.isNullOrEmpty()) {
-                tv_alternate_no.visibility = View.GONE
-                alternate_no.visibility = View.GONE
+                ll_alt_mobile.visibility = View.GONE
             } else {
                 val altPhone = item.customerAltPhone
                 //tv_alternate_no.text = (altPhone).replaceRange(5..9, "*****")
@@ -104,8 +111,13 @@ class TechJobsListViewHolder(override val containerView: View?, var context: Con
                     //adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.ALT_CUST_PHONE)
                 }
             }
-            ll_bg.setOnClickListener {
-                adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.ASSIGN_JOB_DETAILS)
+            btn_know_more.setOnClickListener {
+                adapterClickListener.onclick(
+                    any = item,
+                    pos = pos,
+                    type = itemView,
+                    op = Constants.ASSIGN_JOB_DETAILS
+                )
             }
 
         }

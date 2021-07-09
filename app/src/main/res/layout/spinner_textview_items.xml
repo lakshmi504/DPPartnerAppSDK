@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_centerHorizontal="true"
     android:layout_centerVertical="true"
+    android:fontFamily="@font/stolzl_regular"
     android:gravity="center"
     android:padding="15dp"
     android:textAlignment="gravity"

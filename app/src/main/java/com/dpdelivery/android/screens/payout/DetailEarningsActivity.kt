@@ -59,10 +59,10 @@ class DetailEarningsActivity : TechBaseActivity(), IAdapterClickListener, View.O
         iv_logout.setOnClickListener(this)
         iv_account.setOnClickListener(this)
         error_button.setOnClickListener(this)
-        refreshView.setOnRefreshListener { // Load data to your RecyclerView
-            refreshView.isRefreshing = false
-            getDetailEarnings()
-        }
+        /* refreshView.setOnRefreshListener { // Load data to your RecyclerView
+             refreshView.isRefreshing = false
+             getDetailEarnings()
+         }*/
     }
 
     override fun onClick(v: View?) {
@@ -90,9 +90,7 @@ class DetailEarningsActivity : TechBaseActivity(), IAdapterClickListener, View.O
                 }
             }
             R.id.iv_logout -> {
-                SharedPreferenceManager.clearPreferences()
-                startActivity(Intent(this, LoginActivity::class.java))
-                finishAffinity()
+                logOut()
             }
             R.id.iv_account -> {
                 startActivity(Intent(this, AccountActivity::class.java))
@@ -158,6 +156,7 @@ class DetailEarningsActivity : TechBaseActivity(), IAdapterClickListener, View.O
                 }
             }
         } else {
+            showViewState(MultiStateView.VIEW_STATE_ERROR)
             toast(throwable.message.toString())
         }
     }

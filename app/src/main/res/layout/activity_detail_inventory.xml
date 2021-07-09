@@ -5,23 +5,38 @@
     android:layout_height="match_parent"
     android:background="#E4E4E4"
     android:orientation="vertical"
-    tools:context=".screens.usableinventory.UsableInventoryActivity">
+    tools:context=".screens.inventoryDetails.InventoryDetailsActivity">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dimens_20"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dimens_10"
         android:layout_marginEnd="@dimen/dimens_20"
-        android:layout_marginTop="@dimen/dimens_20"
         android:fontFamily="@font/stolzl_medium"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/dimens_14sp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_item_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_20"
+        android:layout_marginTop="@dimen/dimens_5"
+        android:layout_marginEnd="@dimen/dimens_20"
+        android:layout_gravity="center"
+        android:fontFamily="@font/stolzl_regular"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/dimens_12sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_usable_inventory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dimens_20" />
+        android:layout_marginStart="@dimen/dimens_20"
+        android:layout_marginTop="@dimen/dimens_10"
+        android:layout_marginEnd="@dimen/dimens_20" />
 
 </LinearLayout>

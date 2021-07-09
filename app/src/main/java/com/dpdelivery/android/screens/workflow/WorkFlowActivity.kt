@@ -56,6 +56,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.zxing.integration.android.IntentIntegrator
 import id.zelory.compressor.Compressor
+import kotlinx.android.synthetic.main.activity_inventory.*
 import kotlinx.android.synthetic.main.activity_work_flow.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.error_view.*
@@ -124,6 +125,9 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var ownerName: String = ""
     private var synctext: TextView? = null
     private var isSync: Boolean = false
+    private val inventoryMap: MutableMap<String, Any> = mutableMapOf<String, Any>()
+    private var inventoryList = ArrayList<Any>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -145,7 +149,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             jobType = intent.getStringExtra(Constants.JOB_TYPE)
             noteList = intent.getParcelableArrayListExtra(Constants.NOTES)
         }
-        getWorkFlowData(jobId)
         initRecyclerView()
         dialog = CommonUtils.progressDialog(context)
         btn_next.setOnClickListener(this)
@@ -155,6 +158,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         tv_view_notes.setOnClickListener(this)
         error_button.setOnClickListener(this)
         dbH = DatabaseHandler(this)
+        getWorkFlowData(jobId)
     }
 
     override fun onClick(v: View?) {
@@ -177,7 +181,16 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 if (stepsFinished.containsValue(false)) {
                     toast("Please submit mandatory fields")
                 } else {
-                    finishJob()
+                    if (jobType == "DEL") {
+                        val deviceCode = stepMap[3.toString()]
+                        if (inventoryList.contains(deviceCode.toString())) {
+                            finishJob()
+                        } else {
+                            toast("Device code is not present in your inventory")
+                        }
+                    } else {
+                        finishJob()
+                    }
                 }
             }
             R.id.btn_submit -> {
@@ -193,6 +206,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         }
     }
 
+    //showing notes
     private fun showNotesList() {
         dialog = Dialog(context, R.style.CustomDialogThemeLightBg)
         dialog.setContentView(R.layout.layout_note_list)
@@ -213,6 +227,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         dialog.show()
     }
 
+    //initializing recyclerview
     private fun initRecyclerView() {
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             @SuppressLint("LongLogTag")
@@ -242,6 +257,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
     }
 
+    //get workflow data
     private fun getWorkFlowData(jobId: Int?) {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
         if (jobId != null) {
@@ -249,6 +265,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         }
     }
 
+    //workflow data response
     override fun showWorFlowDataRes(res: WorkFlowDataRes) {
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (res.success!!) {
@@ -256,10 +273,12 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             submissionField = res.body.submissionField
             activationElementId = res.body.activationElementId
             syncElementId = res.body.syncElementId
+            //setting up steps based on position
             setStep(currentPosition)
         }
     }
 
+    //setting up steps based on position
     private fun setStep(position: Int) {
         if (mDataList != null && mDataList!!.isNotEmpty() && mDataList!!.size > position) {
             currentPosition = position
@@ -283,6 +302,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         }
     }
 
+    //nextstep will be shown when there are more steps
     private fun nextStep() {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
         for (mutableEntry in stepMap) {
@@ -301,6 +321,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         )
     }
 
+    //submit will be called when matches with submission field in dropdown
     private fun submit() {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
         for (mutableEntry in stepMap) {
@@ -343,6 +364,27 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         if (CommonUtils.hasUpdates) {
             updateServerCmds()
         }
+        //inventory list
+        getInventoryItems()
+    }
+
+    private fun getInventoryItems() {
+        workFlowPresenter.getInventory(CommonUtils.getId())
+    }
+
+    override fun showInventoryRes(res: InventoryRes) {
+        if (res.part_info.isNotEmpty()) {
+            for (i in 0 until res.part_info.size) {
+                for (j in 0 until res.part_info[i].product_info.size) {
+                    inventoryMap[res.part_info[i].product_info[j].id.toString()] =
+                        res.part_info[i].product_info[j].product_code
+                }
+            }
+        }
+        for (entry in inventoryMap) {
+            inventoryList.add(entry.value)
+        }
+        Log.d("inventory", inventoryList.toString())
     }
 
     override fun showAddTextRes(res: AddTextRes) {
@@ -403,6 +445,20 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             workFlowPresenter.finishJob(jobId!!, finishJobIp)
         } else {
             toast(res.message!!)
+        }
+    }
+
+    override fun showFinishJobRes(res: SubmiPidRes) {
+        if (res.success) {
+            stepMap.clear()
+            stepsFinished.clear()
+            stepMapList.clear()
+            CommonUtils.saveBotId("")
+            startActivity(Intent(this, TechJobsListActivity::class.java))
+            finish()
+        } else {
+            toast(res.message)
+            showViewState(MultiStateView.VIEW_STATE_CONTENT)
         }
     }
 
@@ -780,20 +836,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     ).show()
                 }
             }
-        }
-    }
-
-    override fun showFinishJobRes(res: SubmiPidRes) {
-        if (res.success) {
-            stepMap.clear()
-            stepsFinished.clear()
-            stepMapList.clear()
-            CommonUtils.saveBotId("")
-            startActivity(Intent(this, TechJobsListActivity::class.java))
-            finish()
-        } else {
-            toast(res.message)
-            showViewState(MultiStateView.VIEW_STATE_CONTENT)
         }
     }
 

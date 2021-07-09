@@ -132,7 +132,7 @@
                     android:layout_height="@dimen/dimens_30"
                     android:layout_gravity="center"
                     android:layout_marginBottom="20dp"
-                    android:background="@drawable/btn_orange_bg"
+                    android:background="@drawable/btn_theme_bg"
                     android:text="Submit"
                     android:textAllCaps="false"
                     android:textColor="#fff"

@@ -454,12 +454,6 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener,
         }
     }
 
-    override fun reSendHappyCodeRes(res: SubmiPidRes) {
-        if (res.success) {
-            toast(res.message)
-        }
-    }
-
     private fun addParts(partsList: ArrayList<SparePartsData>) {
         val mBuilder = AlertDialog.Builder(this)
         val mView = layoutInflater.inflate(R.layout.layout_spare_parts, null)

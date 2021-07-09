@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/dimens_10"
     android:layout_marginEnd="@dimen/dimens_10"
     android:layout_marginBottom="@dimen/dimens_8"
     android:background="@drawable/bg_outline_curve"
-    android:orientation="vertical"
+    android:gravity="center"
+    android:orientation="horizontal"
     android:padding="@dimen/dimens_10">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_pid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
         android:fontFamily="@font/stolzl_regular"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/dimens_12sp" />
@@ -23,23 +23,21 @@
         android:id="@+id/iv_scan"
         android:layout_width="@dimen/dimens_20"
         android:layout_height="@dimen/dimens_20"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/dimens_10"
         android:src="@drawable/qr"
         android:visibility="gone" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_return"
+        android:id="@+id/btn_cancel"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dimens_25"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/dimens_10"
         android:background="@drawable/btn_grey_bg"
         android:fontFamily="@font/stolzl_regular"
         android:text="Cancel"
         android:textColor="@color/colorWhite"
         android:visibility="gone" />
-</RelativeLayout>
+</LinearLayout>
 

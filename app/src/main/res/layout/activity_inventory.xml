@@ -3,14 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#E4E4E4"
+    android:orientation="vertical"
     tools:context=".screens.inventory.InventoryActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_inventory"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:listitem="@layout/item_inventory" />
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

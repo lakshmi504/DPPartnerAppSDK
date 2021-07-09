@@ -27,6 +27,7 @@ class SharedPreferenceManager {
         val USER_NAME = "USER_NAME"
         val NAME = "NAME"
         val ROLE = "ROLE"
+        val USER_ID = "USER_ID"
 
         fun clearPreferences() {
             getPrefs().edit().clear().apply()
