@@ -64,7 +64,6 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
 
     lateinit var mContext: Context
     private var jobId: Int? = 0
-    private var workflowId: Int? = 0
     private var phone: String? = null
     private var altPhone: String? = null
     private var statusCode: String? = null
@@ -548,8 +547,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         deviceCode = res.installation?.deviceCode
         botId = res.bid + ""
         connectivity = res.connectivity + ""
-        workflowId = res.workflowId
-        if (workflowId != null) {
+        if (res.workflowId != null) {
             if (!res.status.code.equals("ASG")) {
                 ll_workflow.visibility = View.VISIBLE
             }
@@ -573,7 +571,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         et_purifierid.setText(res.installation?.deviceCode)
         jobType = res.type.code
         cxLatLong = res.customerLatLong.toString()
-        if (cxLatLong != null) {
+        if (res.customerLatLong != null) {
             val st = StringTokenizer(cxLatLong, ",")
             val result = ArrayList<String>()
             while (st.hasMoreTokens()) {

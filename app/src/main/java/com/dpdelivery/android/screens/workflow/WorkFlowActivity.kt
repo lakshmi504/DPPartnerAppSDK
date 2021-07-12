@@ -181,7 +181,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 if (stepsFinished.containsValue(false)) {
                     toast("Please submit mandatory fields")
                 } else {
-                    if (jobType == "DEL") {
+                    if (jobType == "DEL" || jobType == "DRT") {
                         val deviceCode = stepMap[3.toString()]
                         if (inventoryList.contains(deviceCode.toString())) {
                             finishJob()

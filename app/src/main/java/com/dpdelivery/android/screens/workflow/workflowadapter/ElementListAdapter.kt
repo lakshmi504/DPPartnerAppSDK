@@ -3,6 +3,7 @@ package com.dpdelivery.android.screens.workflow.workflowadapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.text.Editable
+import android.text.InputFilter
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
@@ -86,6 +87,7 @@ class ElementListAdapter(
                         et_add_text.inputType = InputType.TYPE_CLASS_NUMBER
                     }
                     if (item.name.toString() == "DeviceCode") {
+                        et_add_text.filters = arrayOf(InputFilter.LengthFilter(10))
                         ivqrcodescan.visibility = View.VISIBLE
                         ivqrcodescan.setOnClickListener {
                             adapterClickListener?.onclick(
