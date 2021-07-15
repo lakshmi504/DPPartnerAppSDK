@@ -36,7 +36,10 @@ import com.dpdelivery.android.screens.finish.FinishJobActivity
 import com.dpdelivery.android.screens.login.LoginActivity
 import com.dpdelivery.android.screens.scanner.ScannerActivity
 import com.dpdelivery.android.screens.workflow.WorkFlowActivity
-import com.dpdelivery.android.utils.*
+import com.dpdelivery.android.utils.CommonUtils
+import com.dpdelivery.android.utils.SharedPreferenceManager
+import com.dpdelivery.android.utils.toast
+import com.dpdelivery.android.utils.withNotNullNorEmpty
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
@@ -351,7 +354,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
 
     private fun startJob() {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
-        val currentTime = DateHelper.getCurrentDateTime()
+        val currentTime = Date()
         val output = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
         output.timeZone = TimeZone.getTimeZone("GMT")
         jobStartTime = output.format(currentTime)

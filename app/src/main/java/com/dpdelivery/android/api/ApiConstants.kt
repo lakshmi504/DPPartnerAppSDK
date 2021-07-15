@@ -3,10 +3,10 @@ package com.dpdelivery.android.api
 class ApiConstants {
     companion object {
 
-        const val BASE_URL = "http://staging.waterwalaprime.in:8080/"
-        const val TEST_BASE_URL = "http://test.waterwalaprime.in:8080/"
+        const val BASE_URL = "http://api.drinkprime.in/workforce/"
+        const val TEST_BASE_URL = "http://api.staging.drinkprime.in/workforce/"
 
-        const val LOGIN = "login"
+        const val LOGIN = "http://api.drinkprime.in/auth/login"
         const val JOBS_LIST = "workforce/job/list/v2"
         const val JOB_BY_ID = "workforce/job/"
         const val SUBMIT_PID = "device/add"
@@ -22,6 +22,6 @@ class ApiConstants {
         const val ADD_WORK_FLOW = "workflow/addData"
         const val VOIP_CALL = "https://api-voice.kaleyra.com/v1/"
         const val UPDATE_TOKEN = "notification/user"
-        const val PARTNER_DETAILS = "auth/me"
+        const val PARTNER_DETAILS = "http://api.drinkprime.in/auth/auth/me"
     }
 }
