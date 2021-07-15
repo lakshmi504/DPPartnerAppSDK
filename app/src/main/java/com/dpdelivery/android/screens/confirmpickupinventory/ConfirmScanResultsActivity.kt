@@ -65,14 +65,18 @@ class ConfirmScanResultsActivity : TechBaseActivity(), ConfirmPickUpContract.Vie
             }
         }
         btn_confirm.setOnClickListener {
-            showViewState(MultiStateView.VIEW_STATE_LOADING)
-            confirmPickUpPresenter.confirmInventory(
-                submitInventoryIp = SubmitInventoryIp(
-                    employee_id = CommonUtils.getId(),
-                    product_id = productId.toInt(),
-                    qr_code = content
+            if (et_result.text.toString().isNotEmpty()) {
+                showViewState(MultiStateView.VIEW_STATE_LOADING)
+                confirmPickUpPresenter.confirmInventory(
+                    submitInventoryIp = SubmitInventoryIp(
+                        employee_id = CommonUtils.getId(),
+                        product_id = productId.toInt(),
+                        qr_code = content
+                    )
                 )
-            )
+            } else {
+                toast("Please enter device code")
+            }
         }
     }
 

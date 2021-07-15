@@ -50,6 +50,7 @@
             android:background="@drawable/bg_edit_text"
             android:fontFamily="@font/stolzl_medium"
             android:gravity="center"
+            android:maxLength="10"
             android:padding="@dimen/dimens_10"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/dimens_12sp" />
