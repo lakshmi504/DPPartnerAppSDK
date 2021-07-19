@@ -1,12 +1,11 @@
 package com.dpdelivery.android.screens.base
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.SpannableString
 import android.text.TextUtils
-import android.text.style.UnderlineSpan
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
@@ -81,7 +80,9 @@ open class TechBaseActivity : DaggerAppCompatActivity(),
         val dialog = Dialog(context, R.style.CustomDialogThemeLightBg)
         dialog.setContentView(R.layout.dialog_logout)
         dialog.setCancelable(true)
-        dialog.show()
+        if (!(context as Activity).isFinishing) {
+            dialog.show()
+        }
         (dialog.findViewById(R.id.tv_confirm) as TextView).setOnClickListener {
             SharedPreferenceManager.clearPreferences()
             startActivity(Intent(this, LoginActivity::class.java))

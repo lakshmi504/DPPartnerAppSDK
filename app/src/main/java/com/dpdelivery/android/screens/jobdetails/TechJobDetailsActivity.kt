@@ -268,25 +268,29 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             }
             R.id.btn_start_job -> {
                 if (btn_start_job.visibility == View.VISIBLE) {
-                    if (cxLatLong.isEmpty() || cxLatLong == "null" || cxLatLong == "0") {
+                    if (CommonUtils.getRole() == "DeliveryPerson") {
                         startJob()
                     } else {
-                        if (latitude.isNotEmpty() && longitude.isNotEmpty()) {
-                            val loc1 = Location("")
-                            loc1.latitude = latitude.toDouble()
-                            loc1.longitude = longitude.toDouble()
-                            val loc2 = Location("")
-                            loc2.latitude = cxlat.toDouble()
-                            loc2.longitude = cxLong.toDouble()
-
-                            val distanceInMeters: Float = loc1.distanceTo(loc2)
-                            if (distanceInMeters < 500) {
-                                startJob()
-                            } else {
-                                toast("Please reach customer place before start job")
-                            }
-                        } else {
+                        if (cxLatLong.isEmpty() || cxLatLong == "null" || cxLatLong == "0") {
                             startJob()
+                        } else {
+                            if (latitude.isNotEmpty() && longitude.isNotEmpty()) {
+                                val loc1 = Location("")
+                                loc1.latitude = latitude.toDouble()
+                                loc1.longitude = longitude.toDouble()
+                                val loc2 = Location("")
+                                loc2.latitude = cxlat.toDouble()
+                                loc2.longitude = cxLong.toDouble()
+
+                                val distanceInMeters: Float = loc1.distanceTo(loc2)
+                                if (distanceInMeters < 500) {
+                                    startJob()
+                                } else {
+                                    toast("Please reach customer place before start job")
+                                }
+                            } else {
+                                startJob()
+                            }
                         }
                     }
                 }
