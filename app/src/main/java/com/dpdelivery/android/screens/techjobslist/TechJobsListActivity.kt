@@ -115,7 +115,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
     }
 
     override fun showPartnerDetails(res: PartnerDetailsRes) {
-        CommonUtils.saveUserName(res.username)
+        CommonUtils.saveUserDetails(res)
         getDeviceToken()
     }
 
@@ -127,7 +127,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
             val token = it.result
             val msg = getString(R.string.msg_token_fmt, token)
             Log.d("msg", msg)
-            updateDeviceToken(token)
+            //updateDeviceToken(token)
         }
     }
 

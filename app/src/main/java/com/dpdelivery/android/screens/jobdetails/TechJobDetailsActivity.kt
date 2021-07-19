@@ -267,25 +267,29 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             }
             R.id.btn_start_job -> {
                 if (btn_start_job.visibility == View.VISIBLE) {
-                    if (cxLatLong.isEmpty() || cxLatLong == "null" || cxLatLong == "0") {
+                    if (CommonUtils.getRole() == "DeliveryPerson") {
                         startJob()
                     } else {
-                        if (latitude.isNotEmpty() && longitude.isNotEmpty()) {
-                            val loc1 = Location("")
-                            loc1.latitude = latitude.toDouble()
-                            loc1.longitude = longitude.toDouble()
-                            val loc2 = Location("")
-                            loc2.latitude = cxlat.toDouble()
-                            loc2.longitude = cxLong.toDouble()
-
-                            val distanceInMeters: Float = loc1.distanceTo(loc2)
-                            if (distanceInMeters < 500) {
-                                startJob()
-                            } else {
-                                toast("Please reach customer place before start job")
-                            }
-                        } else {
+                        if (cxLatLong.isEmpty() || cxLatLong == "null" || cxLatLong == "0") {
                             startJob()
+                        } else {
+                            if (latitude.isNotEmpty() && longitude.isNotEmpty()) {
+                                val loc1 = Location("")
+                                loc1.latitude = latitude.toDouble()
+                                loc1.longitude = longitude.toDouble()
+                                val loc2 = Location("")
+                                loc2.latitude = cxlat.toDouble()
+                                loc2.longitude = cxLong.toDouble()
+
+                                val distanceInMeters: Float = loc1.distanceTo(loc2)
+                                if (distanceInMeters < 500) {
+                                    startJob()
+                                } else {
+                                    toast("Please reach customer place before start job")
+                                }
+                            } else {
+                                startJob()
+                            }
                         }
                     }
                 }
@@ -457,19 +461,19 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         tv_job_id.text = res.id.toString()
         tv_job_type.text = res.type!!.description
         tv_name.text = res.customerName
-        phone = res.customerPhone
-        if (!phone.isNullOrEmpty()) {
+        if (!res.customerPhone.isNullOrEmpty()) {
             try {
                 //tv_phone.text = phone?.replaceRange(5..9, "*****")
+                phone = res.customerPhone
                 tv_phone.text = phone
             } catch (e: Exception) {
 
             }
         }
-        altPhone = res.customerAltPhone
-        if (!altPhone.isNullOrEmpty()) {
+        if (!res.customerAltPhone.isNullOrEmpty()) {
             try {
                 // tv_alt_phone.text = altPhone?.replaceRange(5..9, "*****")
+                altPhone = res.customerAltPhone
                 tv_alt_phone.text = altPhone
             } catch (e: Exception) {
 
