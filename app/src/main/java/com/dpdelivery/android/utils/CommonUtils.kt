@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.dpdelivery.android.R
+import com.dpdelivery.android.model.techres.PartnerDetailsRes
 import java.io.ByteArrayOutputStream
 
 class CommonUtils {
@@ -38,6 +39,52 @@ class CommonUtils {
                 SharedPreferenceManager.VALUE_TYPE.STRING
             )
         }
+        fun saveUserDetails(res: PartnerDetailsRes) {
+            SharedPreferenceManager.setPrefVal(
+                SharedPreferenceManager.ROLE,
+                res.role,
+                SharedPreferenceManager.VALUE_TYPE.STRING
+            )
+            SharedPreferenceManager.setPrefVal(
+                SharedPreferenceManager.USER_NAME,
+                res.username,
+                SharedPreferenceManager.VALUE_TYPE.STRING
+            )
+            SharedPreferenceManager.setPrefVal(
+                SharedPreferenceManager.USER_ID,
+                res.id,
+                SharedPreferenceManager.VALUE_TYPE.INTEGER
+            )
+            SharedPreferenceManager.setPrefVal(
+                SharedPreferenceManager.NAME,
+                res.firstname,
+                SharedPreferenceManager.VALUE_TYPE.STRING
+            )
+        }
+
+        fun getRole(): String {
+            return SharedPreferenceManager.getPrefVal(
+                SharedPreferenceManager.ROLE,
+                "",
+                SharedPreferenceManager.VALUE_TYPE.STRING
+            ) as String
+        }
+
+        fun getName(): String {
+            return SharedPreferenceManager.getPrefVal(
+                SharedPreferenceManager.NAME,
+                "",
+                SharedPreferenceManager.VALUE_TYPE.STRING
+            ) as String
+        }
+
+        fun getId(): Int {
+            return SharedPreferenceManager.getPrefVal(
+                SharedPreferenceManager.USER_ID,
+                0,
+                SharedPreferenceManager.VALUE_TYPE.INTEGER
+            ) as Int
+        }
 
         fun getUserName(): String {
             return SharedPreferenceManager.getPrefVal(
@@ -45,14 +92,6 @@ class CommonUtils {
                 "",
                 SharedPreferenceManager.VALUE_TYPE.STRING
             ) as String
-        }
-
-        fun saveUserName(string: String?) {
-            SharedPreferenceManager.setPrefVal(
-                SharedPreferenceManager.USER_NAME,
-                string!!,
-                SharedPreferenceManager.VALUE_TYPE.STRING
-            )
         }
 
         fun saveBotId(string: String?) {

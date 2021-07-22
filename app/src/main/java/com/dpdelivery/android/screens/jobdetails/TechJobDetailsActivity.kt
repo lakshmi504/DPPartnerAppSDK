@@ -36,7 +36,10 @@ import com.dpdelivery.android.screens.finish.FinishJobActivity
 import com.dpdelivery.android.screens.login.LoginActivity
 import com.dpdelivery.android.screens.scanner.ScannerActivity
 import com.dpdelivery.android.screens.workflow.WorkFlowActivity
-import com.dpdelivery.android.utils.*
+import com.dpdelivery.android.utils.CommonUtils
+import com.dpdelivery.android.utils.SharedPreferenceManager
+import com.dpdelivery.android.utils.toast
+import com.dpdelivery.android.utils.withNotNullNorEmpty
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
@@ -264,25 +267,29 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             }
             R.id.btn_start_job -> {
                 if (btn_start_job.visibility == View.VISIBLE) {
-                    if (cxLatLong.isEmpty() || cxLatLong == "null" || cxLatLong == "0") {
+                    if (CommonUtils.getRole() == "DeliveryPerson") {
                         startJob()
                     } else {
-                        if (latitude.isNotEmpty() && longitude.isNotEmpty()) {
-                            val loc1 = Location("")
-                            loc1.latitude = latitude.toDouble()
-                            loc1.longitude = longitude.toDouble()
-                            val loc2 = Location("")
-                            loc2.latitude = cxlat.toDouble()
-                            loc2.longitude = cxLong.toDouble()
-
-                            val distanceInMeters: Float = loc1.distanceTo(loc2)
-                            if (distanceInMeters < 500) {
-                                startJob()
-                            } else {
-                                toast("Please reach customer place before start job")
-                            }
-                        } else {
+                        if (cxLatLong.isEmpty() || cxLatLong == "null" || cxLatLong == "0") {
                             startJob()
+                        } else {
+                            if (latitude.isNotEmpty() && longitude.isNotEmpty()) {
+                                val loc1 = Location("")
+                                loc1.latitude = latitude.toDouble()
+                                loc1.longitude = longitude.toDouble()
+                                val loc2 = Location("")
+                                loc2.latitude = cxlat.toDouble()
+                                loc2.longitude = cxLong.toDouble()
+
+                                val distanceInMeters: Float = loc1.distanceTo(loc2)
+                                if (distanceInMeters < 500) {
+                                    startJob()
+                                } else {
+                                    toast("Please reach customer place before start job")
+                                }
+                            } else {
+                                startJob()
+                            }
                         }
                     }
                 }
@@ -351,7 +358,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
 
     private fun startJob() {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
-        val currentTime = DateHelper.getCurrentDateTime()
+        val currentTime = Date()
         val output = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
         output.timeZone = TimeZone.getTimeZone("GMT")
         jobStartTime = output.format(currentTime)
@@ -454,19 +461,19 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         tv_job_id.text = res.id.toString()
         tv_job_type.text = res.type!!.description
         tv_name.text = res.customerName
-        phone = res.customerPhone
-        if (!phone.isNullOrEmpty()) {
+        if (!res.customerPhone.isNullOrEmpty()) {
             try {
                 //tv_phone.text = phone?.replaceRange(5..9, "*****")
+                phone = res.customerPhone
                 tv_phone.text = phone
             } catch (e: Exception) {
 
             }
         }
-        altPhone = res.customerAltPhone
-        if (!altPhone.isNullOrEmpty()) {
+        if (!res.customerAltPhone.isNullOrEmpty()) {
             try {
                 // tv_alt_phone.text = altPhone?.replaceRange(5..9, "*****")
+                altPhone = res.customerAltPhone
                 tv_alt_phone.text = altPhone
             } catch (e: Exception) {
 
