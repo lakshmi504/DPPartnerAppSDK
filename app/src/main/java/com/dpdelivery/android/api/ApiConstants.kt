@@ -3,12 +3,11 @@ package com.dpdelivery.android.api
 class ApiConstants {
     companion object {
 
-        const val BASE_URL = "http://staging.waterwalaprime.in:8080/"
-        //const val TEST_BASE_URL = "http://8d00335057d7.ngrok.io/"
-        const val TEST_BASE_URL = "http://test.waterwalaprime.in:8080/"
+        const val BASE_URL = "https://api.drinkprime.in/workforce/"
+        const val TEST_BASE_URL = "https://api.staging.drinkprime.in/workforce/"
 
-        const val LOGIN = "http://auth-dev.waterwalaprime.in:8084/login"
-       // const val LOGIN = "login"
+        const val LOGIN = "https://api.drinkprime.in/auth/login"
+        const val PARTNER_DETAILS = "https://api.drinkprime.in/auth/auth/me"
         const val JOBS_LIST = "workforce/job/list/v2"
         const val JOB_BY_ID = "workforce/job/"
         const val SUBMIT_PID = "device/add"
@@ -23,14 +22,13 @@ class ApiConstants {
         const val ADD_WORK_FLOW = "workflow/addData"
         const val VOIP_CALL = "https://api-voice.kaleyra.com/v1/"
         const val UPDATE_TOKEN = "notification/user"
-        const val PARTNER_DETAILS = "auth/me"
 
         //employee earnings
         const val EARNINGS = "earnings/entries"
 
         //inventory Api's
-        const val INVENTORY = "/employee/inventory/"
-        const val INVENTORY_COUNT = "/employee/app/inventory/"
+        const val INVENTORY = "employee/inventory/"
+        const val INVENTORY_COUNT = "employee/app/inventory/"
         const val INVENTORY_PICKED_UP = "employee/Inventory/item/picked"
         const val INVENTORY_TO_BE_PICKED_UP = "employee/Inventory/item/notPicked"
         const val INVENTORY_TO_BE_RETURNED = "employee/returnInventory/item"

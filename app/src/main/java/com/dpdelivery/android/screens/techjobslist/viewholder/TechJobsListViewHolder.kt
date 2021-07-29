@@ -59,11 +59,11 @@ class TechJobsListViewHolder(
                 tv_appointmentdate.text = item.appointmentStartTime
             }
             tv_statusvalue.text = item.status?.description
-           /* if (item.workflowId != null) {
+            if (item.workflowId != null) {
                 btn_update_status.visibility = View.VISIBLE
             } else {
                 btn_update_status.visibility = View.INVISIBLE
-            }*/
+            }
             btn_update_status.setOnClickListener {
                 adapterClickListener.onclick(
                     any = item,

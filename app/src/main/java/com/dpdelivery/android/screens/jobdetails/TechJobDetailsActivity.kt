@@ -560,8 +560,6 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             } else {
                 ll_workflow.visibility = View.VISIBLE
             }
-            /*btn_finish_job.visibility = View.GONE
-            finish_job.visibility = View.GONE*/
         } else {
             ll_workflow.visibility = View.GONE
             if (!res.type.code.equals("INS") && (res.status.code.equals("INP"))) {
@@ -617,7 +615,6 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         } else if (!submiPidRes.success) {
             toast(submiPidRes.message)
             isSuccess = submiPidRes.success
-            iv_refresh!!.isEnabled = false
         }
     }
 

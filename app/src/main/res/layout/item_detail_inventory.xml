@@ -17,6 +17,7 @@
         android:layout_gravity="center_vertical"
         android:fontFamily="@font/stolzl_regular"
         android:textColor="@color/colorBlack"
+        android:textAllCaps="true"
         android:textSize="@dimen/dimens_12sp" />
 
     <androidx.appcompat.widget.AppCompatImageView

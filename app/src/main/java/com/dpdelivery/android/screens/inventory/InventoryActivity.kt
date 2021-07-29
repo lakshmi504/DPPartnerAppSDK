@@ -51,6 +51,9 @@ class InventoryActivity : TechBaseActivity(), InventoryContract.View, IAdapterCl
         mContext = this
         setTitle("Inventory")
         setUpBottomNavView(true)
+        error_button.setOnClickListener {
+            getInventoryItems()
+        }
     }
 
     // layout to inflate our menu file.

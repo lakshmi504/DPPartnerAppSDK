@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.MenuItem
 import com.dpdelivery.android.R
@@ -19,6 +21,7 @@ import com.dpdelivery.android.utils.toast
 import kotlinx.android.synthetic.main.activity_confirm_scan_results.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.error_view.*
+import kotlinx.android.synthetic.main.item_element_list.*
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -61,7 +64,30 @@ class ConfirmScanResultsActivity : TechBaseActivity(), ConfirmPickUpContract.Vie
                 et_result.isEnabled = false
             } else {
                 et_result.hint = "Enter Device Code"
-                content = et_result.text.toString()
+                et_result!!.addTextChangedListener(object :
+                    TextWatcher {
+                    override fun afterTextChanged(editable: Editable?) {
+
+                    }
+
+                    override fun beforeTextChanged(
+                        p0: CharSequence?,
+                        p1: Int,
+                        p2: Int,
+                        p3: Int
+                    ) {
+
+                    }
+
+                    override fun onTextChanged(
+                        p0: CharSequence?,
+                        p1: Int,
+                        p2: Int,
+                        p3: Int
+                    ) {
+                        content = p0.toString()
+                    }
+                })
             }
         }
         btn_confirm.setOnClickListener {
@@ -77,6 +103,9 @@ class ConfirmScanResultsActivity : TechBaseActivity(), ConfirmPickUpContract.Vie
             } else {
                 toast("Please enter device code")
             }
+        }
+        error_button.setOnClickListener {
+            init()
         }
     }
 

@@ -12,7 +12,8 @@
         android:fontFamily="@font/stolzl_regular"
         android:paddingTop="@dimen/dimens_5"
         android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/dimens_12sp" />
+        android:textSize="@dimen/dimens_12sp"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -247,7 +248,7 @@
         <FrameLayout
             android:id="@+id/ll_spinner_spares"
             android:layout_width="@dimen/dimens_150"
-            android:layout_height="@dimen/dimens_30"
+            android:layout_height="@dimen/dimens_25"
             android:background="@drawable/btn_background_grey_border"
             android:orientation="vertical">
 

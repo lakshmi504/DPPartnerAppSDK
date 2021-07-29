@@ -85,8 +85,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     lateinit var mLayoutManager: LinearLayoutManager
     private var workFlowAdapter: TemplateListAdapter? = null
     private var currentPosition: Int = 0
-    lateinit var manager: LinearLayoutManager
-    lateinit var adapterNotesList: BasicAdapter
+    private lateinit var manager: LinearLayoutManager
+    private lateinit var adapterNotesList: BasicAdapter
     private var isSuccess: Boolean = false
 
     @Inject
@@ -104,8 +104,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var elementId: Int = 0
     private var mTemplateList: ArrayList<WorkFlowDataRes.WorkFlowDataResBody.Step.Template>? = null
     private var noteList: ArrayList<Note?>? = null
-    private val stepMap: MutableMap<String, String> = mutableMapOf<String, String>()
-    private val stepsFinished: MutableMap<String, Boolean> = mutableMapOf<String, Boolean>()
+    private val stepMap: MutableMap<String, String> = mutableMapOf()
+    private val stepsFinished: MutableMap<String, Boolean> = mutableMapOf()
     private val stepMapList = ArrayList<AddWorkFlowData.Data>()
     private var latitude: String = ""
     private var longitude: String = ""
@@ -159,6 +159,14 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         error_button.setOnClickListener(this)
         dbH = DatabaseHandler(this)
         getWorkFlowData(jobId)
+    }
+
+    //get workflow data
+    private fun getWorkFlowData(jobId: Int?) {
+        showViewState(MultiStateView.VIEW_STATE_LOADING)
+        if (jobId != null) {
+            workFlowPresenter.getWorkFlowData(jobId)
+        }
     }
 
     override fun onClick(v: View?) {
@@ -264,13 +272,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
     }
 
-    //get workflow data
-    private fun getWorkFlowData(jobId: Int?) {
-        showViewState(MultiStateView.VIEW_STATE_LOADING)
-        if (jobId != null) {
-            workFlowPresenter.getWorkFlowData(jobId)
-        }
-    }
 
     //workflow data response
     override fun showWorFlowDataRes(res: WorkFlowDataRes) {
@@ -286,6 +287,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     }
 
     //setting up steps based on position
+    @SuppressLint("SetTextI18n")
     private fun setStep(position: Int) {
         if (mDataList != null && mDataList!!.isNotEmpty() && mDataList!!.size > position) {
             currentPosition = position
@@ -301,11 +303,11 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 activationElementId,
                 syncElementId
             )
-            /*if (currentPosition == mDataList!!.size - 1) {
+            if (currentPosition == mDataList!!.size - 1) {
                 btn_next.visibility = View.GONE
                 btn_submit.visibility = View.GONE
                 btn_Finish.visibility = View.VISIBLE
-            }*/
+            }
         }
     }
 
@@ -484,10 +486,10 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 }
             }
         } else {
-            toast(throwable.message.toString())
+            //toast(throwable.message.toString())
+            Log.e("msg", throwable.message.toString())
         }
         dialog.dismiss()
-        //error_textView.text = throwable.message.toString()
     }
 
     override fun showViewState(state: Int) {
@@ -589,7 +591,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         val params = HashMap<String, String>()
         params["purifierid"] = deviceCode.toString()
         params["currentliters"] = CommonUtils.current.toString() + ""
-        params["validity"] = CommonUtils.validity!!
+        params["validity"] = CommonUtils.validity
         params["flowlimit"] = CommonUtils.flowlimit.toString() + ""
         params["status"] = CommonUtils.purifierStatus.toString() + ""
         params["techApp"] = "1"
@@ -622,16 +624,14 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 stepsFinished[elementId.toString()] = true
             } else {
                 ownerName = res.output?.owner!!
-                //synctext!!.text = res.output.lastsync.toString()
                 dbH.deleteAll()
                 val cmds = res.cmds
-                for (i in 0 until cmds!!.size) {
-                    val c = Command(cmds[i]!!.id!!, cmds[i]!!.cmd, "INIT")
+                for (i in cmds!!.indices) {
+                    val c = Command(cmds[i]?.id!!, cmds[i]!!.cmd, "INIT")
                     //Log.i("command", "INIT Command Found")
                     dbH.addCommand(c)
                     Log.i("SSyyzzzz", "added into table")
                 }
-                botId = CommonUtils.getBotId()
                 if (botId != null) {
                     val botId = botId!!.substring(0, 2) + ":" + botId!!.substring(
                         2,
@@ -861,7 +861,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             toast(submiPidRes.message)
             dialog.dismiss()
             isSuccess = submiPidRes.success
-            iv_refresh!!.isEnabled = false
         }
     }
 

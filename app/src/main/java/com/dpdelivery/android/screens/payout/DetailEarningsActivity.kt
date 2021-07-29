@@ -59,10 +59,6 @@ class DetailEarningsActivity : TechBaseActivity(), IAdapterClickListener, View.O
         iv_logout.setOnClickListener(this)
         iv_account.setOnClickListener(this)
         error_button.setOnClickListener(this)
-        /* refreshView.setOnRefreshListener { // Load data to your RecyclerView
-             refreshView.isRefreshing = false
-             getDetailEarnings()
-         }*/
     }
 
     override fun onClick(v: View?) {

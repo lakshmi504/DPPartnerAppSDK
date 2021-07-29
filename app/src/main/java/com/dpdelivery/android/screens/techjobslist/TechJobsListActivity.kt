@@ -89,7 +89,6 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
 
     override fun onStart() {
         super.onStart()
-        forceUpdate()
         getPartnerDetails()
     }
 
@@ -189,6 +188,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         presenter.takeView(this)
         bottom_navigation.selectedItemId = R.id.action_jobs
         loadDefaultSpinner()
+        forceUpdate()
         getAssignedJobsList()
     }
 

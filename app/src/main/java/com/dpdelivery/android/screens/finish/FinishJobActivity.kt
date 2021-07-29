@@ -64,7 +64,6 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener,
     private var LOCATION_PERMISSION_REQUEST_CODE = 123
     private var latitude: String = ""
     private var longitude: String = ""
-    private var isLocationSet: Boolean = false
     private var isTDSSet: Boolean = false
     private var isPhotoSet: Boolean = false
     private var isOTPSet: Boolean = false
@@ -722,7 +721,7 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener,
                 spares = partsIdList!!
             )
             presenter.finishJob(jobId, finishJobIp)
-        } else if (isLocationSet && isPhotoSet && isTDSSet && isOTPSet && mode != "Payment Type" && amountCollected > 0f) {
+        } else if (isPhotoSet && isTDSSet && isOTPSet && mode != "Payment Type" && amountCollected > 0f) {
             showViewState(MultiStateView.VIEW_STATE_LOADING)
             val finishJobIp = FinishJobIp(
                 status = "COM",

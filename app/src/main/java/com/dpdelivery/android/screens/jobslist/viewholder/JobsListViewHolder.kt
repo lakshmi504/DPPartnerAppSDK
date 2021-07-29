@@ -57,11 +57,11 @@ class JobsListViewHolder(
             }
             view.tv_statusvalue.text = item.status?.description
 
-          /*  if ((jobType == "INP") && item.workflowId != null) {
+            if ((jobType == "INP") && item.workflowId != null) {
                 view.btn_update_status.visibility = View.VISIBLE
             } else {
                 view.btn_update_status.visibility = View.INVISIBLE
-            }*/
+            }
             view.btn_update_status.setOnClickListener {
                 adapterClickListener.onclick(
                     any = item,
