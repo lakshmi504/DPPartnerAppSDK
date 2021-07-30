@@ -24,6 +24,7 @@
         android:letterSpacing="0.02"
         android:lineSpacingMultiplier="1.2"
         android:padding="@dimen/dimens_8"
+        android:fontFamily="@font/stolzl_regular"
         android:text="@string/error_something_wrong"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/dimens_12sp" />

@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,9 +19,9 @@ import com.dpdelivery.android.commonviews.MultiStateView
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.model.techinp.FinishJobIp
-import com.dpdelivery.android.model.techinp.UpdateJobIp
 import com.dpdelivery.android.model.techinp.UpdateTokenIP
 import com.dpdelivery.android.model.techres.*
+import com.dpdelivery.android.screens.account.AccountActivity
 import com.dpdelivery.android.screens.base.TechBaseActivity
 import com.dpdelivery.android.screens.jobdetails.TechJobDetailsActivity
 import com.dpdelivery.android.screens.jobslist.JobsListActivity
@@ -39,6 +38,7 @@ import retrofit2.HttpException
 import java.util.*
 import javax.inject.Inject
 
+
 class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAdapterClickListener,
     View.OnClickListener,
     AdapterView.OnItemSelectedListener {
@@ -54,9 +54,13 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
     @Inject
     lateinit var presenter: TechJobsListPresenter
 
-    //private val filterMode: Array<String> = arrayOf<String>("Status Filter", "Assigned", "In-Progress", "Completed", "Postponed", "Cancelled")
-    private val filterMode: Array<String> =
-        arrayOf<String>("Status Filter", "Assigned", "In-Progress", "Completed")
+    private val filterMode: Array<String> = arrayOf<String>(
+        "Assigned",
+        "In-Progress",
+        "Completed",
+        "Postponed",
+        "Cancelled"
+    )
     private val statusFilterMode = ArrayList<String>()
 
 
@@ -69,16 +73,23 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
 
     override fun init() {
         mContext = this
-        setTitle("Assigned Jobs")
         setUpBottomNavView(true)
         loadDefaultSpinner()
-        search_filter.visibility = View.GONE
-        tv_search.setOnClickListener(this)
+        iv_search.setOnClickListener(this)
+        iv_account.setOnClickListener(this)
         error_button.setOnClickListener(this)
-        empty_button.setOnClickListener(this)
-        tv_search.visibility = View.VISIBLE
-        sp_filter.visibility = View.VISIBLE
+        iv_logout.setOnClickListener(this)
+        iv_search.visibility = View.VISIBLE
+        iv_logout.visibility = View.VISIBLE
+        iv_account.visibility = View.VISIBLE
+        iv_account.setOnClickListener(this)
+        ll_spinner.visibility = View.VISIBLE
         dialog = CommonUtils.progressDialog(context)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        getPartnerDetails()
     }
 
     private fun forceUpdate() {
@@ -148,9 +159,10 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
 
     private fun loadDefaultSpinner() {
         val adapterMode =
-            ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, filterMode)
-        adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            ArrayAdapter<String>(this, R.layout.spinner_item, filterMode)
+        adapterMode.setDropDownViewResource(R.layout.spinner_item)
         sp_filter!!.adapter = adapterMode
+        sp_filter.setSelection(0, false)
         sp_filter.onItemSelectedListener = this
     }
 
@@ -159,11 +171,14 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
             R.id.error_button -> {
                 getAssignedJobsList()
             }
-            R.id.empty_button -> {
-                getAssignedJobsList()
-            }
-            R.id.tv_search -> {
+            R.id.iv_search -> {
                 startActivity(Intent(this, SearchActivity::class.java))
+            }
+            R.id.iv_account -> {
+                startActivity(Intent(this, AccountActivity::class.java))
+            }
+            R.id.iv_logout -> {
+                logOut()
             }
         }
     }
@@ -172,9 +187,8 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         super.onResume()
         presenter.takeView(this)
         bottom_navigation.selectedItemId = R.id.action_jobs
-        forceUpdate()
         loadDefaultSpinner()
-        getPartnerDetails()
+        forceUpdate()
         getAssignedJobsList()
     }
 
@@ -185,15 +199,10 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         when (parent!!.id) {
             R.id.sp_filter -> {
-                (parent.getChildAt(0) as TextView).setTextColor(Color.WHITE)
-                (parent.getChildAt(0) as TextView).textSize = 14f
                 filter = sp_filter!!.selectedItem.toString()
                 when (filter) {
                     "In-Progress" -> {
                         filter = "INP"
-                    }
-                    "Assigned" -> {
-                        filter = "ASG"
                     }
                     "Completed" -> {
                         filter = "COM"
@@ -205,7 +214,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
                         filter = "CAN"
                     }
                 }
-                if (filter != "Status Filter") {
+                if (filter != "Assigned") {
                     startActivity(
                         Intent(this, JobsListActivity::class.java).putExtra(
                             "filter",
@@ -228,22 +237,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         } else {
             showViewState(MultiStateView.VIEW_STATE_EMPTY)
             empty_textView.text = "No Jobs Found"
-            empty_button.text = "Back to list"
-        }
-    }
-
-    override fun showJobsListRes(res: ASGListRes) {
-        if (res.jobs!!.isNotEmpty()) {
-            showViewState(MultiStateView.VIEW_STATE_CONTENT)
-            res.jobs.withNotNullNorEmpty {
-                jobsList = res.jobs
-                adapterAsgJobsList.addList(jobsList)
-                rl_jobs.visibility = View.GONE
-            }
-        } else {
-            showViewState(MultiStateView.VIEW_STATE_EMPTY)
-            empty_textView.text = "No Jobs Found"
-            empty_button.text = "Back to list"
+            empty_button.visibility = View.GONE
         }
     }
 
@@ -344,10 +338,9 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
                         if (statusFilter != "Select Status") {
                             if (note.text.toString().isNotEmpty()) {
                                 dialog.show()
-                                val jobStatus = FinishJobIp(status = statusFilter)
-                                presenter.addNote(
-                                    any.id,
-                                    updateJobIp = UpdateJobIp(note = note.text!!.toString())
+                                val jobStatus = FinishJobIp(
+                                    status = statusFilter,
+                                    note = note.text!!.toString()
                                 )
                                 presenter.updateJob(any.id, jobStatus)
                                 statusDialog.dismiss()

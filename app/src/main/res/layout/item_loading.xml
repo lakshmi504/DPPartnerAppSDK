@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:text="Please wait, content loading"
         android:textSize="@dimen/dimens_12sp"
-        android:fontFamily="@font/montserrat_regular"
+        android:fontFamily="@font/stolzl_regular"
         android:layout_marginBottom="@dimen/dimens_5"
         android:gravity="center"/>
 

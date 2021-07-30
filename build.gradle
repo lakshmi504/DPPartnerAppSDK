@@ -39,14 +39,6 @@ allprojects {
         maven { url 'https://jitpack.io' }
         google()
         jcenter()
-        maven {
-            name = "MaterialSnapshots"
-            url = uri("https://maven.pkg.github.com/material-components/material-components-android")
-            credentials {
-                username = 'LakshminPrasanna'
-                password = 'c440a2d7effbfed54e882c2b17221fed06a8dd06'
-            }
-        }
     }
 }
 

@@ -6,6 +6,8 @@ import android.content.Intent
 import android.graphics.Paint
 import android.net.Uri
 import android.view.View
+import androidx.core.content.ContextCompat
+import com.dpdelivery.android.R
 import com.dpdelivery.android.commonadapter.BaseViewholder
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
@@ -16,16 +18,21 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TechJobsListViewHolder(override val containerView: View?, var context: Context, private var adapterClickListener: IAdapterClickListener) : BaseViewholder(containerView), LayoutContainer {
+class TechJobsListViewHolder(
+    override val containerView: View?,
+    var context: Context,
+    private var adapterClickListener: IAdapterClickListener
+) : BaseViewholder(containerView), LayoutContainer {
 
     @SuppressLint("SetTextI18n")
     override fun bind(context: Context, item: Any, pos: Int) {
         if (item is Job) {
             tv_jobtypevalue.text = item.type?.description
+            tv_jobtypevalue.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
             tv_jobidvalue.text = item.id.toString()
             tv_namevalue.text = item.customerName
             if (item.customerAddress?.area?.description.isNullOrEmpty()) {
-                tv_areavalue.text = " "
+                tv_areavalue.text = ""
             } else {
                 tv_areavalue.text = item.customerAddress?.area?.description.toString()
             }
@@ -33,7 +40,7 @@ class TechJobsListViewHolder(override val containerView: View?, var context: Con
             if (!item.appointmentStartTime.isNullOrEmpty()) {
                 val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ROOT)
                 val output = SimpleDateFormat("d-MMM-yyyy", Locale.ROOT)
-                val time = SimpleDateFormat("hh:mm a", Locale.ROOT)
+                val time = SimpleDateFormat("hha", Locale.ROOT)
                 input.timeZone = TimeZone.getTimeZone("IST")
                 var d: Date? = null
                 var d1: Date? = null
@@ -47,20 +54,24 @@ class TechJobsListViewHolder(override val containerView: View?, var context: Con
                 val startTime = time.format(d)
                 val endTime = time.format(d1!!)
                 tv_appointmentdate.text = formatted
-                appointmenttimevalue.text = "$startTime - $endTime"
+                appointmenttimevalue.text = "$startTime to $endTime".toLowerCase(Locale.ROOT)
             } else {
                 tv_appointmentdate.text = item.appointmentStartTime
             }
             tv_statusvalue.text = item.status?.description
-            /* if (item.workflowId != null) {
-                 ll_instatus.visibility = View.VISIBLE
-             } else {
-                 ll_instatus.visibility = View.GONE
-             }
-             tv_instatusvalue.paintFlags = tv_statusvalue.paintFlags or Paint.UNDERLINE_TEXT_FLAG
-             tv_instatusvalue.setOnClickListener {
-                 adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.JOB_TYPE)
-             }*/
+            if (item.workflowId != null) {
+                btn_update_status.visibility = View.VISIBLE
+            } else {
+                btn_update_status.visibility = View.INVISIBLE
+            }
+            btn_update_status.setOnClickListener {
+                adapterClickListener.onclick(
+                    any = item,
+                    pos = pos,
+                    type = itemView,
+                    op = Constants.JOB_TYPE
+                )
+            }
             val text = item.customerPhone
             if (text!!.isNotEmpty()) {
                 try {
@@ -83,8 +94,7 @@ class TechJobsListViewHolder(override val containerView: View?, var context: Con
             }
 
             if (item.customerAltPhone.isNullOrEmpty()) {
-                tv_alternate_no.visibility = View.GONE
-                alternate_no.visibility = View.GONE
+                ll_alt_mobile.visibility = View.GONE
             } else {
                 val altPhone = item.customerAltPhone
                 //tv_alternate_no.text = (altPhone).replaceRange(5..9, "*****")
@@ -101,8 +111,13 @@ class TechJobsListViewHolder(override val containerView: View?, var context: Con
                     //adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.ALT_CUST_PHONE)
                 }
             }
-            ll_bg.setOnClickListener {
-                adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.ASSIGN_JOB_DETAILS)
+            btn_know_more.setOnClickListener {
+                adapterClickListener.onclick(
+                    any = item,
+                    pos = pos,
+                    type = itemView,
+                    op = Constants.ASSIGN_JOB_DETAILS
+                )
             }
 
         }

@@ -15,7 +15,6 @@ import android.media.ExifInterface
 import android.media.MediaScannerConnection
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.text.InputFilter
@@ -57,6 +56,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.zxing.integration.android.IntentIntegrator
 import id.zelory.compressor.Compressor
+import kotlinx.android.synthetic.main.activity_inventory.*
 import kotlinx.android.synthetic.main.activity_work_flow.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.error_view.*
@@ -85,14 +85,13 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     lateinit var mLayoutManager: LinearLayoutManager
     private var workFlowAdapter: TemplateListAdapter? = null
     private var currentPosition: Int = 0
-    lateinit var manager: LinearLayoutManager
-    lateinit var adapterNotesList: BasicAdapter
+    private lateinit var manager: LinearLayoutManager
+    private lateinit var adapterNotesList: BasicAdapter
     private var isSuccess: Boolean = false
 
     @Inject
     lateinit var workFlowPresenter: WorkFlowPresenter
     private var mDataList: ArrayList<WorkFlowDataRes.WorkFlowDataResBody.Step>? = null
-    private var doubleBackToExitPressedOnce = false
     private val CAMERA_REQUEST = 0
     private val PHOTO_FILE_NAME = UUID.randomUUID().toString() + ".jpeg"
     private lateinit var bitmap: Bitmap
@@ -105,8 +104,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var elementId: Int = 0
     private var mTemplateList: ArrayList<WorkFlowDataRes.WorkFlowDataResBody.Step.Template>? = null
     private var noteList: ArrayList<Note?>? = null
-    private val stepMap: MutableMap<String, String> = mutableMapOf<String, String>()
-    private val stepsFinished: MutableMap<String, Boolean> = mutableMapOf<String, Boolean>()
+    private val stepMap: MutableMap<String, String> = mutableMapOf()
+    private val stepsFinished: MutableMap<String, Boolean> = mutableMapOf()
     private val stepMapList = ArrayList<AddWorkFlowData.Data>()
     private var latitude: String = ""
     private var longitude: String = ""
@@ -126,6 +125,9 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var ownerName: String = ""
     private var synctext: TextView? = null
     private var isSync: Boolean = false
+    private val inventoryMap: MutableMap<String, Any> = mutableMapOf<String, Any>()
+    private var inventoryList = ArrayList<Any>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -147,7 +149,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             jobType = intent.getStringExtra(Constants.JOB_TYPE)
             noteList = intent.getParcelableArrayListExtra(Constants.NOTES)
         }
-        getWorkFlowData(jobId)
         initRecyclerView()
         dialog = CommonUtils.progressDialog(context)
         btn_next.setOnClickListener(this)
@@ -157,6 +158,15 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         tv_view_notes.setOnClickListener(this)
         error_button.setOnClickListener(this)
         dbH = DatabaseHandler(this)
+        getWorkFlowData(jobId)
+    }
+
+    //get workflow data
+    private fun getWorkFlowData(jobId: Int?) {
+        showViewState(MultiStateView.VIEW_STATE_LOADING)
+        if (jobId != null) {
+            workFlowPresenter.getWorkFlowData(jobId)
+        }
     }
 
     override fun onClick(v: View?) {
@@ -179,7 +189,23 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 if (stepsFinished.containsValue(false)) {
                     toast("Please submit mandatory fields")
                 } else {
-                    finishJob()
+                    if (jobType == "DEL") {
+                        val deviceCode = stepMap[3.toString()]
+                        if (inventoryList.contains(deviceCode.toString())) {
+                            finishJob()
+                        } else {
+                            toast("Device code is not present in your inventory")
+                        }
+                    } else if (jobType == "DRT") {
+                        val deviceCode = stepMap[32.toString()]
+                        if (inventoryList.contains(deviceCode.toString())) {
+                            finishJob()
+                        } else {
+                            toast("Device code is not present in your inventory")
+                        }
+                    } else {
+                        finishJob()
+                    }
                 }
             }
             R.id.btn_submit -> {
@@ -195,6 +221,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         }
     }
 
+    //showing notes
     private fun showNotesList() {
         dialog = Dialog(context, R.style.CustomDialogThemeLightBg)
         dialog.setContentView(R.layout.layout_note_list)
@@ -215,6 +242,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         dialog.show()
     }
 
+    //initializing recyclerview
     private fun initRecyclerView() {
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             @SuppressLint("LongLogTag")
@@ -244,13 +272,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
     }
 
-    private fun getWorkFlowData(jobId: Int?) {
-        showViewState(MultiStateView.VIEW_STATE_LOADING)
-        if (jobId != null) {
-            workFlowPresenter.getWorkFlowData(jobId)
-        }
-    }
 
+    //workflow data response
     override fun showWorFlowDataRes(res: WorkFlowDataRes) {
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (res.success!!) {
@@ -258,10 +281,13 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             submissionField = res.body.submissionField
             activationElementId = res.body.activationElementId
             syncElementId = res.body.syncElementId
+            //setting up steps based on position
             setStep(currentPosition)
         }
     }
 
+    //setting up steps based on position
+    @SuppressLint("SetTextI18n")
     private fun setStep(position: Int) {
         if (mDataList != null && mDataList!!.isNotEmpty() && mDataList!!.size > position) {
             currentPosition = position
@@ -277,14 +303,15 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 activationElementId,
                 syncElementId
             )
-            /*if (currentPosition == mDataList!!.size - 1) {
+            if (currentPosition == mDataList!!.size - 1) {
                 btn_next.visibility = View.GONE
                 btn_submit.visibility = View.GONE
                 btn_Finish.visibility = View.VISIBLE
-            }*/
+            }
         }
     }
 
+    //nextstep will be shown when there are more steps
     private fun nextStep() {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
         for (mutableEntry in stepMap) {
@@ -303,6 +330,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         )
     }
 
+    //submit will be called when matches with submission field in dropdown
     private fun submit() {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
         for (mutableEntry in stepMap) {
@@ -345,6 +373,27 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         if (CommonUtils.hasUpdates) {
             updateServerCmds()
         }
+        //inventory list
+        getInventoryItems()
+    }
+
+    private fun getInventoryItems() {
+        workFlowPresenter.getInventory(CommonUtils.getId())
+    }
+
+    override fun showInventoryRes(res: InventoryRes) {
+        if (res.part_info.isNotEmpty()) {
+            for (i in 0 until res.part_info.size) {
+                for (j in 0 until res.part_info[i].product_info.size) {
+                    inventoryMap[res.part_info[i].product_info[j].id.toString()] =
+                        res.part_info[i].product_info[j].product_code
+                }
+            }
+        }
+        for (entry in inventoryMap) {
+            inventoryList.add(entry.value)
+        }
+        Log.d("inventory", inventoryList.toString())
     }
 
     override fun showAddTextRes(res: AddTextRes) {
@@ -408,6 +457,20 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         }
     }
 
+    override fun showFinishJobRes(res: SubmiPidRes) {
+        if (res.success) {
+            stepMap.clear()
+            stepsFinished.clear()
+            stepMapList.clear()
+            CommonUtils.saveBotId("")
+            startActivity(Intent(this, TechJobsListActivity::class.java))
+            finish()
+        } else {
+            toast(res.message)
+            showViewState(MultiStateView.VIEW_STATE_CONTENT)
+        }
+    }
+
     override fun showErrorMsg(throwable: Throwable, apiType: String) {
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (throwable is HttpException) {
@@ -422,9 +485,11 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     toast(throwable.message.toString())
                 }
             }
+        } else {
+            //toast(throwable.message.toString())
+            Log.e("msg", throwable.message.toString())
         }
         dialog.dismiss()
-        //error_textView.text = throwable.message.toString()
     }
 
     override fun showViewState(state: Int) {
@@ -526,7 +591,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         val params = HashMap<String, String>()
         params["purifierid"] = deviceCode.toString()
         params["currentliters"] = CommonUtils.current.toString() + ""
-        params["validity"] = CommonUtils.validity!!
+        params["validity"] = CommonUtils.validity
         params["flowlimit"] = CommonUtils.flowlimit.toString() + ""
         params["status"] = CommonUtils.purifierStatus.toString() + ""
         params["techApp"] = "1"
@@ -559,16 +624,14 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 stepsFinished[elementId.toString()] = true
             } else {
                 ownerName = res.output?.owner!!
-                //synctext!!.text = res.output.lastsync.toString()
                 dbH.deleteAll()
                 val cmds = res.cmds
-                for (i in 0 until cmds!!.size) {
-                    val c = Command(cmds[i]!!.id!!, cmds[i]!!.cmd, "INIT")
+                for (i in cmds!!.indices) {
+                    val c = Command(cmds[i]?.id!!, cmds[i]!!.cmd, "INIT")
                     //Log.i("command", "INIT Command Found")
                     dbH.addCommand(c)
                     Log.i("SSyyzzzz", "added into table")
                 }
-                botId = CommonUtils.getBotId()
                 if (botId != null) {
                     val botId = botId!!.substring(0, 2) + ":" + botId!!.substring(
                         2,
@@ -783,20 +846,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         }
     }
 
-    override fun showFinishJobRes(res: SubmiPidRes) {
-        if (res.success) {
-            stepMap.clear()
-            stepsFinished.clear()
-            stepMapList.clear()
-            CommonUtils.saveBotId("")
-            startActivity(Intent(this, TechJobsListActivity::class.java))
-            finish()
-        } else {
-            toast(res.message)
-            showViewState(MultiStateView.VIEW_STATE_CONTENT)
-        }
-    }
-
     override fun showSubmittedPidRes(submiPidRes: SubmiPidRes) {
         if (submiPidRes.success) {
             dialog.dismiss()
@@ -812,7 +861,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             toast(submiPidRes.message)
             dialog.dismiss()
             isSuccess = submiPidRes.success
-            iv_refresh!!.isEnabled = false
         }
     }
 
@@ -838,44 +886,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         // botId = res.bid + ""
         CommonUtils.saveBotId(res.bid + "")
         connectivity = res.connectivity + ""
-    }
-
-    override fun onBackPressed() {
-        if (currentPosition != 0) {
-            init()
-            setStep(currentPosition - 1)
-            btn_next.visibility = View.VISIBLE
-            btn_Finish.visibility = View.GONE
-            btn_submit.visibility = View.GONE
-        }
-
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed()
-            return
-        }
-        this.doubleBackToExitPressedOnce = true
-        Handler().postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                if (currentPosition != 0) {
-                    init()
-                    setStep(currentPosition - 1)
-                    btn_next.visibility = View.VISIBLE
-                    btn_Finish.visibility = View.GONE
-                    btn_submit.visibility = View.GONE
-                }
-                if (doubleBackToExitPressedOnce) {
-                    super.onBackPressed()
-                }
-                this.doubleBackToExitPressedOnce = true
-                Handler().postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
-                return true
-            }
-            else -> return super.onOptionsItemSelected(item)
-        }
     }
 
     /**
@@ -938,4 +948,33 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                if (currentPosition > 0) {
+                    init()
+                    setStep(currentPosition - 1)
+                    btn_next.visibility = View.VISIBLE
+                    btn_Finish.visibility = View.GONE
+                    btn_submit.visibility = View.GONE
+                } else {
+                    finish()
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onBackPressed() {
+        if (currentPosition > 0) {
+            init()
+            setStep(currentPosition - 1)
+            btn_next.visibility = View.VISIBLE
+            btn_Finish.visibility = View.GONE
+            btn_submit.visibility = View.GONE
+        } else {
+            finish()
+        }
+    }
 }

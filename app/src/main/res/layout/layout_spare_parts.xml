@@ -21,7 +21,8 @@
             android:layout_marginStart="@dimen/dimens_10"
             android:layout_marginEnd="@dimen/dimens_10"
             android:layout_marginBottom="@dimen/dimens_10"
-            android:background="@drawable/btn_orange_bg"
+            android:background="@drawable/btn_theme_bg"
+            android:fontFamily="@font/stolzl_regular"
             android:text="@string/add_parts"
             android:textColor="@color/colorWhite" />
     </RelativeLayout>

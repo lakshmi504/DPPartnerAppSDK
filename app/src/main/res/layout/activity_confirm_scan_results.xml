@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E4E4E4"
+    android:orientation="vertical"
+    tools:context=".screens.confirmpickupinventory.ConfirmScanResultsActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/dimens_30"
+        android:background="@drawable/bg_outline_curve">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_item_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/tv_item_id"
+            android:layout_marginStart="@dimen/dimens_20"
+            android:layout_marginEnd="@dimen/dimens_20"
+            android:fontFamily="@font/stolzl_medium"
+            android:gravity="center"
+            android:padding="@dimen/dimens_10"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/dimens_16sp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_item_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/et_result"
+            android:layout_marginStart="@dimen/dimens_20"
+            android:layout_marginEnd="@dimen/dimens_20"
+            android:layout_marginBottom="@dimen/dimens_20"
+            android:fontFamily="@font/stolzl_medium"
+            android:gravity="center"
+            android:textColor="@color/colorBlackOverlay"
+            android:textSize="@dimen/dimens_14sp" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="@dimen/dimens_20"
+            android:layout_marginEnd="@dimen/dimens_20"
+            android:layout_marginBottom="@dimen/dimens_40"
+            android:background="@drawable/bg_edit_text"
+            android:fontFamily="@font/stolzl_medium"
+            android:gravity="center"
+            android:maxLength="10"
+            android:padding="@dimen/dimens_10"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/dimens_12sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/et_result"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="@dimen/dimens_20"
+            android:layout_marginEnd="@dimen/dimens_20"
+            android:background="@drawable/btn_green_bg"
+            android:fontFamily="@font/stolzl_regular"
+            android:paddingStart="@dimen/dimens_20"
+            android:paddingEnd="@dimen/dimens_20"
+            android:text="@string/confirm_pick_up"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/dimens_10sp" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

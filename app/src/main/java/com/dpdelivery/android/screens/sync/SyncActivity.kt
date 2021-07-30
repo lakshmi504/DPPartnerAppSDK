@@ -315,7 +315,6 @@ class SyncActivity : DaggerAppCompatActivity() {
             progress.visibility = View.INVISIBLE
             progress1.visibility = View.INVISIBLE
             progress2.visibility = View.INVISIBLE
-            mBluetoothLeService!!.disconnect()
             mHandler.postDelayed({
                 finish()
             }, 2000)

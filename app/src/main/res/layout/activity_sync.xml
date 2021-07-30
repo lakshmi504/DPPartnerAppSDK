@@ -50,6 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dimens_10"
+                android:fontFamily="@font/stolzl_regular"
                 android:text="BotId:"
                 android:textSize="@dimen/dimens_14sp" />
 
@@ -57,6 +58,7 @@
                 android:id="@+id/tv_botId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/stolzl_medium"
                 android:text="BotId"
                 android:textColor="@color/colorBlack"
                 android:textSize="@dimen/dimens_14sp"
@@ -73,6 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dimens_10"
+                android:fontFamily="@font/stolzl_regular"
                 android:text="PurifierId:"
                 android:textSize="@dimen/dimens_14sp" />
 
@@ -80,6 +83,7 @@
                 android:id="@+id/tv_pid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/stolzl_medium"
                 android:text="PurifierId"
                 android:textColor="@color/colorBlack"
                 android:textSize="@dimen/dimens_14sp"
@@ -96,6 +100,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dimens_10"
+                android:fontFamily="@font/stolzl_regular"
                 android:text="Owner Name:"
                 android:textSize="@dimen/dimens_14sp" />
 
@@ -103,6 +108,7 @@
                 android:id="@+id/tv_owner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/stolzl_medium"
                 android:text="Owner Name"
                 android:textColor="@color/colorBlack"
                 android:textSize="@dimen/dimens_14sp"
@@ -169,6 +175,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/progress1"
         android:layout_marginTop="@dimen/dimens_10"
+        android:fontFamily="@font/stolzl_medium"
         android:gravity="center"
         android:text="Sync Completed !"
         android:textColor="@color/colorBlack"
@@ -192,6 +199,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/progress1"
         android:layout_marginTop="@dimen/dimens_10"
+        android:fontFamily="@font/stolzl_medium"
         android:gravity="center"
         android:text="Not able to sync !"
         android:textColor="@color/colorBlack"
@@ -204,6 +212,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/progress1"
         android:layout_marginTop="@dimen/dimens_20"
+        android:fontFamily="@font/stolzl_medium"
         android:gravity="center"
         android:text="@string/connecting_to_your_prime_device"
         android:textColor="@color/colorBlack"

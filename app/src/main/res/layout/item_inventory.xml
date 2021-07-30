@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/dimens_20"
+    android:layout_marginTop="@dimen/dimens_5"
+    android:layout_marginEnd="@dimen/dimens_20"
+    android:layout_marginBottom="@dimen/dimens_5"
+    android:background="@drawable/bg_outline_curve"
+    android:orientation="vertical"
+    android:padding="@dimen/dimens_10">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimens_5"
+        android:fontFamily="@font/stolzl_medium"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/dimens_14sp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_item_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimens_5"
+        android:fontFamily="@font/stolzl_regular"
+        android:textColor="@color/colorBlackOverlay"
+        android:textSize="@dimen/dimens_12sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginEnd="@dimen/dimens_5"
+            android:layout_weight="1"
+            android:fontFamily="@font/stolzl_regular"
+            android:gravity="center"
+            android:padding="@dimen/dimens_5"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/dimens_10sp"
+            android:visibility="invisible" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_returnable"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimens_5"
+            android:layout_weight="1"
+            android:alpha="0.25"
+            android:background="@drawable/btn_red_bg"
+            android:enabled="false"
+            android:fontFamily="@font/stolzl_regular"
+            android:gravity="center"
+            android:padding="@dimen/dimens_5"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/dimens_10sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimens_10"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_picked_up"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dimens_5"
+            android:layout_weight="1"
+            android:alpha="0.5"
+            android:background="@drawable/btn_theme_bg"
+            android:enabled="false"
+            android:fontFamily="@font/stolzl_regular"
+            android:gravity="center"
+            android:padding="@dimen/dimens_5"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/dimens_10sp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_to_be_pickup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimens_5"
+            android:layout_weight="1"
+            android:alpha="0.5"
+            android:background="@drawable/btn_green_bg"
+            android:enabled="false"
+            android:fontFamily="@font/stolzl_regular"
+            android:gravity="center"
+            android:padding="@dimen/dimens_5"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/dimens_10sp" />
+    </LinearLayout>
+
+</LinearLayout>

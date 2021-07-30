@@ -14,7 +14,7 @@
             android:id="@+id/tv_nums"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat_semibold"
+            android:fontFamily="@font/stolzl_medium"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/dimens_14sp" />
 
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dimens_10"
             android:layout_toEndOf="@id/tv_nums"
-            android:fontFamily="@font/montserrat_semibold"
+            android:fontFamily="@font/stolzl_medium"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/dimens_14sp" />
 

@@ -14,7 +14,6 @@ class ApiConstants {
         const val PURIFIER_STATUS = "device/code/"
         const val SPARE_PARTS = "inventory/spareParts"
         const val FINISH_JOB = "workforce/job/"
-        const val SEND_HAPPY_CODE = "workforce/sendHappyCode"
         const val SUMMARY = "employee/monthlyReport"
         const val SYNC = "https://waterwalaprime.com/controller/sync1.php"
         const val GET_BLE_DETAILS = "https://waterwalaprime.com/controller/getdetailsBLE.php"
@@ -23,5 +22,17 @@ class ApiConstants {
         const val ADD_WORK_FLOW = "workflow/addData"
         const val VOIP_CALL = "https://api-voice.kaleyra.com/v1/"
         const val UPDATE_TOKEN = "notification/user"
+
+        //employee earnings
+        const val EARNINGS = "earnings/entries"
+
+        //inventory Api's
+        const val INVENTORY = "employee/inventory/"
+        const val INVENTORY_COUNT = "employee/app/inventory/"
+        const val INVENTORY_PICKED_UP = "employee/Inventory/item/picked"
+        const val INVENTORY_TO_BE_PICKED_UP = "employee/Inventory/item/notPicked"
+        const val INVENTORY_TO_BE_RETURNED = "employee/returnInventory/item"
+        const val SUBMIT_INVENTORY = "inventory/submitQrDetails"
+        const val CANCEL_INVENTORY = "inventory/cancelQr"
     }
 }

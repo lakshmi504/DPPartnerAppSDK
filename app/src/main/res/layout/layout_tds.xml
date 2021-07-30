@@ -14,11 +14,13 @@
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/input_tds"
             style="@style/layout_edit_text"
+            android:fontFamily="@font/stolzl_regular"
             android:hint="@string/input_tds" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/output_tds"
             style="@style/layout_edit_text"
+            android:fontFamily="@font/stolzl_regular"
             android:hint="@string/output_tds" />
 
     </LinearLayout>
@@ -29,7 +31,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="15dp"
-        android:background="@drawable/btn_orange_bg"
+        android:background="@drawable/btn_theme_bg"
+        android:fontFamily="@font/stolzl_regular"
         android:padding="@dimen/dimens_10"
         android:text="@string/submit"
         android:textColor="@color/colorWhite" />

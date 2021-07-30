@@ -45,7 +45,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.zxing.integration.android.IntentIntegrator
-import kotlinx.android.synthetic.main.activity_assigned_job.*
+import kotlinx.android.synthetic.main.activity_tech_job_details.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
@@ -64,7 +64,6 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
 
     lateinit var mContext: Context
     private var jobId: Int? = 0
-    private var workflowId: Int? = 0
     private var phone: String? = null
     private var altPhone: String? = null
     private var statusCode: String? = null
@@ -98,7 +97,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LayoutInflater.from(context).inflate(R.layout.activity_assigned_job, tech_layout_container)
+        LayoutInflater.from(context)
+            .inflate(R.layout.activity_tech_job_details, tech_layout_container)
         init()
     }
 
@@ -106,7 +106,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         mContext = this
         setTitle("Job Details")
         showBack()
-        setUpBottomNavView(false)
+        setUpBottomNavView(true)
         if (intent != null) {
             val data = intent.getStringExtra(Constants.ID)
             jobId = Integer.parseInt(data!!)
@@ -115,9 +115,9 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         error_button.setOnClickListener(this)
         empty_button.setOnClickListener(this)
         ivqrcodescan.setOnClickListener(this)
-        iv_call.setOnClickListener(this)
+        tv_phone.setOnClickListener(this)
         dialog = CommonUtils.progressDialog(mContext)
-        iv_alt_call.setOnClickListener(this)
+        tv_alt_phone.setOnClickListener(this)
         btn_activate.setOnClickListener(this)
         btn_start_job.setOnClickListener(this)
         btn_finish_job.setOnClickListener(this)
@@ -126,7 +126,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         btn_add_note.setOnClickListener(this)
         finish_job.setOnClickListener(this)
         btn_select.setOnClickListener(this)
-        imageButton.setOnClickListener(this)
+        tv_address.setOnClickListener(this)
     }
 
     /**
@@ -201,6 +201,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
     override fun onResume() {
         super.onResume()
         detailsPresenter.takeView(this)
+        bottom_navigation.menu.getItem(0).isCheckable = false
     }
 
     override fun onRequestPermissionsResult(
@@ -244,8 +245,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
                     .setCaptureActivity(ScannerActivity::class.java)
                     .initiateScan()
             }
-            R.id.iv_call -> { //call function
-                if (phone!!.isNotEmpty()) {
+            R.id.tv_phone -> { //call function
+                if (phone?.isNotEmpty()!!) {
                     val url = "tel:$phone"
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
                     startActivity(intent)
@@ -253,8 +254,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
                      detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = phone!!)*/
                 }
             }
-            R.id.iv_alt_call -> {  // for call function(alt number)
-                if (altPhone!!.isNotEmpty()) {
+            R.id.tv_alt_phone -> {  // for call function(alt number)
+                if (altPhone != null) {
                     val url = "tel:$altPhone"
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
                     startActivity(intent)
@@ -341,7 +342,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
                 intent.putParcelableArrayListExtra(Constants.NOTES, noteList)
                 startActivity(intent)
             }
-            R.id.imageButton -> {
+            R.id.tv_address -> {
                 if (cxLatLong.isEmpty() || cxLatLong == "null" || cxLatLong == "0") {
                     toast("Location is not set")
                 } else {
@@ -461,6 +462,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         tv_job_id.text = res.id.toString()
         tv_job_type.text = res.type!!.description
         tv_name.text = res.customerName
+
         if (!res.customerPhone.isNullOrEmpty()) {
             try {
                 //tv_phone.text = phone?.replaceRange(5..9, "*****")
@@ -478,6 +480,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             } catch (e: Exception) {
 
             }
+        } else {
+            ll_alt_mobile.visibility = View.GONE
         }
         statusCode = res.status!!.code
         noteList = res.notes
@@ -547,13 +551,15 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         deviceCode = res.installation?.deviceCode
         botId = res.bid + ""
         connectivity = res.connectivity + ""
-        workflowId = res.workflowId
-        if (workflowId != null) {
+        if (res.workflowId != null) {
             if (!res.status.code.equals("ASG")) {
                 ll_workflow.visibility = View.VISIBLE
             }
-            btn_finish_job.visibility = View.GONE
-            finish_job.visibility = View.GONE
+            if (res.status.code.equals("ASG") || (res.status.code.equals("COM"))) {
+                ll_workflow.visibility = View.GONE
+            } else {
+                ll_workflow.visibility = View.VISIBLE
+            }
         } else {
             ll_workflow.visibility = View.GONE
             if (!res.type.code.equals("INS") && (res.status.code.equals("INP"))) {
@@ -567,7 +573,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         et_purifierid.setText(res.installation?.deviceCode)
         jobType = res.type.code
         cxLatLong = res.customerLatLong.toString()
-        if (cxLatLong != null) {
+        if (res.customerLatLong != null) {
             val st = StringTokenizer(cxLatLong, ",")
             val result = ArrayList<String>()
             while (st.hasMoreTokens()) {
@@ -609,7 +615,6 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         } else if (!submiPidRes.success) {
             toast(submiPidRes.message)
             isSuccess = submiPidRes.success
-            iv_refresh!!.isEnabled = false
         }
     }
 
@@ -642,6 +647,9 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
                      toast(throwable.message.toString())*/
                 }
             }
+        } else {
+            /*showViewState(MultiStateView.VIEW_STATE_ERROR)
+            toast(throwable.message.toString())*/
         }
     }
 

@@ -12,7 +12,6 @@ interface TechJobsListContract {
 
     interface View : BaseView {
         fun showAsgJobsListRes(res: ASGListRes)
-        fun showJobsListRes(res: ASGListRes)
         fun showVoipRes(res: Headers)
         fun showUpdateJobRes(res: SubmiPidRes)
         fun showAddNoteRes(res: StartJobRes)

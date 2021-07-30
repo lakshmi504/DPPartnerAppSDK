@@ -256,6 +256,8 @@ class ImageActivity : TechBaseActivity(), View.OnClickListener, ImageContract.Vi
                     toast(throwable.message.toString())
                 }
             }
+        } else {
+            toast(throwable.message.toString())
         }
         if (dialog.isShowing) {
             dialog.dismiss()

@@ -115,12 +115,6 @@ interface ApiService {
         @Body finishJobIp: FinishJobIp
     ): Observable<SubmiPidRes>
 
-    @GET(ApiConstants.SEND_HAPPY_CODE + "{jobId}")
-    fun resendHappyCode(
-        @Header("Authorization") token: String,
-        @Path("jobId", encoded = true) jobId: Int
-    ): Observable<SubmiPidRes>
-
     @GET(ApiConstants.SUMMARY)
     fun getSummary(@Header("Authorization") token: String): Observable<SummaryRes>
 
@@ -171,5 +165,49 @@ interface ApiService {
     fun getPartnerDetails(
         @Header("Authorization") token: String
     ): Observable<PartnerDetailsRes>
+
+    @GET(ApiConstants.EARNINGS)
+    fun getPayoutDetails(
+        @Header("Authorization") token: String,
+        @Query("startDate") startDate: String,
+        @Query("endDate") endDate: String
+    ): Observable<EarningsRes>
+
+    @GET(ApiConstants.INVENTORY + "{id}")
+    fun getInventory(
+        @Header("Authorization") token: String,
+        @Path("id", encoded = true) id: Int
+    ): Observable<InventoryRes>
+
+    @GET(ApiConstants.INVENTORY_COUNT + "{id}")
+    fun getInventoryCount(
+        @Header("Authorization") token: String,
+        @Path("id", encoded = true) id: Int
+    ): Observable<InventoryRes>
+
+    @POST(ApiConstants.INVENTORY_PICKED_UP)
+    fun pickedUpInventoryDetails(
+        @Header("Authorization") token: String, @Body inventoryIp: DetailInventoryIp
+    ): Observable<InventoryDetailRes>
+
+    @POST(ApiConstants.INVENTORY_TO_BE_PICKED_UP)
+    fun toBePickedUpInventoryDetails(
+        @Header("Authorization") token: String, @Body inventoryIp: DetailInventoryIp
+    ): Observable<InventoryDetailRes>
+
+    @POST(ApiConstants.INVENTORY_TO_BE_RETURNED)
+    fun returnedInventoryDetails(
+        @Header("Authorization") token: String, @Body inventoryIp: DetailInventoryIp
+    ): Observable<InventoryDetailRes>
+
+    @POST(ApiConstants.SUBMIT_INVENTORY)
+    fun submitInventoryDetails(
+        @Header("Authorization") token: String, @Body submitInventoryIp: SubmitInventoryIp
+    ): Observable<CommonRes>
+
+    @POST(ApiConstants.CANCEL_INVENTORY)
+    fun cancelInventoryDetails(
+        @Header("Authorization") token: String, @Body submitInventoryIp: SubmitInventoryIp
+    ): Observable<CommonRes>
 
 }

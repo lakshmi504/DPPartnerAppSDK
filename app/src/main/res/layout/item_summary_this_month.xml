@@ -10,19 +10,21 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="2"
-        android:padding="@dimen/dimens_12"
+        android:fontFamily="@font/stolzl_regular"
+        android:padding="@dimen/dimens_8"
         android:textColor="@color/colorBlack"
-        android:textSize="@dimen/dimens_16sp" />
+        android:textSize="@dimen/dimens_12sp" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_quantity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:fontFamily="@font/stolzl_regular"
         android:gravity="center"
-        android:padding="@dimen/dimens_12"
+        android:padding="@dimen/dimens_8"
         android:textColor="@color/colorBlack"
-        android:textSize="@dimen/dimens_16sp" />
+        android:textSize="@dimen/dimens_12sp" />
 
 
 </LinearLayout>

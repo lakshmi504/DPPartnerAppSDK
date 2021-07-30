@@ -7,299 +7,335 @@
         android:id="@+id/ll_bg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dimens_5"
-        android:layout_marginEnd="@dimen/dimens_5"
+        android:layout_marginStart="@dimen/dimens_20"
+        android:layout_marginTop="@dimen/dimens_5"
+        android:layout_marginEnd="@dimen/dimens_20"
         android:layout_marginBottom="@dimen/dimens_5"
-        android:background="@drawable/bg_edit_text"
-        android:orientation="vertical">
+        android:background="@drawable/bg_outline_curve"
+        android:orientation="vertical"
+        android:padding="@dimen/dimens_8">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tv_jobtype"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="@string/job_type"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
 
-                <TextView
-                    android:id="@+id/tv_jobid"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:text="@string/job_id"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/dimens_13sp" />
-
-                <TextView
-                    android:id="@+id/tv_jobidvalue"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:textColor="@color/colorBlacklight"
-                    android:textSize="@dimen/dimens_12sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tv_jobtypevalue"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimens_5"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_regular"
+                android:textColor="@color/colorBlacklight"
+                android:textSize="@dimen/dimens_12sp" />
 
-                <TextView
-                    android:id="@+id/tv_jobtype"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:text="@string/job_type"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/dimens_13sp" />
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tv_jobtypevalue"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:textColor="@color/colorBlacklight"
-                    android:textSize="@dimen/dimens_12sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tv_jobid"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimens_5"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="@string/job_id"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
 
-                <TextView
-                    android:id="@+id/tv_name"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:text="@string/customer_name"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/dimens_13sp" />
-
-                <TextView
-                    android:id="@+id/tv_namevalue"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:textColor="@color/colorBlacklight"
-                    android:textSize="@dimen/dimens_12sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_mobile"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tv_jobidvalue"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimens_5"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_regular"
+                android:textColor="@color/colorBlacklight"
+                android:textSize="@dimen/dimens_12sp" />
 
+        </LinearLayout>
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:text="@string/custphn"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/dimens_13sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-                <TextView
-                    android:id="@+id/tv_cust_phn"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:textColor="@color/colorBlacklight"
-                    android:textSize="@dimen/dimens_12sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_alt_mobile"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimens_5"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="@string/customer_name"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
 
-                <TextView
-                    android:id="@+id/alternate_no"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:text="@string/alternate_no"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/dimens_13sp" />
-
-                <TextView
-                    android:id="@+id/tv_alternate_no"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:textColor="@color/colorBlacklight"
-                    android:textSize="@dimen/dimens_12sp" />
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tv_namevalue"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimens_5"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_regular"
+                android:textColor="@color/colorBlacklight"
+                android:textSize="@dimen/dimens_12sp" />
 
-                <TextView
-                    android:id="@+id/tv_date"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:text="@string/appt_date"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/dimens_13sp" />
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tv_appointmentdate"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:textColor="@color/colorBlacklight"
-                    android:textSize="@dimen/dimens_12sp" />
-            </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_mobile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimens_5"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="@string/custphn"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
 
-                <TextView
-                    android:id="@+id/tv_time"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:text="@string/appmt_time"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/dimens_13sp" />
-
-                <TextView
-                    android:id="@+id/appointmenttimevalue"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:textColor="@color/colorBlacklight"
-                    android:textSize="@dimen/dimens_12sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tv_cust_phn"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimens_5"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_regular"
+                android:textColor="@color/colorBlacklight"
+                android:textSize="@dimen/dimens_12sp" />
 
-                <TextView
-                    android:id="@+id/tv_area"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:text="@string/area"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/dimens_13sp" />
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tv_areavalue"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:textColor="@color/colorBlacklight"
-                    android:textSize="@dimen/dimens_12sp" />
-            </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_alt_mobile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/alternate_no"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimens_5"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="@string/alternate_no"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
 
-                <TextView
-                    android:id="@+id/tv_status"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:text="@string/status"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/dimens_13sp" />
-
-                <TextView
-                    android:id="@+id/tv_statusvalue"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:textColor="@color/colorBlue"
-                    android:textSize="@dimen/dimens_12sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_instatus"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tv_alternate_no"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimens_5"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                android:weightSum="2">
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_regular"
+                android:textColor="@color/colorBlacklight"
+                android:textSize="@dimen/dimens_12sp" />
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tv_instatus"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:text="In Status :"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/dimens_13sp" />
 
-                <TextView
-                    android:id="@+id/tv_instatusvalue"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/montserrat_regular"
-                    android:text="Update Status"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/dimens_12sp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="@string/appt_date"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
 
+            <TextView
+                android:id="@+id/tv_appointmentdate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_regular"
+                android:textColor="@color/colorBlacklight"
+                android:textSize="@dimen/dimens_12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="@string/appmt_time"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <TextView
+                android:id="@+id/appointmenttimevalue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_regular"
+                android:textColor="@color/colorBlacklight"
+                android:textSize="@dimen/dimens_12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tv_area"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="@string/area"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <TextView
+                android:id="@+id/tv_areavalue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_regular"
+                android:textColor="@color/colorBlacklight"
+                android:textSize="@dimen/dimens_12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tv_status"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="@string/status"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <TextView
+                android:id="@+id/tv_statusvalue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_regular"
+                android:textColor="@color/colorBlue"
+                android:textSize="@dimen/dimens_12sp" />
+
+        </LinearLayout>
+
+        <!--  <LinearLayout
+              android:id="@+id/ll_instatus"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="@dimen/dimens_5"
+              android:orientation="horizontal"
+              android:visibility="gone"
+              android:weightSum="2">
+
+              <TextView
+                  android:id="@+id/tv_instatus"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:fontFamily="@font/stolzl_medium"
+                  android:text="In Status :"
+                  android:textColor="@color/colorBlack"
+                  android:textSize="@dimen/dimens_13sp" />
+
+              <TextView
+                  android:id="@+id/tv_instatusvalue"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:fontFamily="@font/stolzl_regular"
+                  android:text="Update Status"
+                  android:textColor="@color/colorBlack"
+                  android:textSize="@dimen/dimens_12sp" />
+
+          </LinearLayout>-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_10"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/btn_update_status"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_10"
+                android:layout_weight="1"
+                android:background="@drawable/btn_theme_bg"
+                android:fontFamily="@font/stolzl_regular"
+                android:gravity="center"
+                android:padding="@dimen/dimens_5"
+                android:text="Update status"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/dimens_12sp"
+                android:visibility="invisible" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/btn_know_more"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_20"
+                android:layout_marginEnd="@dimen/dimens_10"
+                android:layout_weight="1"
+                android:background="@drawable/btn_theme_bg"
+                android:fontFamily="@font/stolzl_regular"
+                android:gravity="center"
+                android:paddingStart="@dimen/dimens_10"
+                android:paddingTop="@dimen/dimens_5"
+                android:paddingEnd="@dimen/dimens_10"
+                android:paddingBottom="@dimen/dimens_5"
+                android:text="know more"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/dimens_12sp" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

@@ -3,6 +3,7 @@ package com.dpdelivery.android.di
 import android.content.Context
 import com.dpdelivery.android.api.*
 import com.facebook.stetho.okhttp3.StethoInterceptor
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -18,9 +19,12 @@ class NetworkModule {
     @Singleton
     @Provides
     fun provideApiService(okHttpClient: OkHttpClient.Builder): ApiService {
+        val gson = GsonBuilder()
+            .setLenient()
+            .create()
         return retrofit2.Retrofit.Builder()
             .client(okHttpClient.build())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .baseUrl(ApiConstants.BASE_URL)
             .build()

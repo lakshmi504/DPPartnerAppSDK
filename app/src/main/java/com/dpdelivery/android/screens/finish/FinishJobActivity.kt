@@ -64,7 +64,6 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener,
     private var LOCATION_PERMISSION_REQUEST_CODE = 123
     private var latitude: String = ""
     private var longitude: String = ""
-    private var isLocationSet: Boolean = false
     private var isTDSSet: Boolean = false
     private var isPhotoSet: Boolean = false
     private var isOTPSet: Boolean = false
@@ -454,12 +453,6 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener,
         }
     }
 
-    override fun reSendHappyCodeRes(res: SubmiPidRes) {
-        if (res.success) {
-            toast(res.message)
-        }
-    }
-
     private fun addParts(partsList: ArrayList<SparePartsData>) {
         val mBuilder = AlertDialog.Builder(this)
         val mView = layoutInflater.inflate(R.layout.layout_spare_parts, null)
@@ -773,6 +766,8 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener,
                     toast(throwable.message.toString())
                 }
             }
+        } else {
+            toast(throwable.message.toString())
         }
         if (dialog.isShowing) {
             dialog.dismiss()

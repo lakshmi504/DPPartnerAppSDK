@@ -9,9 +9,10 @@ import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
 class FinishJobPresenter @Inject constructor(
-        var apiService: ApiService,
-        var context: Context,
-        var baseScheduler: BaseScheduler) : FinishJobContract.Presenter {
+    var apiService: ApiService,
+    var context: Context,
+    var baseScheduler: BaseScheduler
+) : FinishJobContract.Presenter {
 
     var view: FinishJobContract.View? = null
     private val subscription = CompositeDisposable()
@@ -23,76 +24,65 @@ class FinishJobPresenter @Inject constructor(
     override fun getSparePartsList() {
         view?.showProgress()
         subscription.add(
-                apiService.getSpareParts(CommonUtils.getLoginToken())
-                        .subscribeOn(baseScheduler.io())
-                        .observeOn(baseScheduler.ui())
-                        .subscribe(
-                                { res ->
-                                    view?.showSparePartsRes(res)
-                                },
-                                { throwable ->
-                                    view?.showErrorMsg(throwable)
-                                }))
+            apiService.getSpareParts(CommonUtils.getLoginToken())
+                .subscribeOn(baseScheduler.io())
+                .observeOn(baseScheduler.ui())
+                .subscribe(
+                    { res ->
+                        view?.showSparePartsRes(res)
+                    },
+                    { throwable ->
+                        view?.showErrorMsg(throwable)
+                    })
+        )
     }
 
     override fun finishJob(jobId: Int, finishJobIp: FinishJobIp) {
         view?.showProgress()
         subscription.add(
-                apiService.finishJob(CommonUtils.getLoginToken(), jobId, finishJobIp)
-                        .subscribeOn(baseScheduler.io())
-                        .observeOn(baseScheduler.ui())
-                        .subscribe(
-                                { res ->
-                                    view?.showFinishJobRes(res)
-                                },
-                                { throwable ->
-                                    view?.showErrorMsg(throwable)
-                                }))
-    }
-
-    override fun reSendHappyCode(jobId: Int) {
-        view?.showProgress()
-        subscription.add(
-                apiService.resendHappyCode(CommonUtils.getLoginToken(), jobId = jobId)
-                        .subscribeOn(baseScheduler.io())
-                        .observeOn(baseScheduler.ui())
-                        .subscribe(
-                                { res ->
-                                    view?.reSendHappyCodeRes(res)
-                                },
-                                { throwable ->
-                                    view?.showErrorMsg(throwable)
-                                }))
+            apiService.finishJob(CommonUtils.getLoginToken(), jobId, finishJobIp)
+                .subscribeOn(baseScheduler.io())
+                .observeOn(baseScheduler.ui())
+                .subscribe(
+                    { res ->
+                        view?.showFinishJobRes(res)
+                    },
+                    { throwable ->
+                        view?.showErrorMsg(throwable)
+                    })
+        )
     }
 
     override fun getPidDetails(hashMap: HashMap<String, String>) {
         view?.showProgress()
         subscription.add(
-                apiService.getBLEDetails(purifierid = hashMap)
-                        .subscribeOn(baseScheduler.io())
-                        .observeOn(baseScheduler.ui())
-                        .subscribe(
-                                { res ->
-                                    view?.showPidDetailsRes(res)
-                                },
-                                { throwable ->
-                                    view?.showErrorMsg(throwable)
-                                }))
+            apiService.getBLEDetails(purifierid = hashMap)
+                .subscribeOn(baseScheduler.io())
+                .observeOn(baseScheduler.ui())
+                .subscribe(
+                    { res ->
+                        view?.showPidDetailsRes(res)
+                    },
+                    { throwable ->
+                        view?.showErrorMsg(throwable)
+                    })
+        )
     }
 
     override fun updateServerCmds(hashMap: HashMap<String, String>) {
         view?.showProgress()
         subscription.add(
-                apiService.updateServerCmds(params = hashMap)
-                        .subscribeOn(baseScheduler.io())
-                        .observeOn(baseScheduler.ui())
-                        .subscribe(
-                                { res ->
-                                    view?.showSyncRes(res)
-                                },
-                                { throwable ->
-                                    view?.showErrorMsg(throwable)
-                                }))
+            apiService.updateServerCmds(params = hashMap)
+                .subscribeOn(baseScheduler.io())
+                .observeOn(baseScheduler.ui())
+                .subscribe(
+                    { res ->
+                        view?.showSyncRes(res)
+                    },
+                    { throwable ->
+                        view?.showErrorMsg(throwable)
+                    })
+        )
     }
 
     override fun dropView() {

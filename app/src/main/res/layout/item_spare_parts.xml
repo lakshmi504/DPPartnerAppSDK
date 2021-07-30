@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:checkMark="?android:attr/listChoiceIndicatorMultiple"
     android:gravity="center_vertical"
+    android:fontFamily="@font/stolzl_regular"
     android:padding="10dp"
     android:textColor="@color/colorBlack"
     android:textSize="@dimen/dimens_12sp" />

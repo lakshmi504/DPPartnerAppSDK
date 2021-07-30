@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.location.LocationManager
+import android.net.ConnectivityManager
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.widget.ImageView
@@ -17,6 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.dpdelivery.android.MyApplication
 import com.dpdelivery.android.R
 import com.dpdelivery.android.model.techres.PartnerDetailsRes
 import java.io.ByteArrayOutputStream
@@ -39,6 +41,7 @@ class CommonUtils {
                 SharedPreferenceManager.VALUE_TYPE.STRING
             )
         }
+
         fun saveUserDetails(res: PartnerDetailsRes) {
             SharedPreferenceManager.setPrefVal(
                 SharedPreferenceManager.ROLE,
@@ -70,6 +73,14 @@ class CommonUtils {
             ) as String
         }
 
+        fun getUserName(): String {
+            return SharedPreferenceManager.getPrefVal(
+                SharedPreferenceManager.USER_NAME,
+                "",
+                SharedPreferenceManager.VALUE_TYPE.STRING
+            ) as String
+        }
+
         fun getName(): String {
             return SharedPreferenceManager.getPrefVal(
                 SharedPreferenceManager.NAME,
@@ -84,14 +95,6 @@ class CommonUtils {
                 0,
                 SharedPreferenceManager.VALUE_TYPE.INTEGER
             ) as Int
-        }
-
-        fun getUserName(): String {
-            return SharedPreferenceManager.getPrefVal(
-                SharedPreferenceManager.USER_NAME,
-                "",
-                SharedPreferenceManager.VALUE_TYPE.STRING
-            ) as String
         }
 
         fun saveBotId(string: String?) {
@@ -164,6 +167,26 @@ class CommonUtils {
 
         fun getCopyRightSymbol(context: Context, text: String): String {
             return context.getString(R.string.copyright) + text
+        }
+
+        fun getRupeesSymbol(context: Context, price: Double): String {
+            return context.getString(R.string.plus_symbol) + price
+        }
+
+        fun getMinusRupeesSymbol(context: Context, price: Double): String {
+            return context.getString(R.string.minus_symbol) + price
+        }
+
+        fun getPickUpText(context: Context, text: String): String {
+            return context.getString(R.string.picked_up) + text
+        }
+
+        fun getToBePickUpText(context: Context, text: String): String {
+            return context.getString(R.string.to_be_pickup) + text
+        }
+
+        fun getReturnText(context: Context, text: String): String {
+            return context.getString(R.string.to_be_return) + text
         }
 
         fun setStatus(
@@ -307,7 +330,6 @@ class CommonUtils {
                 }
                 .show()
         }
-
     }
 }
 

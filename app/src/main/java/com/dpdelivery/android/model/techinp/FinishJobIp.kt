@@ -10,6 +10,7 @@ data class FinishJobIp(
         val inputTds: String? = null,
         val jobEndTime: String? = null,
         val status: String? = null,
+        val note: String? = null,
         val latitude: String? = null,
         val longitude: String? = null,
         val outputTds: String? = null,

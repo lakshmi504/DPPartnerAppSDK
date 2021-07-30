@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dimens_5"
-            android:fontFamily="@font/montserrat_semibold"
+            android:fontFamily="@font/stolzl_medium"
             android:gravity="center"
             android:text="@string/new_version_available"
             android:textColor="@color/colorBlack"
@@ -41,7 +41,7 @@
             android:layout_marginStart="@dimen/dimens_30"
             android:layout_marginTop="@dimen/dimens_15"
             android:layout_marginEnd="@dimen/dimens_30"
-            android:fontFamily="@font/montserrat_regular"
+            android:fontFamily="@font/stolzl_regular"
             android:gravity="center"
             android:text="@string/update_app"
             android:textColor="@color/colorBlack"
@@ -53,7 +53,7 @@
             android:layout_height="@dimen/dimens_40"
             android:layout_marginTop="@dimen/dimens_20"
             android:background="@color/colorBlue"
-            android:fontFamily="@font/montserrat_regular"
+            android:fontFamily="@font/stolzl_regular"
             android:text="@string/update_now"
             android:textColor="@color/colorWhite" />
 

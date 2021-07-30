@@ -127,11 +127,9 @@ class SearchActivity : DaggerAppCompatActivity(), TechJobsListContract.View, IAd
                     toast(throwable.message.toString())
                 }
             }
+        } else {
+            toast(throwable.message.toString())
         }
-    }
-
-    override fun showJobsListRes(res: ASGListRes) {
-
     }
 
     override fun onclick(any: Any, pos: Int, type: Any, op: String) {

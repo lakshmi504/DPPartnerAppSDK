@@ -42,7 +42,7 @@
             android:layout_toStartOf="@id/iv_close"
             android:layout_toEndOf="@id/iv_back"
             android:background="@color/colorWhite"
-            android:fontFamily="@font/montserrat_semibold"
+            android:fontFamily="@font/stolzl_medium"
             android:hint="@string/search_for_job_id_name"
             android:padding="@dimen/dimens_8sp"
             android:textColor="@color/colorBlack"

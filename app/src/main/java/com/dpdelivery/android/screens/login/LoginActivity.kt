@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import com.dpdelivery.android.R
@@ -41,12 +42,27 @@ class LoginActivity : DaggerAppCompatActivity(), View.OnClickListener, LoginCont
     override fun init() {
         mContext = this
         btn_login.setOnClickListener(this)
+        iv_show_password.setOnClickListener(this)
+        et_password.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        iv_show_password.setBackgroundResource(R.drawable.password_eye_toggle)
     }
 
     override fun onClick(v: View?) {
         when (v!!.id) {
             R.id.btn_login -> {
                 showLoginLoader()
+            }
+            R.id.iv_show_password -> {
+                et_password.setSelection(et_password.text!!.length)
+                if (et_password.inputType == InputType.TYPE_CLASS_TEXT) {
+                    et_password.inputType =
+                        InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                    iv_show_password.setBackgroundResource(R.drawable.password_eye_toggle)
+
+                } else {
+                    et_password.inputType = InputType.TYPE_CLASS_TEXT
+                    iv_show_password.setBackgroundResource(R.drawable.ic_eye_on)
+                }
             }
         }
     }
