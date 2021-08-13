@@ -125,9 +125,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var ownerName: String = ""
     private var synctext: TextView? = null
     private var isSync: Boolean = false
-    private val inventoryMap: MutableMap<String, Any> = mutableMapOf<String, Any>()
-    private var inventoryList = ArrayList<Any>()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -189,23 +186,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 if (stepsFinished.containsValue(false)) {
                     toast("Please submit mandatory fields")
                 } else {
-                    if (jobType == "DEL") {
-                        val deviceCode = stepMap[3.toString()]
-                        if (inventoryList.contains(deviceCode.toString())) {
-                            finishJob()
-                        } else {
-                            toast("Device code is not present in your inventory")
-                        }
-                    } else if (jobType == "DRT") {
-                        val deviceCode = stepMap[32.toString()]
-                        if (inventoryList.contains(deviceCode.toString())) {
-                            finishJob()
-                        } else {
-                            toast("Device code is not present in your inventory")
-                        }
-                    } else {
-                        finishJob()
-                    }
+                    finishJob()
                 }
             }
             R.id.btn_submit -> {
@@ -314,6 +295,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     //nextstep will be shown when there are more steps
     private fun nextStep() {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
+        stepMapList.clear()
         for (mutableEntry in stepMap) {
             stepMapList.add(
                 AddWorkFlowData.Data(
@@ -351,6 +333,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
     private fun finishJob() {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
+        stepMapList.clear()
         for (mutableEntry in stepMap) {
             stepMapList.add(
                 AddWorkFlowData.Data(
@@ -373,27 +356,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         if (CommonUtils.hasUpdates) {
             updateServerCmds()
         }
-        //inventory list
-        getInventoryItems()
-    }
-
-    private fun getInventoryItems() {
-        workFlowPresenter.getInventory(CommonUtils.getId())
-    }
-
-    override fun showInventoryRes(res: InventoryRes) {
-        if (res.part_info.isNotEmpty()) {
-            for (i in 0 until res.part_info.size) {
-                for (j in 0 until res.part_info[i].product_info.size) {
-                    inventoryMap[res.part_info[i].product_info[j].id.toString()] =
-                        res.part_info[i].product_info[j].product_code
-                }
-            }
-        }
-        for (entry in inventoryMap) {
-            inventoryList.add(entry.value)
-        }
-        Log.d("inventory", inventoryList.toString())
     }
 
     override fun showAddTextRes(res: AddTextRes) {
@@ -459,6 +421,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
     override fun showFinishJobRes(res: SubmiPidRes) {
         if (res.success) {
+            toast("Job Completed")
             stepMap.clear()
             stepsFinished.clear()
             stepMapList.clear()
