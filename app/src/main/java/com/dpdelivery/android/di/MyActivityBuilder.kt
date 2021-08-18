@@ -5,6 +5,7 @@ import com.dpdelivery.android.screens.base.TechBaseActivity
 import com.dpdelivery.android.screens.confirmpickupinventory.ConfirmScanResultsActivity
 import com.dpdelivery.android.screens.finish.FinishJobActivity
 import com.dpdelivery.android.screens.inventory.InventoryActivity
+import com.dpdelivery.android.screens.inventoryDetails.InventoryDetailsActivity
 import com.dpdelivery.android.screens.jobdetails.TechJobDetailsActivity
 import com.dpdelivery.android.screens.jobslist.JobsListActivity
 import com.dpdelivery.android.screens.login.LoginActivity
@@ -12,11 +13,11 @@ import com.dpdelivery.android.screens.payout.DetailEarningsActivity
 import com.dpdelivery.android.screens.photo.ImageActivity
 import com.dpdelivery.android.screens.scanner.ScannerActivity
 import com.dpdelivery.android.screens.search.SearchActivity
+import com.dpdelivery.android.screens.servicereport.ServiceReportActivity
 import com.dpdelivery.android.screens.splash.SplashActivity
 import com.dpdelivery.android.screens.summary.SummaryActivity
 import com.dpdelivery.android.screens.sync.SyncActivity
 import com.dpdelivery.android.screens.techjobslist.TechJobsListActivity
-import com.dpdelivery.android.screens.inventoryDetails.InventoryDetailsActivity
 import com.dpdelivery.android.screens.workflow.WorkFlowActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -77,5 +78,8 @@ abstract class MyActivityBuilder {
 
     @ContributesAndroidInjector()
     internal abstract fun detailEarningsActivity(): DetailEarningsActivity
+
+    @ContributesAndroidInjector()
+    internal abstract fun serviceReportActivity(): ServiceReportActivity
 
 }

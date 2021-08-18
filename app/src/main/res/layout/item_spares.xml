@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dimens_8"
+    android:background="@drawable/bg_grey_stroke_curve"
+    android:orientation="horizontal"
+    android:padding="@dimen/dimens_10"
+    android:weightSum="2">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_spare_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="@font/stolzl_regular"
+        android:text="Sediment"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/dimens_12sp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_last_changed"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="@font/stolzl_regular"
+        android:text="20 days ago"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/dimens_12sp" />
+</LinearLayout>

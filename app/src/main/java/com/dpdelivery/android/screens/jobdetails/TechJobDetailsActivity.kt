@@ -35,6 +35,7 @@ import com.dpdelivery.android.screens.base.TechBaseActivity
 import com.dpdelivery.android.screens.finish.FinishJobActivity
 import com.dpdelivery.android.screens.login.LoginActivity
 import com.dpdelivery.android.screens.scanner.ScannerActivity
+import com.dpdelivery.android.screens.servicereport.ServiceReportActivity
 import com.dpdelivery.android.screens.workflow.WorkFlowActivity
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.SharedPreferenceManager
@@ -581,6 +582,18 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             }
             cxlat = result[0]
             cxLong = result[1]
+        }
+        if (!res.type.code.equals("INS") && CommonUtils.getRole() == "Technician") {
+            ll_purifier_id.visibility = View.VISIBLE
+            tv_purifier_id.text = res.installation?.deviceCode
+            btn_service_report.setOnClickListener {
+                startActivity(
+                    Intent(this, ServiceReportActivity::class.java).putExtra(
+                        "purifierId",
+                        res.installation?.deviceCode
+                    )
+                )
+            }
         }
     }
 

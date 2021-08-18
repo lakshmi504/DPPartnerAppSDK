@@ -63,6 +63,52 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_purifier_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="Purifier ID :"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/tv_purifier_id"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/stolzl_regular"
+                    android:textSize="@dimen/dimens_12sp" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/btn_service_report"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dimens_30"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_background"
+                    android:fontFamily="@font/stolzl_regular"
+                    android:gravity="center"
+                    android:text="Service Report"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/dimens_12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimens_5"
