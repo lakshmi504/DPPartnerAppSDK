@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_spare_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:fontFamily="@font/stolzl_regular"
+        android:textSize="@dimen/dimens_12sp" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_add"
+        android:layout_width="@dimen/dimens_20"
+        android:layout_height="@dimen/dimens_20"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="@dimen/dimens_10"
+        android:src="@drawable/add"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/dimens_10"
+        android:layout_marginEnd="@dimen/dimens_10"
+        android:background="@drawable/bg_outline_curve">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_minus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dimens_5"
+            android:layout_toStartOf="@id/tv_quantity"
+            android:src="@drawable/ic_remove" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_quantity"
+            android:layout_width="@dimen/dimens_30"
+            android:layout_height="@dimen/dimens_30"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:fontFamily="@font/stolzl_regular"
+            android:gravity="center"
+            android:text="1"
+            android:textSize="@dimen/dimens_12sp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_plus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dimens_5"
+            android:layout_marginEnd="@dimen/dimens_5"
+            android:layout_toEndOf="@id/tv_quantity"
+            android:src="@drawable/ic_plus" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

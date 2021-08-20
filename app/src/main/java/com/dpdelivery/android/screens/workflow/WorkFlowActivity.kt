@@ -48,6 +48,7 @@ import com.dpdelivery.android.screens.sync.Command
 import com.dpdelivery.android.screens.sync.DatabaseHandler
 import com.dpdelivery.android.screens.sync.SyncActivity
 import com.dpdelivery.android.screens.techjobslist.TechJobsListActivity
+import com.dpdelivery.android.screens.workflow.workflowadapter.SparesListAdapter
 import com.dpdelivery.android.screens.workflow.workflowadapter.TemplateListAdapter
 import com.dpdelivery.android.utils.*
 import com.google.android.gms.location.LocationCallback
@@ -61,6 +62,7 @@ import kotlinx.android.synthetic.main.activity_work_flow.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.error_view.*
 import kotlinx.android.synthetic.main.item_element_list.view.*
+import kotlinx.android.synthetic.main.item_template_list.*
 import kotlinx.android.synthetic.main.item_timeline.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -119,7 +121,9 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var tv_status: AppCompatTextView? = null
     private var LOCATION_PERMISSION_REQUEST_CODE = 123
     lateinit var partList: ArrayList<SparePartsData>
-    private var spinnerSpares: Spinner? = null
+
+    //private var spinnerSpares: Spinner? = null
+    private var rvSpares: RecyclerView? = null
     private var value: String? = null
     lateinit var dbH: DatabaseHandler
     private var ownerName: String = ""
@@ -527,10 +531,12 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     workFlowPresenter.refreshPidStatus(type.et_purifier_id.text.toString())
                 }
                 Constants.SPARE_PARTS -> {
-                    dialog.show()
+                    //dialog.show()
                     elementId = any.id
                     value = any.value
-                    spinnerSpares = type.spinner_spares
+                    //spinnerSpares = type.spinner_spares
+                    rvSpares = type.rv_spares
+                    rvSpares!!.layoutManager = LinearLayoutManager(context)
                     workFlowPresenter.getSparePartsList(any.functionName.toString())
                 }
                 Constants.SYNC -> {
@@ -634,7 +640,10 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         dialog.dismiss()
         if (res.isNotEmpty()) {
             partList = res
-            if (partList.isNotEmpty()) {
+            val adapterPartsList = SparesListAdapter(context)
+            rvSpares!!.adapter = adapterPartsList
+            adapterPartsList.addList(partList)
+            /*if (partList.isNotEmpty()) {
                 val adapterMode = ArrayAdapter<SparePartsData>(
                     context,
                     android.R.layout.simple_spinner_item,
@@ -660,7 +669,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                         }
 
                     }
-            }
+            }*/
 
         } else {
             toast("No Spares Found")

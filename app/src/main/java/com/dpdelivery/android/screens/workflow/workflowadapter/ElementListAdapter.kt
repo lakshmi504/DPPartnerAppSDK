@@ -151,13 +151,14 @@ class ElementListAdapter(
                                                 iv_refresh.setOnClickListener {
                                                     if (et_purifier_id!!.text.toString()
                                                             .trim { it <= ' ' }
-                                                            .isEmpty()) {
+                                                            .isEmpty()
+                                                    ) {
                                                         Toast.makeText(
                                                             context,
                                                             "Purifier Id is required",
                                                             Toast.LENGTH_SHORT
                                                         ).show()
-                                                    }else{
+                                                    } else {
                                                         adapterClickListener?.onclick(
                                                             any = item,
                                                             pos = pos,
@@ -320,7 +321,7 @@ class ElementListAdapter(
                                 }
                             }
                             "API_INPUT" -> {
-                                ll_spares.visibility = View.VISIBLE
+                                ll_spare_parts.visibility = View.VISIBLE
                                 tv_name.visibility = View.VISIBLE
                                 tv_name.text = item.name
                                 if (!item.optional!!) {
@@ -335,14 +336,14 @@ class ElementListAdapter(
                                     iv_mandatory.visibility = View.INVISIBLE
                                     stepsFinished[item.id.toString()] = true
                                 }
-                                ll_spinner_spares.setOnClickListener {
-                                    adapterClickListener?.onclick(
-                                        any = item,
-                                        pos = pos,
-                                        type = itemView,
-                                        op = Constants.SPARE_PARTS
-                                    )
-                                }
+
+                                adapterClickListener?.onclick(
+                                    any = item,
+                                    pos = pos,
+                                    type = itemView,
+                                    op = Constants.SPARE_PARTS
+                                )
+
                             }
                         }
                     }

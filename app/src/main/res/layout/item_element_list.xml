@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/dimens_5"
@@ -13,7 +14,7 @@
         android:paddingTop="@dimen/dimens_5"
         android:textColor="@color/colorPrimary"
         android:textSize="@dimen/dimens_12sp"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -294,5 +295,55 @@
             style="@style/finish_buttons_style"
             android:text="@string/sync_now" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_spare_parts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_grey_border"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_spares"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimens_10"
+            tools:listitem="@layout/item_spares" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimens_20"
+            android:layout_marginEnd="@dimen/dimens_20"
+            android:layout_marginBottom="@dimen/dimens_20"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_20"
+                android:layout_marginEnd="@dimen/dimens_20"
+                android:layout_weight="1"
+                android:background="@drawable/bg_edit_text_stroke"
+                android:fontFamily="@font/stolzl_regular"
+                android:text="@string/add_parts"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dimens_20"
+                android:layout_weight="1"
+                android:background="@drawable/bg_edit_text_stroke"
+                android:fontFamily="@font/stolzl_regular"
+                android:text="@string/close"
+                android:textSize="@dimen/dimens_12sp" />
+
+        </LinearLayout>
+    </LinearLayout>
+
 
 </LinearLayout>
