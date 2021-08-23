@@ -9,21 +9,21 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dpdelivery.android.R
+import com.dpdelivery.android.model.techres.SpareConsumption
 import com.dpdelivery.android.screens.servicereport.adapter.SparesAdapter
 import kotlinx.android.synthetic.main.fragment_spares.*
 
 class SparesFragment : Fragment() {
 
     lateinit var mContext: Context
-    lateinit var mActivity: FragmentActivity
-    private var purifierId: String? = null
+    private lateinit var mActivity: FragmentActivity
     private var sparesAdapter: SparesAdapter? = null
-    private var sparesList: ArrayList<String>? = null
+    private var sparesHistory: ArrayList<SpareConsumption?>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.apply {
-            purifierId = getString("purifierId")
+            sparesHistory = getParcelableArrayList("sparesHistory")
         }
     }
 
@@ -41,30 +41,22 @@ class SparesFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_spares, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
-        getSparesChangedHistory()
-    }
-
-    private fun getSparesChangedHistory() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         rv_spares.layoutManager = LinearLayoutManager(mContext)
         sparesAdapter = SparesAdapter(mContext)
         rv_spares.adapter = sparesAdapter
-        sparesList = ArrayList()
-        sparesList!!.add("")
-        sparesList!!.add("")
-        sparesAdapter!!.addList(sparesList!!)
+        sparesAdapter!!.addList(sparesHistory!!)
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(purifierId: String): SparesFragment {
-            return SparesFragment().apply {
-                val bundle = Bundle()
-                bundle.putString("purifierId", purifierId)
-                val fragment = SparesFragment()
-                fragment.arguments = bundle
-            }
+        fun newInstance(sparesHistory: ArrayList<SpareConsumption>): SparesFragment {
+            val bundle = Bundle()
+            bundle.putParcelableArrayList("sparesHistory", sparesHistory)
+            val fragment = SparesFragment()
+            fragment.arguments = bundle
+            return fragment
         }
     }
 }

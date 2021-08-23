@@ -588,10 +588,11 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             tv_purifier_id.text = res.installation?.deviceCode
             btn_service_report.setOnClickListener {
                 startActivity(
-                    Intent(this, ServiceReportActivity::class.java).putExtra(
-                        "purifierId",
-                        res.installation?.deviceCode
-                    )
+                    Intent(this, ServiceReportActivity::class.java)
+                        .putParcelableArrayListExtra(
+                            "sparesHistory",
+                            res.spareHistory.spareConsumptions
+                        )
                 )
             }
         }

@@ -40,8 +40,23 @@ data class Job(
     val jobStatuses: ArrayList<JobStatuses?>?,
     val agentJobStatuses: ArrayList<AgentJobStatuses?>?,
     val type: Type?,
-    val customerLatLong: String?
+    val customerLatLong: String?,
+    val spareHistory: SpareHistory
 )
+
+@Keep
+@Parcelize
+data class SpareHistory(
+    val spareConsumptions: ArrayList<SpareConsumption>
+): Parcelable
+
+@Keep
+@Parcelize
+data class SpareConsumption(
+    val date: String,
+    val name: String,
+    val reason: String
+): Parcelable
 
 @Keep
 data class CustomerAddress(
