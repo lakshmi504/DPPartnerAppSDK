@@ -30,6 +30,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dpdelivery.android.R
@@ -531,13 +532,11 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     workFlowPresenter.refreshPidStatus(type.et_purifier_id.text.toString())
                 }
                 Constants.SPARE_PARTS -> {
-                    //dialog.show()
                     elementId = any.id
                     value = any.value
-                    //spinnerSpares = type.spinner_spares
                     rvSpares = type.rv_spares
                     rvSpares!!.layoutManager = LinearLayoutManager(context)
-                    workFlowPresenter.getSparePartsList(any.functionName.toString())
+                    workFlowPresenter.getSparePartsList("http://test.waterwalaprime.in:8080/inventory/spareParts")
                 }
                 Constants.SYNC -> {
                     dialog.show()
@@ -641,36 +640,14 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         if (res.isNotEmpty()) {
             partList = res
             val adapterPartsList = SparesListAdapter(context)
+            rvSpares!!.addItemDecoration(
+                DividerItemDecoration(
+                    context,
+                    LinearLayoutManager.VERTICAL
+                )
+            )
             rvSpares!!.adapter = adapterPartsList
             adapterPartsList.addList(partList)
-            /*if (partList.isNotEmpty()) {
-                val adapterMode = ArrayAdapter<SparePartsData>(
-                    context,
-                    android.R.layout.simple_spinner_item,
-                    partList
-                )
-                adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                spinnerSpares!!.adapter = adapterMode
-                spinnerSpares!!.onItemSelectedListener =
-                    object : AdapterView.OnItemSelectedListener {
-                        override fun onNothingSelected(parent: AdapterView<*>?) {
-
-                        }
-
-                        override fun onItemSelected(
-                            parent: AdapterView<*>?,
-                            view: View?,
-                            position: Int,
-                            id: Long
-                        ) {
-                            val selectedString = partList[position].itemname
-                            stepMap[elementId.toString()] = selectedString
-                            stepsFinished[elementId.toString()] = true
-                        }
-
-                    }
-            }*/
-
         } else {
             toast("No Spares Found")
         }
