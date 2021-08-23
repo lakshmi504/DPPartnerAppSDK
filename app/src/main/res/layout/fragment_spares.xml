@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimens_10"
-        tools:listitem="@layout/item_spares" />
+        tools:listitem="@layout/item_spares_history" />
 
 
 </LinearLayout>

@@ -9,7 +9,7 @@ import com.dpdelivery.android.model.techres.SpareConsumption
 import com.dpdelivery.android.screens.servicereport.adapter.SparesAdapter.SparesListViewHolder
 import com.dpdelivery.android.utils.inflate
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.item_spares.*
+import kotlinx.android.synthetic.main.item_spares_history.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -29,7 +29,7 @@ class SparesAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SparesListViewHolder {
-        val view = parent.inflate(R.layout.item_spares)
+        val view = parent.inflate(R.layout.item_spares_history)
         return SparesListViewHolder(view, context)
     }
 
