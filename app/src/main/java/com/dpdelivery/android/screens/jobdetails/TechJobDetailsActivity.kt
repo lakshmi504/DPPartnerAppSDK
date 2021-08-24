@@ -592,7 +592,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
                         .putParcelableArrayListExtra(
                             "sparesHistory",
                             res.spareHistory.spareConsumptions
-                        )
+                        ).putExtra("jobId", jobId)
                 )
             }
         }

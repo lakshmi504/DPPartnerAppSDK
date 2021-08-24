@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.app_bar_tech_base.*
 
 class ServiceReportActivity : TechBaseActivity() {
     private var sparesHistory: ArrayList<SpareConsumption>? = null
+    private var jobId: Int? = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         LayoutInflater.from(context)
@@ -28,6 +29,7 @@ class ServiceReportActivity : TechBaseActivity() {
         setTitle("Service Report")
         intent.apply {
             sparesHistory = getParcelableArrayListExtra("sparesHistory")
+            jobId = getIntExtra("jobId", 0)
         }
         addTabs(viewPager!!)
         tabLayout!!.setupWithViewPager(viewPager)
@@ -37,7 +39,7 @@ class ServiceReportActivity : TechBaseActivity() {
     private fun addTabs(viewPager: ViewPager) {
         val adapter = ServiceReportAdapter(supportFragmentManager)
         adapter.addFrag(SparesFragment.newInstance(sparesHistory!!), "Spares")
-        adapter.addFrag(JobsFragment.newInstance("purifierId"), "Jobs")
+        adapter.addFrag(JobsFragment.newInstance(jobId!!), "Jobs")
         viewPager.adapter = adapter
     }
 

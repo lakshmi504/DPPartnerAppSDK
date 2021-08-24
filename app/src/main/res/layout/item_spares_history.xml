@@ -14,7 +14,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="1.2"
         android:fontFamily="@font/stolzl_regular"
-        android:text="Sediment"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/dimens_12sp" />
 
@@ -25,7 +24,6 @@
         android:layout_weight="0.8"
         android:fontFamily="@font/stolzl_regular"
         android:gravity="center"
-        android:text="20 days ago"
         android:textColor="@color/colorBlack"
         android:textSize="@dimen/dimens_12sp" />
 </LinearLayout>

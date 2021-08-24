@@ -23,6 +23,7 @@ class ApiConstants {
         const val ADD_WORK_FLOW = "workflow/addData"
         const val VOIP_CALL = "https://api-voice.kaleyra.com/v1/"
         const val UPDATE_TOKEN = "notification/user"
+        const val LAST_3_JOBS = "workforce/getLast3JobsByInstallation/"
 
         //employee earnings
         const val EARNINGS = "earnings/entries"
