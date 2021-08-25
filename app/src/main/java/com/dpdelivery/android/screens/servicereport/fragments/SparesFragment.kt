@@ -5,15 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dpdelivery.android.R
 import com.dpdelivery.android.model.techres.SpareConsumption
 import com.dpdelivery.android.screens.servicereport.adapter.SparesAdapter
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_spares.*
 
-class SparesFragment : Fragment() {
+class SparesFragment : DaggerFragment() {
 
     lateinit var mContext: Context
     private lateinit var mActivity: FragmentActivity
@@ -46,7 +46,12 @@ class SparesFragment : Fragment() {
         rv_spares.layoutManager = LinearLayoutManager(mContext)
         sparesAdapter = SparesAdapter(mContext)
         rv_spares.adapter = sparesAdapter
-        sparesAdapter!!.addList(sparesHistory!!)
+        if (sparesHistory!!.isNotEmpty()) {
+            ll_static_data.visibility = View.VISIBLE
+            sparesAdapter!!.addList(sparesHistory!!)
+        } else {
+            tv_no_data.visibility = View.VISIBLE
+        }
     }
 
     companion object {

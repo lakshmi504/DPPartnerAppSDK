@@ -1,17 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".screens.servicereport.fragments.SparesFragment">
 
+    <LinearLayout
+        android:id="@+id/ll_static_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_margin="@dimen/dimens_10"
+        android:background="@drawable/bg_edit_text_stroke"
+        android:orientation="horizontal"
+        android:padding="@dimen/dimens_10"
+        android:visibility="gone"
+        android:weightSum="2">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_spare_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.2"
+            android:fontFamily="@font/stolzl_medium"
+            android:text="@string/spare_name"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/dimens_12sp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_last_changed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:fontFamily="@font/stolzl_medium"
+            android:gravity="center"
+            android:text="@string/last_changed"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/dimens_12sp" />
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_spares"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dimens_10"
+        android:layout_below="@id/ll_static_data"
+        android:layout_marginStart="@dimen/dimens_10"
+        android:layout_marginEnd="@dimen/dimens_10"
         tools:listitem="@layout/item_spares_history" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_no_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/stolzl_medium"
+        android:gravity="center"
+        android:text="No Data Found"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/dimens_14sp"
+        android:visibility="gone" />
 
-</LinearLayout>
+</RelativeLayout>

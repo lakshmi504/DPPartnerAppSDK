@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.item_spares_history.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by user on 17/08/21.
@@ -49,15 +50,17 @@ class SparesAdapter(
             if (item is SpareConsumption) {
                 tv_spare_name.text = item.name
                 val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ROOT)
-                val output = SimpleDateFormat("d-MMM-yyyy", Locale.ROOT)
                 var d: Date? = null
                 try {
                     d = input.parse(item.date)
                 } catch (e: ParseException) {
                     e.printStackTrace()
                 }
-                val formatted = output.format(d!!)
-                tv_last_changed.text = formatted
+                val dueDays: Long = (Date().time) - d!!.time
+                val diffInDays = TimeUnit.DAYS.convert(dueDays, TimeUnit.MILLISECONDS) + 1
+                if (diffInDays >= 1) {
+                    tv_last_changed.text = "$diffInDays days ago"
+                }
             }
         }
 

@@ -7,24 +7,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dpdelivery.android.R
-import com.dpdelivery.android.model.techres.Job
+import com.dpdelivery.android.model.techres.LastJobsRes
 import com.dpdelivery.android.screens.servicereport.adapter.JobsAdapter
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.toast
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_jobs.*
 import javax.inject.Inject
 
-class JobsFragment : Fragment(), JobsContract.View {
+class JobsFragment : DaggerFragment(), JobsContract.View {
 
     lateinit var mContext: Context
     lateinit var mActivity: FragmentActivity
     private var jobId: Int? = 0
     private var jobsAdapter: JobsAdapter? = null
-    private var jobsList: ArrayList<Job>? = null
+    private var jobsList: ArrayList<LastJobsRes.LastJobsResItem>? = null
     lateinit var dialog: Dialog
 
     @Inject
@@ -75,8 +75,9 @@ class JobsFragment : Fragment(), JobsContract.View {
         toast(throwable.message!!, Toast.LENGTH_SHORT)
     }
 
-    override fun showJobsRes(res: Job) {
+    override fun showJobsRes(res: LastJobsRes) {
         dialog.dismiss()
+        jobsList = res
         jobsAdapter!!.addList(jobsList!!)
     }
 
@@ -90,5 +91,10 @@ class JobsFragment : Fragment(), JobsContract.View {
                 fragment.arguments = bundle
                 return fragment
             }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.dropView()
     }
 }

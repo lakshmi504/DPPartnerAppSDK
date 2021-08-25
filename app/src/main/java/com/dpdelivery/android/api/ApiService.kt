@@ -207,7 +207,7 @@ interface ApiService {
     @GET(ApiConstants.LAST_3_JOBS + "{jobId}")
     fun getLast3Jobs(
         @Header("Authorization") token: String,
-        @Path("id", encoded = true) id: Int
-    ): Observable<Job>
+        @Path("jobId", encoded = true) id: Int
+    ): Observable<LastJobsRes>
 
 }
