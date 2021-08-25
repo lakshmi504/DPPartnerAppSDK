@@ -42,11 +42,12 @@ class LastJobsRes : ArrayList<LastJobsRes.LastJobsResItem>() {
         val spareParts: List<SparePart>,
         val status: Status,
         val type: Type,
-        val workflowData: Any,
+        val workflowData: WorkFlowDataRes,
         val workflowId: Any,
         val zcreated: String,
         val zone: String
     ) {
+        @Keep
         data class AssignedTo(
             val emailId: String,
             val id: Int,
@@ -54,6 +55,7 @@ class LastJobsRes : ArrayList<LastJobsRes.LastJobsResItem>() {
             val phoneNumber: String
         )
 
+        @Keep
         data class CustomerAddress(
             val area: Any,
             val city: Any,
@@ -67,12 +69,14 @@ class LastJobsRes : ArrayList<LastJobsRes.LastJobsResItem>() {
             val zone: Any
         )
 
+        @Keep
         data class Installation(
             val deviceCode: String,
             val deviceStatus: String,
             val id: Int,
             val plan: Plan
         ) {
+            @Keep
             data class Plan(
                 val code: String,
                 val description: String,
@@ -81,12 +85,14 @@ class LastJobsRes : ArrayList<LastJobsRes.LastJobsResItem>() {
             )
         }
 
+        @Keep
         data class Note(
             val createdBy: CreatedBy,
             val createdOn: String,
             val id: Int,
             val note: String
         ) {
+            @Keep
             data class CreatedBy(
                 val emailId: Any,
                 val id: Int,
@@ -95,16 +101,21 @@ class LastJobsRes : ArrayList<LastJobsRes.LastJobsResItem>() {
             )
         }
 
+        @Keep
         data class SpareHistory(
             val spareConsumptions: List<SpareConsumption>
         ) {
+            @Keep
             data class SpareConsumption(
                 val date: String,
                 val name: String,
                 val reason: String
-            )
+            ) {
+                override fun toString(): String = name
+            }
         }
 
+        @Keep
         data class SparePart(
             val category: String,
             val code: String,
@@ -113,8 +124,11 @@ class LastJobsRes : ArrayList<LastJobsRes.LastJobsResItem>() {
             val id: Int,
             val name: String,
             val status: String
-        )
+        ) {
+            override fun toString(): String = name
+        }
 
+        @Keep
         data class Status(
             val code: String,
             val description: String,
@@ -122,6 +136,7 @@ class LastJobsRes : ArrayList<LastJobsRes.LastJobsResItem>() {
             val isDelivery: Any
         )
 
+        @Keep
         data class Type(
             val code: String,
             val description: String,

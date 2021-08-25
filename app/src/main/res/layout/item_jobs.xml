@@ -43,7 +43,7 @@
                     android:layout_weight="0.5"
                     android:fontFamily="@font/stolzl_regular"
                     android:text="Job ID :"
-                    android:textColor="@color/colorBlackOverlay"
+                    android:textColor="@color/colorBlack"
                     android:textSize="@dimen/dimens_10sp" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -53,7 +53,7 @@
                     android:layout_weight="0.5"
                     android:fontFamily="@font/stolzl_regular"
                     android:text="1234"
-                    android:textColor="@color/colorBlackOverlay"
+                    android:textColor="@color/colorBlack"
                     android:textSize="@dimen/dimens_10sp" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -63,7 +63,7 @@
                     android:layout_weight="2"
                     android:fontFamily="@font/stolzl_regular"
                     android:text="02-06-2021"
-                    android:textColor="@color/colorBlackOverlay"
+                    android:textColor="@color/colorBlack"
                     android:textSize="@dimen/dimens_10sp" />
 
             </LinearLayout>
@@ -89,6 +89,7 @@
         android:visibility="gone">
 
         <LinearLayout
+            android:id="@+id/ll_issue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dimens_10"
@@ -96,6 +97,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="@dimen/dimens_8"
+            android:visibility="gone"
             android:weightSum="2">
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -121,12 +123,13 @@
                 android:layout_weight="1.2"
                 android:fontFamily="@font/stolzl_regular"
                 android:text="02-06-2021"
-                android:textColor="@color/colorBlackOverlay"
+                android:textColor="@color/colorBlack"
                 android:textSize="@dimen/dimens_10sp" />
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_diagnosis"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dimens_10"
@@ -134,6 +137,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="@dimen/dimens_8"
+            android:visibility="gone"
             android:weightSum="2">
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -159,12 +163,13 @@
                 android:layout_weight="1.2"
                 android:fontFamily="@font/stolzl_regular"
                 android:text="02-06-2021"
-                android:textColor="@color/colorBlackOverlay"
+                android:textColor="@color/colorBlack"
                 android:textSize="@dimen/dimens_10sp" />
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_resolution"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dimens_10"
@@ -172,6 +177,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="@dimen/dimens_8"
+            android:visibility="gone"
             android:weightSum="2">
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -197,12 +203,13 @@
                 android:layout_weight="1.2"
                 android:fontFamily="@font/stolzl_regular"
                 android:text="02-06-2021"
-                android:textColor="@color/colorBlackOverlay"
+                android:textColor="@color/colorBlack"
                 android:textSize="@dimen/dimens_10sp" />
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_spares_changed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dimens_10"
@@ -210,6 +217,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="@dimen/dimens_8"
+            android:visibility="gone"
             android:weightSum="2">
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -235,12 +243,13 @@
                 android:layout_weight="1.2"
                 android:fontFamily="@font/stolzl_regular"
                 android:text="02-06-2021"
-                android:textColor="@color/colorBlackOverlay"
+                android:textColor="@color/colorBlack"
                 android:textSize="@dimen/dimens_10sp" />
 
         </LinearLayout>
 
     </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"

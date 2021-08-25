@@ -1,5 +1,6 @@
 package com.dpdelivery.android.screens.servicereport.fragments
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
@@ -66,7 +67,9 @@ class JobsFragment : DaggerFragment(), JobsContract.View {
     }
 
     private fun getJobsHistory() {
-        dialog.show()
+        if (!(mContext as Activity).isFinishing) {
+            dialog.show()
+        }
         presenter.getJobsList(jobId!!)
     }
 
@@ -78,7 +81,11 @@ class JobsFragment : DaggerFragment(), JobsContract.View {
     override fun showJobsRes(res: LastJobsRes) {
         dialog.dismiss()
         jobsList = res
-        jobsAdapter!!.addList(jobsList!!)
+        if (res.isNotEmpty()) {
+            jobsAdapter!!.addList(jobsList!!)
+        } else {
+            tv_no_data.visibility = View.VISIBLE
+        }
     }
 
     companion object {

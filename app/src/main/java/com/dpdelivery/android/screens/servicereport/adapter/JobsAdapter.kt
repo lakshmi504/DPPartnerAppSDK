@@ -63,9 +63,46 @@ class JobsAdapter(
                     val formattedStartTime = output.format(d!!)
                     tv_job_date.text = formattedStartTime
                 }
-               /* if (item.spareHistory.spareConsumptions.isNotEmpty()) {
+                if (item.spareParts.isEmpty() || item.workflowData != null) {
+                    iv_show_more.visibility = View.GONE
+                } else {
+                    iv_show_more.visibility = View.VISIBLE
+                    iv_show_more.setImageResource(R.drawable.ic_down_arrow)
+                }
+                rl_job_data.setOnClickListener {
                     ll_report.visibility = View.VISIBLE
-                }*/
+                    iv_show_more.setImageResource(R.drawable.ic_up_arrow)
+                }
+                ll_report.setOnClickListener {
+                    if (ll_report.visibility == View.VISIBLE) {
+                        rl_job_data.visibility = View.VISIBLE
+                        ll_report.visibility = View.GONE
+                        iv_show_more.visibility = View.VISIBLE
+                        iv_show_more.setImageResource(R.drawable.ic_down_arrow)
+                    }
+                }
+                if (item.spareParts.isNotEmpty()) {
+                    ll_spares_changed.visibility = View.VISIBLE
+                    val spareParts =
+                        item.spareHistory.spareConsumptions.toString()!!.replace("[", "")
+                    val spareParts1 = spareParts.replace("]", "")
+                    tv_spares_desc.text = spareParts1
+                }
+                if (item.workflowData != null) {
+                    if (item.workflowData.body!!.steps!![3].templates!![0].elements!!.isNotEmpty()) {
+                        val data = item.workflowData.body.steps!![3].templates!![0].elements!!
+                        ll_issue.visibility = View.VISIBLE
+                        ll_diagnosis.visibility = View.VISIBLE
+                        ll_resolution.visibility = View.VISIBLE
+
+                        tv_issue.text = data[0].name
+                        tv_issue_desc.text = data[0].value
+                        tv_diagnosis.text = data[1].name
+                        tv_diagnosis_desc.text = data[1].value
+                        tv_resolution.text = data[2].name
+                        tv_resolution_desc.text = data[2].value
+                    }
+                }
             }
         }
 

@@ -97,6 +97,7 @@
                     android:id="@+id/btn_service_report"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/dimens_30"
+                    android:layout_gravity="start"
                     android:layout_weight="1"
                     android:background="@drawable/btn_background"
                     android:fontFamily="@font/stolzl_regular"
