@@ -173,12 +173,6 @@ interface ApiService {
         @Query("endDate") endDate: String
     ): Observable<EarningsRes>
 
-    @GET(ApiConstants.INVENTORY + "{id}")
-    fun getInventory(
-        @Header("Authorization") token: String,
-        @Path("id", encoded = true) id: Int
-    ): Observable<InventoryRes>
-
     @GET(ApiConstants.INVENTORY_COUNT + "{id}")
     fun getInventoryCount(
         @Header("Authorization") token: String,

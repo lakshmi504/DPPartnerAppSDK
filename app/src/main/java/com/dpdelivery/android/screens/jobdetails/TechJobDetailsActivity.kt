@@ -585,8 +585,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
     }
 
     override fun showStartJobRes(startJobRes: StartJobRes) {
+        showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (startJobRes.success!!) {
-            showViewState(MultiStateView.VIEW_STATE_CONTENT)
             toast("Job Started Successfully")
             init()
         } else {

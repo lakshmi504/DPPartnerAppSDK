@@ -21,7 +21,6 @@ import com.dpdelivery.android.utils.toast
 import kotlinx.android.synthetic.main.activity_confirm_scan_results.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.error_view.*
-import kotlinx.android.synthetic.main.item_element_list.*
 import retrofit2.HttpException
 import javax.inject.Inject
 

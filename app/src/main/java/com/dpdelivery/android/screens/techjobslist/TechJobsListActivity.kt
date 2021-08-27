@@ -138,7 +138,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
             val token = it.result
             val msg = getString(R.string.msg_token_fmt, token)
             Log.d("msg", msg)
-            //updateDeviceToken(token)
+            updateDeviceToken(token)
         }
     }
 
@@ -246,6 +246,11 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         if (throwable is HttpException) {
             when (throwable.code()) {
                 403 -> {
+                    SharedPreferenceManager.clearPreferences()
+                    startActivity(Intent(this, LoginActivity::class.java))
+                    finishAffinity()
+                }
+                401 -> {
                     SharedPreferenceManager.clearPreferences()
                     startActivity(Intent(this, LoginActivity::class.java))
                     finishAffinity()

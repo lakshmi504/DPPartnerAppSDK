@@ -14,8 +14,8 @@ android {
         applicationId "com.dpdelivery.android"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 22
-        versionName "4.0"
+        versionCode 23
+        versionName "4.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -67,7 +67,7 @@ dependencies {
     implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar'
 
     //image compressor
-    implementation 'id.zelory:compressor:2.1.0'
+    implementation 'id.zelory:compressor:2.1.1'
 
     // dependency injection
     implementation "com.google.dagger:dagger:$dagger2_version"

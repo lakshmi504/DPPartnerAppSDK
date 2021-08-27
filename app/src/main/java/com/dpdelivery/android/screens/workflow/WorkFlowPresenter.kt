@@ -27,22 +27,6 @@ class WorkFlowPresenter @Inject constructor(
         this.view = view
     }
 
-    override fun getInventory(id: Int) {
-        view?.showProgress()
-        subscription.add(
-            apiService.getInventory(CommonUtils.getLoginToken(), id = id)
-                .subscribeOn(baseScheduler.io())
-                .observeOn(baseScheduler.ui())
-                .subscribe(
-                    { res ->
-                        view?.showInventoryRes(res)
-                    },
-                    { throwable ->
-                        view?.showErrorMsg(throwable)
-                    })
-        )
-    }
-
     override fun getWorkFlowData(jobId: Int) {
         view?.showProgress()
         subscription.add(

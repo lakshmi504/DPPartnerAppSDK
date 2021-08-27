@@ -23,7 +23,6 @@ interface WorkFlowContract {
         fun showPidDetailsRes(res: BLEDetailsRes)
         fun showSyncRes(res: BLEDetailsRes)
         fun showJobRes(res: Job)
-        fun showInventoryRes(res: InventoryRes)
     }
 
     interface Presenter : BasePresenter<View> {
@@ -39,6 +38,5 @@ interface WorkFlowContract {
         fun getPidDetails(hashMap: HashMap<String, String>)
         fun updateServerCmds(hashMap: HashMap<String, String>)
         fun getJob(jobId: Int)
-        fun getInventory(id: Int)
     }
 }
