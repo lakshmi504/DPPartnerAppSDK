@@ -48,7 +48,9 @@ class JobsAdapter(
             if (item is LastJobsRes.LastJobsResItem) {
 
                 tv_job_name.text = item.type.description
+                tv_job_name1.text = item.type.description
                 tv_job_id.text = item.id.toString()
+                tv_job_id1.text = item.id.toString()
 
                 if (!item.appointmentStartTime.isNullOrEmpty()) {
                     val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ROOT)
@@ -62,16 +64,20 @@ class JobsAdapter(
                     }
                     val formattedStartTime = output.format(d!!)
                     tv_job_date.text = formattedStartTime
+                    tv_job_date1.text = formattedStartTime
                 }
-                if (item.spareParts.isEmpty() || item.workflowData != null) {
-                    iv_show_more.visibility = View.GONE
-                } else {
+                if (item.spareParts.isNotEmpty() || item.workflowData != null) {
                     iv_show_more.visibility = View.VISIBLE
                     iv_show_more.setImageResource(R.drawable.ic_down_arrow)
+                } else {
+                    iv_show_more.visibility = View.GONE
                 }
                 rl_job_data.setOnClickListener {
-                    ll_report.visibility = View.VISIBLE
-                    iv_show_more.setImageResource(R.drawable.ic_up_arrow)
+                    if (item.spareParts.isNotEmpty() || item.workflowData != null) {
+                        ll_report.visibility = View.VISIBLE
+                        rl_job_data.visibility = View.GONE
+                        iv_show_more1.setImageResource(R.drawable.ic_up_arrow)
+                    }
                 }
                 ll_report.setOnClickListener {
                     if (ll_report.visibility == View.VISIBLE) {
@@ -84,24 +90,22 @@ class JobsAdapter(
                 if (item.spareParts.isNotEmpty()) {
                     ll_spares_changed.visibility = View.VISIBLE
                     val spareParts =
-                        item.spareHistory.spareConsumptions.toString()!!.replace("[", "")
+                        item.spareParts.toString().replace("[", "")
                     val spareParts1 = spareParts.replace("]", "")
                     tv_spares_desc.text = spareParts1
                 }
                 if (item.workflowData != null) {
-                    if (item.workflowData.body!!.steps!![3].templates!![0].elements!!.isNotEmpty()) {
-                        val data = item.workflowData.body.steps!![3].templates!![0].elements!!
-                        ll_issue.visibility = View.VISIBLE
-                        ll_diagnosis.visibility = View.VISIBLE
-                        ll_resolution.visibility = View.VISIBLE
+                    val data = item.workflowData.steps[3].templates[0].elements
+                    ll_issue.visibility = View.VISIBLE
+                    ll_diagnosis.visibility = View.VISIBLE
+                    ll_resolution.visibility = View.VISIBLE
 
-                        tv_issue.text = data[0].name
-                        tv_issue_desc.text = data[0].value
-                        tv_diagnosis.text = data[1].name
-                        tv_diagnosis_desc.text = data[1].value
-                        tv_resolution.text = data[2].name
-                        tv_resolution_desc.text = data[2].value
-                    }
+                    tv_issue.text = data[0].name
+                    tv_issue_desc.text = data[0].value
+                    tv_diagnosis.text = data[1].name
+                    tv_diagnosis_desc.text = data[1].value
+                    tv_resolution.text = data[2].name
+                    tv_resolution_desc.text = data[2].value
                 }
             }
         }

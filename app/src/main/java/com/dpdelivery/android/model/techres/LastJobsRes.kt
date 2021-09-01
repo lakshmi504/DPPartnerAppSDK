@@ -42,11 +42,46 @@ class LastJobsRes : ArrayList<LastJobsRes.LastJobsResItem>() {
         val spareParts: List<SparePart>,
         val status: Status,
         val type: Type,
-        val workflowData: WorkFlowDataRes,
+        val workflowData: WorkflowData,
         val workflowId: Any,
         val zcreated: String,
         val zone: String
     ) {
+        @Keep
+        data class WorkflowData(
+            val activationElementId: Int,
+            val happyCode: Any,
+            val statusElementId: Int,
+            val steps: List<Step>,
+            val submissionField: String,
+            val syncElementId: Int
+        ) {
+            data class Step(
+                val name: String,
+                val templates: List<Template>
+            ) {
+                data class Template(
+                    val elements: List<Element>,
+                    val getDataUrl: Any,
+                    val id: Int,
+                    val name: String,
+                    val postDataUrl: Any
+                ) {
+                    data class Element(
+                        val dropdownContents: Any,
+                        val functionName: Any,
+                        val id: Int,
+                        val inputApi: String,
+                        val name: String,
+                        val optional: Boolean,
+                        val showType: String,
+                        val value: String,
+                        val workflowElementType: String
+                    )
+                }
+            }
+        }
+
         @Keep
         data class AssignedTo(
             val emailId: String,
@@ -143,4 +178,5 @@ class LastJobsRes : ArrayList<LastJobsRes.LastJobsResItem>() {
             val id: Int
         )
     }
+
 }

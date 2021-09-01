@@ -10,10 +10,7 @@ import com.dpdelivery.android.screens.servicereport.adapter.SparesAdapter.Spares
 import com.dpdelivery.android.utils.inflate
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_spares_history.*
-import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by user on 17/08/21.
@@ -49,18 +46,7 @@ class SparesAdapter(
         fun bind(context: Context, item: Any, pos: Int) {
             if (item is SpareConsumption) {
                 tv_spare_name.text = item.name
-                val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ROOT)
-                var d: Date? = null
-                try {
-                    d = input.parse(item.date)
-                } catch (e: ParseException) {
-                    e.printStackTrace()
-                }
-                val dueDays: Long = (Date().time) - d!!.time
-                val diffInDays = TimeUnit.DAYS.convert(dueDays, TimeUnit.MILLISECONDS) + 1
-                if (diffInDays >= 1) {
-                    tv_last_changed.text = "$diffInDays days ago"
-                }
+                tv_last_changed.text = item.date
             }
         }
 

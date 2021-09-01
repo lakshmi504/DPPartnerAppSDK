@@ -561,6 +561,19 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             } else {
                 ll_workflow.visibility = View.VISIBLE
             }
+            if (!res.type.code.equals("INS") && CommonUtils.getRole() == "Technician") {
+                ll_purifier_id.visibility = View.VISIBLE
+                tv_purifier_id.text = res.installation?.deviceCode
+                btn_service_report.setOnClickListener {
+                    startActivity(
+                        Intent(this, ServiceReportActivity::class.java)
+                            .putParcelableArrayListExtra(
+                                "sparesHistory",
+                                res.spareHistory.spareConsumptions
+                            ).putExtra("jobId", jobId)
+                    )
+                }
+            }
         } else {
             ll_workflow.visibility = View.GONE
             if (!res.type.code.equals("INS") && (res.status.code.equals("INP"))) {
@@ -582,19 +595,6 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             }
             cxlat = result[0]
             cxLong = result[1]
-        }
-        if (!res.type.code.equals("INS") && CommonUtils.getRole() == "Technician") {
-            ll_purifier_id.visibility = View.VISIBLE
-            tv_purifier_id.text = res.installation?.deviceCode
-            btn_service_report.setOnClickListener {
-                startActivity(
-                    Intent(this, ServiceReportActivity::class.java)
-                        .putParcelableArrayListExtra(
-                            "sparesHistory",
-                            res.spareHistory.spareConsumptions
-                        ).putExtra("jobId", jobId)
-                )
-            }
         }
     }
 
@@ -657,12 +657,12 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
                     finishAffinity()
                 }
                 else -> {
-                    /* showViewState(MultiStateView.VIEW_STATE_ERROR)
-                     toast(throwable.message.toString())*/
+                     showViewState(MultiStateView.VIEW_STATE_CONTENT)
+                     toast(throwable.message.toString())
                 }
             }
         } else {
-            /*showViewState(MultiStateView.VIEW_STATE_ERROR)
+           /* showViewState(MultiStateView.VIEW_STATE_CONTENT)
             toast(throwable.message.toString())*/
         }
     }
