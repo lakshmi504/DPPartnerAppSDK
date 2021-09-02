@@ -601,10 +601,10 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
     override fun showStartJobRes(startJobRes: StartJobRes) {
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (startJobRes.success!!) {
-            toast("Job Started Successfully")
+            toast(startJobRes.message.toString())
             init()
         } else {
-            toast(startJobRes.error.toString())
+            toast(startJobRes.message.toString())
         }
     }
 
@@ -613,6 +613,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             showViewState(MultiStateView.VIEW_STATE_CONTENT)
             init()
             toast("Note Added Successfully")
+        }else {
+            toast(res.message.toString())
         }
     }
 
@@ -657,13 +659,13 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
                     finishAffinity()
                 }
                 else -> {
-                     showViewState(MultiStateView.VIEW_STATE_CONTENT)
-                     toast(throwable.message.toString())
+                    showViewState(MultiStateView.VIEW_STATE_CONTENT)
+                    toast(throwable.message.toString())
                 }
             }
         } else {
-           /* showViewState(MultiStateView.VIEW_STATE_CONTENT)
-            toast(throwable.message.toString())*/
+            /* showViewState(MultiStateView.VIEW_STATE_CONTENT)
+             toast(throwable.message.toString())*/
         }
     }
 
