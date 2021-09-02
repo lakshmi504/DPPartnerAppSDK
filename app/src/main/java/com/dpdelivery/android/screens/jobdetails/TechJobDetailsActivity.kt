@@ -35,6 +35,7 @@ import com.dpdelivery.android.screens.base.TechBaseActivity
 import com.dpdelivery.android.screens.finish.FinishJobActivity
 import com.dpdelivery.android.screens.login.LoginActivity
 import com.dpdelivery.android.screens.scanner.ScannerActivity
+import com.dpdelivery.android.screens.servicereport.ServiceReportActivity
 import com.dpdelivery.android.screens.workflow.WorkFlowActivity
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.SharedPreferenceManager
@@ -560,6 +561,19 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             } else {
                 ll_workflow.visibility = View.VISIBLE
             }
+            if (!res.type.code.equals("INS") && CommonUtils.getRole() == "Technician") {
+                ll_purifier_id.visibility = View.VISIBLE
+                tv_purifier_id.text = res.installation?.deviceCode
+                btn_service_report.setOnClickListener {
+                    startActivity(
+                        Intent(this, ServiceReportActivity::class.java)
+                            .putParcelableArrayListExtra(
+                                "sparesHistory",
+                                res.spareHistory.spareConsumptions
+                            ).putExtra("jobId", jobId)
+                    )
+                }
+            }
         } else {
             ll_workflow.visibility = View.GONE
             if (!res.type.code.equals("INS") && (res.status.code.equals("INP"))) {
@@ -587,10 +601,10 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
     override fun showStartJobRes(startJobRes: StartJobRes) {
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (startJobRes.success!!) {
-            toast("Job Started Successfully")
+            toast(startJobRes.message.toString())
             init()
         } else {
-            toast(startJobRes.error.toString())
+            toast(startJobRes.message.toString())
         }
     }
 
@@ -599,6 +613,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             showViewState(MultiStateView.VIEW_STATE_CONTENT)
             init()
             toast("Note Added Successfully")
+        }else {
+            toast(res.message.toString())
         }
     }
 
@@ -643,13 +659,13 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
                     finishAffinity()
                 }
                 else -> {
-                    /* showViewState(MultiStateView.VIEW_STATE_ERROR)
-                     toast(throwable.message.toString())*/
+                    showViewState(MultiStateView.VIEW_STATE_CONTENT)
+                    toast(throwable.message.toString())
                 }
             }
         } else {
-            /*showViewState(MultiStateView.VIEW_STATE_ERROR)
-            toast(throwable.message.toString())*/
+            /* showViewState(MultiStateView.VIEW_STATE_CONTENT)
+             toast(throwable.message.toString())*/
         }
     }
 

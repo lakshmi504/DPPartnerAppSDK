@@ -260,6 +260,9 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
                     toast(throwable.message.toString())
                 }
             }
+        } else {
+            showViewState(MultiStateView.VIEW_STATE_ERROR)
+            toast(throwable.message.toString())
         }
     }
 

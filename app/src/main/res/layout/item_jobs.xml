@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
+    android:orientation="vertical"
+    android:padding="@dimen/dimens_5">
+
+    <RelativeLayout
+        android:id="@+id/rl_job_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_10"
+        android:layout_marginEnd="@dimen/dimens_10"
+        android:layout_marginBottom="@dimen/dimens_10">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/iv_show_more"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_job_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="General Service"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimens_5"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_job"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:fontFamily="@font/stolzl_regular"
+                    android:text="Job ID :"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/dimens_10sp" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_job_id"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:fontFamily="@font/stolzl_regular"
+                    android:text="1234"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/dimens_10sp" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_job_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:fontFamily="@font/stolzl_regular"
+                    android:text="02-06-2021"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/dimens_10sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_show_more"
+            android:layout_width="@dimen/dimens_15"
+            android:layout_height="@dimen/dimens_15"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dimens_10" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_report"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_10"
+        android:layout_marginEnd="@dimen/dimens_10"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:id="@+id/rl_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimens_10">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/iv_show_more1"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_job_name1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/stolzl_medium"
+                    android:text="General Service"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/dimens_12sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimens_5"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_job1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:fontFamily="@font/stolzl_regular"
+                        android:text="Job ID :"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="@dimen/dimens_10sp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_job_id1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:fontFamily="@font/stolzl_regular"
+                        android:text="1234"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="@dimen/dimens_10sp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_job_date1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:fontFamily="@font/stolzl_regular"
+                        android:text="02-06-2021"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="@dimen/dimens_10sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_show_more1"
+                android:layout_width="@dimen/dimens_15"
+                android:layout_height="@dimen/dimens_15"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/dimens_10" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_issue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimens_10"
+            android:background="@drawable/bg_grey_stroke_curve"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/dimens_8"
+            android:visibility="gone"
+            android:weightSum="2">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_issue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="Issue"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <View
+                android:layout_width="0.1dp"
+                android:layout_height="@dimen/dimens_20"
+                android:background="@color/colorBlack" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_issue_desc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_10"
+                android:layout_weight="1.2"
+                android:fontFamily="@font/stolzl_regular"
+                android:text="02-06-2021"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_10sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_diagnosis"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimens_10"
+            android:background="@drawable/bg_grey_stroke_curve"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/dimens_8"
+            android:visibility="gone"
+            android:weightSum="2">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_diagnosis"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="Diagnosis"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <View
+                android:layout_width="0.1dp"
+                android:layout_height="@dimen/dimens_20"
+                android:background="@color/colorBlack" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_diagnosis_desc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_10"
+                android:layout_weight="1.2"
+                android:fontFamily="@font/stolzl_regular"
+                android:text="02-06-2021"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_10sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_resolution"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimens_10"
+            android:background="@drawable/bg_grey_stroke_curve"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/dimens_8"
+            android:visibility="gone"
+            android:weightSum="2">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_resolution"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="Resolution"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <View
+                android:layout_width="0.1dp"
+                android:layout_height="@dimen/dimens_20"
+                android:background="@color/colorBlack" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_resolution_desc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_10"
+                android:layout_weight="1.2"
+                android:fontFamily="@font/stolzl_regular"
+                android:text="02-06-2021"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_10sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_spares_changed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimens_10"
+            android:background="@drawable/bg_grey_stroke_curve"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/dimens_8"
+            android:visibility="gone"
+            android:weightSum="2">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_spares_changed"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="Spares Changed"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <View
+                android:layout_width="0.1dp"
+                android:layout_height="@dimen/dimens_20"
+                android:background="@color/colorBlack" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_spares_desc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_10"
+                android:layout_weight="1.2"
+                android:fontFamily="@font/stolzl_regular"
+                android:text="02-06-2021"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_10sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/colorBlack" />
+</LinearLayout>

@@ -192,7 +192,7 @@
         <item name="android:layout_marginStart">5dp</item>
         <item name="android:layout_marginTop">10dp</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:background">@drawable/bg_orange_stroke</item>
+        <item name="android:background">@drawable/bg_grey_stroke</item>
         <item name="android:ems">10</item>
         <item name="android:gravity">center</item>
         <item name="android:inputType">number</item>
@@ -204,5 +204,12 @@
         <item name="android:textColor">@color/colorBlack</item>
         <item name="android:textColorHint">@color/colorBlackOverlay</item>
         <item name="android:textSize">@dimen/dimens_14sp</item>
+    </style>
+
+    <style name="TabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">@dimen/dimens_12sp</item>
+        <item name="android:fontFamily">@font/stolzl_regular</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="textAllCaps">false</item>
     </style>
 </resources>

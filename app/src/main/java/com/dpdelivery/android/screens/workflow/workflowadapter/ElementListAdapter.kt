@@ -91,6 +91,17 @@ class ElementListAdapter(
                                         if (item.name.toString() == "PaymentCollected") {
                                             et_add_text.inputType = InputType.TYPE_CLASS_NUMBER
                                         }
+                                        if (item.name.toString() == "InputTDS") {
+                                            et_add_text.inputType = InputType.TYPE_CLASS_NUMBER
+                                        }
+                                        if (item.name.toString() == "OutputTDS") {
+                                            et_add_text.inputType = InputType.TYPE_CLASS_NUMBER
+                                        }
+                                        if (item.name.toString() == "HappyCode") {
+                                            et_add_text.filters =
+                                                arrayOf<InputFilter>(InputFilter.LengthFilter(6))
+                                            et_add_text.inputType = InputType.TYPE_CLASS_NUMBER
+                                        }
                                         if (item.name.toString() == "DeviceCode") {
                                             et_add_text.filters =
                                                 arrayOf<InputFilter>(InputFilter.LengthFilter(10))
@@ -151,13 +162,14 @@ class ElementListAdapter(
                                                 iv_refresh.setOnClickListener {
                                                     if (et_purifier_id!!.text.toString()
                                                             .trim { it <= ' ' }
-                                                            .isEmpty()) {
+                                                            .isEmpty()
+                                                    ) {
                                                         Toast.makeText(
                                                             context,
                                                             "Purifier Id is required",
                                                             Toast.LENGTH_SHORT
                                                         ).show()
-                                                    }else{
+                                                    } else {
                                                         adapterClickListener?.onclick(
                                                             any = item,
                                                             pos = pos,

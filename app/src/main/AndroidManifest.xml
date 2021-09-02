@@ -39,6 +39,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".screens.servicereport.ServiceReportActivity"
+            android:exported="true" />
 
         <uses-library
             android:name="org.apache.http.legacy"
@@ -167,7 +170,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />
-
         <activity
             android:name=".screens.inventoryDetails.InventoryDetailsActivity"
             android:screenOrientation="portrait"
@@ -191,14 +193,12 @@
             android:theme="@style/noAnimTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />
-
         <activity
             android:name=".screens.confirmpickupinventory.ConfirmScanResultsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />
-
     </application>
 
 </manifest>
