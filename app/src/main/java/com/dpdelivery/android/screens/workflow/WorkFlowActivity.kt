@@ -121,7 +121,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var iv_refresh: AppCompatImageView? = null
     private var tv_status: AppCompatTextView? = null
     private var LOCATION_PERMISSION_REQUEST_CODE = 123
-    lateinit var partList: ArrayList<SparePartsData>
+    lateinit var partList: ArrayList<PartInfo>
 
     //private var spinnerSpares: Spinner? = null
     private var rvSpares: RecyclerView? = null
@@ -532,11 +532,13 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     workFlowPresenter.refreshPidStatus(type.et_purifier_id.text.toString())
                 }
                 Constants.SPARE_PARTS -> {
+                    dialog.show()
                     elementId = any.id
                     value = any.value
                     rvSpares = type.rv_spares
                     rvSpares!!.layoutManager = LinearLayoutManager(context)
-                    workFlowPresenter.getSparePartsList("http://test.waterwalaprime.in:8080/inventory/spareParts")
+                    val api = any.functionName
+                    workFlowPresenter.getSparePartsList("$api${CommonUtils.getId()}")
                 }
                 Constants.SYNC -> {
                     dialog.show()
@@ -635,10 +637,10 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         }
     }
 
-    override fun showSparePartsRes(res: ArrayList<SparePartsData>) {
+    override fun showSparePartsRes(res: InventoryRes) {
         dialog.dismiss()
-        if (res.isNotEmpty()) {
-            partList = res
+        if (res.part_info.isNotEmpty()) {
+            partList = res.part_info
             val adapterPartsList = SparesListAdapter(context)
             rvSpares!!.addItemDecoration(
                 DividerItemDecoration(

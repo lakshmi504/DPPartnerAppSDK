@@ -106,7 +106,7 @@ interface ApiService {
     fun getSpareParts(
         @Header("Authorization") token: String,
         @Url url: String
-    ): Observable<ArrayList<SparePartsData>>
+    ): Observable<InventoryRes>
 
     @PUT(ApiConstants.FINISH_JOB + "{jobId}")
     fun finishJob(

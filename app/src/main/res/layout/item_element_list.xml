@@ -308,37 +308,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <!-- <LinearLayout
-             android:id="@+id/ll_add_parts"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:layout_margin="@dimen/dimens_5"
-             android:orientation="horizontal"
-             android:weightSum="2">
-
-             <androidx.appcompat.widget.AppCompatButton
-                 android:layout_width="0dp"
-                 android:layout_height="wrap_content"
-                 android:layout_marginEnd="@dimen/dimens_5"
-                 android:layout_weight="1"
-                 android:background="@drawable/bg_edit_text_stroke"
-                 android:fontFamily="@font/stolzl_regular"
-                 android:gravity="center"
-                 android:text="@string/add_parts"
-                 android:textColor="@color/colorBlack"
-                 android:textSize="@dimen/dimens_12sp" />
-
-             <androidx.appcompat.widget.AppCompatButton
-                 android:layout_width="0dp"
-                 android:layout_height="wrap_content"
-                 android:layout_weight="1"
-                 android:background="@drawable/bg_edit_text_stroke"
-                 android:fontFamily="@font/stolzl_regular"
-                 android:gravity="center"
-                 android:text="@string/close"
-                 android:textSize="@dimen/dimens_12sp" />
-
-         </LinearLayout>-->
     </LinearLayout>
 
 

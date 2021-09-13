@@ -24,7 +24,9 @@ data class PartInfo(
     val item_name: String,
     val product_info: ArrayList<ProductInfo>,
     val returnable: Boolean,
-    val serializable: Boolean
+    val serializable: Boolean,
+    var mycart: Int = 0,
+    var tempMyCart: Int = -1
 )
 
 @Keep
