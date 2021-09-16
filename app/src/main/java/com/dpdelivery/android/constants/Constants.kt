@@ -28,6 +28,7 @@ class Constants {
         const val TO_BE_PICKED_UP_INVENTORY = "TO_BE_PICKED_UP_INVENTORY"
         const val RETURNABLE_INVENTORY = "RETURNABLE_INVENTORY"
         const val REMOVE_INVENTORY = "REMOVE_INVENTORY"
+        const val ADD_SPARES = "ADD_SPARES"
         const val INCREMENT = "INCREMENT"
         const val DECREMENT = "DECREMENT"
     }

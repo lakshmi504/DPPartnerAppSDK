@@ -54,15 +54,12 @@ class SparesListAdapter(
             if (item is PartInfo) {
                 tv_spare_name.text = item.item_name
                 iv_add.setOnClickListener {
-                    if (item.picked > 0) {
-                        item.mycart += 1
-                        tv_quantity.text = item.mycart.toString()
-                        iv_add.visibility = View.GONE
-                        ll_add.visibility = View.VISIBLE
-                    } else {
-                        Toast.makeText(context, "Inventory items not available", Toast.LENGTH_SHORT)
-                            .show()
-                    }
+                    adapterClickListener?.onclick(
+                        any = item,
+                        pos = pos,
+                        type = itemView,
+                        op = Constants.ADD_SPARES
+                    )
                 }
                 iv_increment.setOnClickListener {
                     adapterClickListener?.onclick(

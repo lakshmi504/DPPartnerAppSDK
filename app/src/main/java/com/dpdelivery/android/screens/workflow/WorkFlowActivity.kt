@@ -131,8 +131,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var synctext: TextView? = null
     private var isSync: Boolean = false
     lateinit var adapterPartsList: SparesListAdapter
-    private val consumedSpareList = ArrayList<SparesConsumptionIpItem>()
-    private var itemsMap: MutableList<SparesConsumptionIp> = mutableListOf<SparesConsumptionIp>()
+    private var consumedSpares = ArrayList<SparesConsumptionIpItem>()
+    private var itemsMap: MutableMap<Int, SparesConsumptionIpItem> = mutableMapOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -554,6 +554,24 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         }
         if (any is PartInfo && type is View) {
             when (op) {
+                Constants.ADD_SPARES -> {
+                    if (any.picked > 0) {
+                        any.mycart += 1
+                        type.tv_quantity.text = any.mycart.toString()
+                        type.iv_add.visibility = View.GONE
+                        type.ll_add.visibility = View.VISIBLE
+                    } else {
+                        Toast.makeText(context, "Inventory items not available", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    val quantity = type.tv_quantity.text.toString()
+                    itemsMap[any.item_id] = SparesConsumptionIpItem(
+                        item_id = any.item_id,
+                        quantity = Integer.parseInt(quantity),
+                        serializable = any.serializable
+                    )
+                    stepMap[elementId.toString()] = itemsMap.values.toString()
+                }
                 Constants.INCREMENT -> {
                     if (!any.serializable) {
                         if (any.mycart < any.picked) {
@@ -567,15 +585,13 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                         }
                         type.tv_quantity.text = any.mycart.toString()
                     }
-                    /*val quantity = type.tv_quantity.text.toString()
-                    consumedSpareList.add(
-                        SparesConsumptionIpItem(
-                            item_id = any.item_id,
-                            quantity = Integer.parseInt(quantity),
-                            serializable = any.serializable
-                        )
-                    )*/
-                    stepMap[elementId.toString()] = consumedSpareList.toString()
+                    val quantity = type.tv_quantity.text.toString()
+                    itemsMap[any.item_id] = SparesConsumptionIpItem(
+                        item_id = any.item_id,
+                        quantity = Integer.parseInt(quantity),
+                        serializable = any.serializable
+                    )
+                    stepMap[elementId.toString()] = itemsMap.values.toString()
                 }
                 Constants.DECREMENT -> {
                     if (!any.serializable) {
@@ -588,7 +604,13 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                         }
                         type.tv_quantity.text = any.mycart.toString()
                     }
-                    stepMap[elementId.toString()] = consumedSpareList.toString()
+                    val quantity = type.tv_quantity.text.toString()
+                    itemsMap[any.item_id] = SparesConsumptionIpItem(
+                        item_id = any.item_id,
+                        quantity = Integer.parseInt(quantity),
+                        serializable = any.serializable
+                    )
+                    stepMap[elementId.toString()] = itemsMap.values.toString()
                 }
             }
         }
