@@ -8,7 +8,8 @@ class ApiConstants {
         const val DEV_BASE_URL = "http://test.waterwalaprime.in:8080/"
 
         const val LOGIN = "http://ec2-15-206-189-98.ap-south-1.compute.amazonaws.com:8084/login"
-        const val PARTNER_DETAILS = "http://ec2-15-206-189-98.ap-south-1.compute.amazonaws.com:8084/auth/me"
+        const val PARTNER_DETAILS =
+            "http://ec2-15-206-189-98.ap-south-1.compute.amazonaws.com:8084/auth/me"
         const val JOBS_LIST = "workforce/job/list/v2"
         const val JOB_BY_ID = "workforce/job/"
         const val SUBMIT_PID = "device/add"
@@ -34,5 +35,6 @@ class ApiConstants {
         const val INVENTORY_TO_BE_RETURNED = "employee/returnInventory/item"
         const val SUBMIT_INVENTORY = "inventory/submitQrDetails"
         const val CANCEL_INVENTORY = "inventory/cancelQr"
+        const val SUBMIT_TECH_INVENTORY = "inventory/submitQrDetailsForTechnician"
     }
 }

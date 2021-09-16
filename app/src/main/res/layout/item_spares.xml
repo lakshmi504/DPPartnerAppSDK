@@ -41,8 +41,8 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_decrement"
-                android:layout_width="@dimen/dimens_10"
-                android:layout_height="@dimen/dimens_10"
+                android:layout_width="@dimen/dimens_15"
+                android:layout_height="@dimen/dimens_15"
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/dimens_5"
                 android:layout_marginEnd="@dimen/dimens_5"
@@ -55,13 +55,12 @@
                 android:layout_gravity="center"
                 android:fontFamily="@font/stolzl_regular"
                 android:gravity="center"
-                android:text="1"
                 android:textSize="@dimen/dimens_12sp" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_increment"
-                android:layout_width="@dimen/dimens_10"
-                android:layout_height="@dimen/dimens_10"
+                android:layout_width="@dimen/dimens_15"
+                android:layout_height="@dimen/dimens_15"
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/dimens_5"
                 android:layout_marginEnd="@dimen/dimens_5"

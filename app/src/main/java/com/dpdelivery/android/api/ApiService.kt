@@ -199,6 +199,11 @@ interface ApiService {
         @Header("Authorization") token: String, @Body submitInventoryIp: SubmitInventoryIp
     ): Observable<CommonRes>
 
+    @POST(ApiConstants.SUBMIT_TECH_INVENTORY)
+    fun submitTechInventoryDetails(
+        @Header("Authorization") token: String, @Body submitInventoryIp: SubmitInventoryIp
+    ): Observable<CommonRes>
+
     @POST(ApiConstants.CANCEL_INVENTORY)
     fun cancelInventoryDetails(
         @Header("Authorization") token: String, @Body submitInventoryIp: SubmitInventoryIp

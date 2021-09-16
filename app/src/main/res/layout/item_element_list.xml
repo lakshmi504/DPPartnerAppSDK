@@ -303,6 +303,12 @@
         android:orientation="vertical"
         android:visibility="gone">
 
+        <SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:queryHint="Search Item" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_spares"
             android:layout_width="match_parent"

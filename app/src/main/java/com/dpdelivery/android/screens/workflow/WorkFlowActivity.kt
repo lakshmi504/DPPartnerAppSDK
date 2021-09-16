@@ -38,9 +38,7 @@ import com.dpdelivery.android.commonadapter.BasicAdapter
 import com.dpdelivery.android.commonviews.MultiStateView
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
-import com.dpdelivery.android.model.techinp.AddWorkFlowData
-import com.dpdelivery.android.model.techinp.FinishJobIp
-import com.dpdelivery.android.model.techinp.SubmitPidIp
+import com.dpdelivery.android.model.techinp.*
 import com.dpdelivery.android.model.techres.*
 import com.dpdelivery.android.screens.base.TechBaseActivity
 import com.dpdelivery.android.screens.login.LoginActivity
@@ -63,6 +61,8 @@ import kotlinx.android.synthetic.main.activity_work_flow.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.error_view.*
 import kotlinx.android.synthetic.main.item_element_list.view.*
+import kotlinx.android.synthetic.main.item_spares.*
+import kotlinx.android.synthetic.main.item_spares.view.*
 import kotlinx.android.synthetic.main.item_template_list.*
 import kotlinx.android.synthetic.main.item_timeline.*
 import org.json.JSONArray
@@ -123,13 +123,16 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var LOCATION_PERMISSION_REQUEST_CODE = 123
     lateinit var partList: ArrayList<PartInfo>
 
-    //private var spinnerSpares: Spinner? = null
     private var rvSpares: RecyclerView? = null
+    private var searchView: SearchView? = null
     private var value: String? = null
     lateinit var dbH: DatabaseHandler
     private var ownerName: String = ""
     private var synctext: TextView? = null
     private var isSync: Boolean = false
+    lateinit var adapterPartsList: SparesListAdapter
+    private val consumedSpareList = ArrayList<SparesConsumptionIpItem>()
+    private var itemsMap: MutableList<SparesConsumptionIp> = mutableListOf<SparesConsumptionIp>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -535,6 +538,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     dialog.show()
                     elementId = any.id
                     value = any.value
+                    searchView = type.searchView
                     rvSpares = type.rv_spares
                     rvSpares!!.layoutManager = LinearLayoutManager(context)
                     val api = any.functionName
@@ -545,6 +549,46 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     synctext = type.tv_sync
                     elementId = any.id
                     getPidDetails(deviceCode)
+                }
+            }
+        }
+        if (any is PartInfo && type is View) {
+            when (op) {
+                Constants.INCREMENT -> {
+                    if (!any.serializable) {
+                        if (any.mycart < any.picked) {
+                            any.mycart += 1
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Inventory items not available",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        type.tv_quantity.text = any.mycart.toString()
+                    }
+                    /*val quantity = type.tv_quantity.text.toString()
+                    consumedSpareList.add(
+                        SparesConsumptionIpItem(
+                            item_id = any.item_id,
+                            quantity = Integer.parseInt(quantity),
+                            serializable = any.serializable
+                        )
+                    )*/
+                    stepMap[elementId.toString()] = consumedSpareList.toString()
+                }
+                Constants.DECREMENT -> {
+                    if (!any.serializable) {
+                        if (any.mycart != 0) {
+                            any.mycart -= 1
+                            if (any.mycart == 0) {
+                                type.iv_add.visibility = View.VISIBLE
+                                type.ll_add.visibility = View.GONE
+                            }
+                        }
+                        type.tv_quantity.text = any.mycart.toString()
+                    }
+                    stepMap[elementId.toString()] = consumedSpareList.toString()
                 }
             }
         }
@@ -641,7 +685,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         dialog.dismiss()
         if (res.part_info.isNotEmpty()) {
             partList = res.part_info
-            val adapterPartsList = SparesListAdapter(context)
+            adapterPartsList = SparesListAdapter(context, adapterClickListener = this)
             rvSpares!!.addItemDecoration(
                 DividerItemDecoration(
                     context,
@@ -649,9 +693,41 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 )
             )
             rvSpares!!.adapter = adapterPartsList
+            rvSpares!!.setItemViewCacheSize(100)
+            rvSpares!!.isNestedScrollingEnabled = false
             adapterPartsList.addList(partList)
+            searchView!!.visibility = View.VISIBLE
+            searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    // calling a method to filter our recycler view.
+                    filter(newText)
+                    return false
+                }
+            })
         } else {
+            searchView!!.visibility = View.GONE
             toast("No Spares Found")
+        }
+    }
+
+    private fun filter(text: String?) {
+        // creating a new array list to filter our data.
+        val filteredList: ArrayList<PartInfo> = ArrayList<PartInfo>()
+
+        // running a for loop to compare elements.
+        for (item in partList) {
+            if (item.item_name.toLowerCase(Locale.ROOT).contains(text!!.toLowerCase(Locale.ROOT))) {
+                filteredList.add(item)
+            }
+        }
+        if (filteredList.isEmpty()) {
+            Toast.makeText(this, "No Item Found", Toast.LENGTH_LONG).show()
+        } else {
+            adapterPartsList.addList(filteredList)
         }
     }
 

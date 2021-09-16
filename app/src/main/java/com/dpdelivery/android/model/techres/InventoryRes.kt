@@ -25,8 +25,7 @@ data class PartInfo(
     val product_info: ArrayList<ProductInfo>,
     val returnable: Boolean,
     val serializable: Boolean,
-    var mycart: Int = 0,
-    var tempMyCart: Int = -1
+    var mycart: Int = 0
 )
 
 @Keep
