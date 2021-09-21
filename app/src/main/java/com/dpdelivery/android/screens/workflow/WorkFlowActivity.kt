@@ -23,6 +23,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
@@ -131,8 +132,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var synctext: TextView? = null
     private var isSync: Boolean = false
     lateinit var adapterPartsList: SparesListAdapter
-    private var consumedSpares = ArrayList<SparesConsumptionIpItem>()
-    private var itemsMap: MutableMap<Int, SparesConsumptionIpItem> = mutableMapOf()
+    private var itemsMap: MutableMap<Int, String> = mutableMapOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -379,6 +379,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (res.success!!) {
             stepMap.clear()
+            itemsMap.clear()
             stepsFinished.clear()
             stepMapList.clear()
             if (currentPosition < mDataList!!.size) {
@@ -467,6 +468,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         multistateview.viewState = state
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onclick(any: Any, pos: Int, type: Any, op: String) {
         if (any is WorkFlowDataRes.WorkFlowDataResBody.Step.Template.Element && type is View) {
             when (op) {
@@ -560,57 +562,55 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                         type.tv_quantity.text = any.mycart.toString()
                         type.iv_add.visibility = View.GONE
                         type.ll_add.visibility = View.VISIBLE
+
+                        itemsMap[any.item_id] =
+                            "{item_id:${any.item_id}/item_name:${any.item_name}/quantity:${any.mycart}/serializable:${any.serializable}}"
+                        val values = itemsMap.values.toString()
+                        val trimSpaceInValue = values.replace(" ", "")
+                        stepMap[elementId.toString()] = itemsMap.values.toString()
                     } else {
                         Toast.makeText(context, "Inventory items not available", Toast.LENGTH_SHORT)
                             .show()
                     }
-                    val quantity = type.tv_quantity.text.toString()
-                    itemsMap[any.item_id] = SparesConsumptionIpItem(
-                        item_id = any.item_id,
-                        quantity = Integer.parseInt(quantity),
-                        serializable = any.serializable
-                    )
-                    stepMap[elementId.toString()] = itemsMap.values.toString()
                 }
                 Constants.INCREMENT -> {
-                    if (!any.serializable) {
-                        if (any.mycart < any.picked) {
-                            any.mycart += 1
-                        } else {
-                            Toast.makeText(
-                                context,
-                                "Inventory items not available",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                    if (any.mycart < any.picked) {
+                        any.mycart += 1
                         type.tv_quantity.text = any.mycart.toString()
+                        itemsMap[any.item_id] =
+                            "{item_id:${any.item_id}/item_name:${any.item_name}/quantity:${any.mycart}/serializable:${any.serializable}}"
+                        val values = itemsMap.values.toString()
+                        val trimSpaceInValue = values.replace(" ", "")
+                        stepMap[elementId.toString()] = itemsMap.values.toString()
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Inventory items not available",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                    val quantity = type.tv_quantity.text.toString()
-                    itemsMap[any.item_id] = SparesConsumptionIpItem(
-                        item_id = any.item_id,
-                        quantity = Integer.parseInt(quantity),
-                        serializable = any.serializable
-                    )
-                    stepMap[elementId.toString()] = itemsMap.values.toString()
                 }
                 Constants.DECREMENT -> {
-                    if (!any.serializable) {
-                        if (any.mycart != 0) {
-                            any.mycart -= 1
-                            if (any.mycart == 0) {
-                                type.iv_add.visibility = View.VISIBLE
-                                type.ll_add.visibility = View.GONE
-                            }
+                    if (any.mycart != 0) {
+                        any.mycart -= 1
+                        if (any.mycart == 0) {
+                            type.iv_add.visibility = View.VISIBLE
+                            type.ll_add.visibility = View.GONE
                         }
                         type.tv_quantity.text = any.mycart.toString()
+
+                        itemsMap[any.item_id] =
+                            "{item_id:${any.item_id}/item_name:${any.item_name}/quantity:${any.mycart}/serializable:${any.serializable}}"
+                        if (itemsMap.values.contains("{item_id:${any.item_id}/item_name:${any.item_name}/quantity:${0}/serializable:${any.serializable}}")) {
+                            itemsMap.remove(
+                                any.item_id,
+                                "{item_id:${any.item_id}/item_name:${any.item_name}/quantity:${any.mycart}/serializable:${any.serializable}}"
+                            )
+                        }
+                        val values = itemsMap.values.toString()
+                        val trimSpaceInValue = values.replace(" ", "")
+                        stepMap[elementId.toString()] = itemsMap.values.toString()
                     }
-                    val quantity = type.tv_quantity.text.toString()
-                    itemsMap[any.item_id] = SparesConsumptionIpItem(
-                        item_id = any.item_id,
-                        quantity = Integer.parseInt(quantity),
-                        serializable = any.serializable
-                    )
-                    stepMap[elementId.toString()] = itemsMap.values.toString()
                 }
             }
         }

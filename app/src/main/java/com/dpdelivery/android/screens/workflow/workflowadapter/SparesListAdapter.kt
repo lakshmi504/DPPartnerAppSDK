@@ -3,7 +3,6 @@ package com.dpdelivery.android.screens.workflow.workflowadapter
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.dpdelivery.android.R
 import com.dpdelivery.android.constants.Constants
