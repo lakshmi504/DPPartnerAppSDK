@@ -12,6 +12,7 @@ import com.dpdelivery.android.commonadapter.BaseViewholder
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.model.techres.Job
+import kotlinx.android.synthetic.main.item_asg_jobs_list.*
 import kotlinx.android.synthetic.main.item_asg_jobs_list.view.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -29,6 +30,7 @@ class JobsListViewHolder(
             view.tv_jobtypevalue.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
             view.tv_jobidvalue.text = item.id.toString()
             view.tv_namevalue.text = item.customerName
+            view.tv_colorCodeValue.text = item.zipColorCode
             if (item.customerAddress?.area?.description.isNullOrEmpty()) {
                 view.tv_areavalue.text = ""
             } else {

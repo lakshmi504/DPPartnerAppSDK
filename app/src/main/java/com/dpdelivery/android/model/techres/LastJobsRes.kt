@@ -56,10 +56,12 @@ class LastJobsRes : ArrayList<LastJobsRes.LastJobsResItem>() {
             val submissionField: String,
             val syncElementId: Int
         ) {
+            @Keep
             data class Step(
                 val name: String,
                 val templates: List<Template>
             ) {
+                @Keep
                 data class Template(
                     val elements: List<Element>,
                     val getDataUrl: Any,
@@ -67,6 +69,7 @@ class LastJobsRes : ArrayList<LastJobsRes.LastJobsResItem>() {
                     val name: String,
                     val postDataUrl: Any
                 ) {
+                    @Keep
                     data class Element(
                         val dropdownContents: Any,
                         val functionName: Any,

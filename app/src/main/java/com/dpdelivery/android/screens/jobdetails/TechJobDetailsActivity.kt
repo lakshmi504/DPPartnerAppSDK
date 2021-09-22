@@ -463,6 +463,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         tv_job_id.text = res.id.toString()
         tv_job_type.text = res.type!!.description
         tv_name.text = res.customerName
+        tv_color_code.text = res.zipColorCode
 
         if (!res.customerPhone.isNullOrEmpty()) {
             try {
@@ -613,7 +614,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             showViewState(MultiStateView.VIEW_STATE_CONTENT)
             init()
             toast("Note Added Successfully")
-        }else {
+        } else {
             toast(res.message.toString())
         }
     }
