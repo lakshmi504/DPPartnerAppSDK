@@ -116,6 +116,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var submissionField: String = ""
     private var syncElementId: Int = 0
     private var activationElementId: Int = 0
+    private var sparePartId: Int = 0
     private var et_device_code: AppCompatEditText? = null
     private var et_purifier_id: AppCompatEditText? = null
     private var btn_activate: AppCompatButton? = null
@@ -251,7 +252,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 stepsFinished = stepsFinished,
                 submissionField = submissionField,
                 activationElementId = activationElementId,
-                syncElementId = syncElementId
+                syncElementId = syncElementId,
+                sparePartId = sparePartId
             )
             adapter = workFlowAdapter
         }
@@ -270,6 +272,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             submissionField = res.body.submissionField
             activationElementId = res.body.activationElementId
             syncElementId = res.body.syncElementId
+            sparePartId = res.body.sparePartId
             //setting up steps based on position
             setStep(currentPosition)
         }
@@ -290,7 +293,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 mTemplateList,
                 submissionField,
                 activationElementId,
-                syncElementId
+                syncElementId,
+                sparePartId
             )
             if (currentPosition == mDataList!!.size - 1) {
                 btn_next.visibility = View.GONE
@@ -565,8 +569,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
                         itemsMap[any.item_id] =
                             "{item_id:${any.item_id}/item_name:${any.item_name}/quantity:${any.mycart}/serializable:${any.serializable}}"
-                        val values = itemsMap.values.toString()
-                        val trimSpaceInValue = values.replace(" ", "")
                         stepMap[elementId.toString()] = itemsMap.values.toString()
                     } else {
                         Toast.makeText(context, "Inventory items not available", Toast.LENGTH_SHORT)
@@ -577,10 +579,9 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     if (any.mycart < any.picked) {
                         any.mycart += 1
                         type.tv_quantity.text = any.mycart.toString()
+
                         itemsMap[any.item_id] =
                             "{item_id:${any.item_id}/item_name:${any.item_name}/quantity:${any.mycart}/serializable:${any.serializable}}"
-                        val values = itemsMap.values.toString()
-                        val trimSpaceInValue = values.replace(" ", "")
                         stepMap[elementId.toString()] = itemsMap.values.toString()
                     } else {
                         Toast.makeText(
@@ -607,8 +608,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                                 "{item_id:${any.item_id}/item_name:${any.item_name}/quantity:${any.mycart}/serializable:${any.serializable}}"
                             )
                         }
-                        val values = itemsMap.values.toString()
-                        val trimSpaceInValue = values.replace(" ", "")
                         stepMap[elementId.toString()] = itemsMap.values.toString()
                     }
                 }
@@ -726,30 +725,13 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
                 override fun onQueryTextChange(newText: String?): Boolean {
                     // calling a method to filter our recycler view.
-                    filter(newText)
+                    adapterPartsList.filter.filter(newText)
                     return false
                 }
             })
         } else {
             searchView!!.visibility = View.GONE
             toast("No Spares Found")
-        }
-    }
-
-    private fun filter(text: String?) {
-        // creating a new array list to filter our data.
-        val filteredList: ArrayList<PartInfo> = ArrayList<PartInfo>()
-
-        // running a for loop to compare elements.
-        for (item in partList) {
-            if (item.item_name.toLowerCase(Locale.ROOT).contains(text!!.toLowerCase(Locale.ROOT))) {
-                filteredList.add(item)
-            }
-        }
-        if (filteredList.isEmpty()) {
-            Toast.makeText(this, "No Item Found", Toast.LENGTH_LONG).show()
-        } else {
-            adapterPartsList.addList(filteredList)
         }
     }
 

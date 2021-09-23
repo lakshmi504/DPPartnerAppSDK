@@ -32,7 +32,8 @@ class ElementListAdapter(
     val stepsFinished: MutableMap<String, Boolean>,
     var submissionField: String,
     var activationElementId: Int,
-    var syncElementId: Int
+    var syncElementId: Int,
+    var sparePartId: Int
 ) : RecyclerView.Adapter<ElementListAdapter.ElementListViewHolder>() {
 
     private var list: ArrayList<WorkFlowDataRes.WorkFlowDataResBody.Step.Template.Element>? = null
@@ -52,7 +53,8 @@ class ElementListAdapter(
             stepsFinished,
             submissionField,
             activationElementId,
-            syncElementId
+            syncElementId,
+            sparePartId
         )
     }
 
@@ -74,7 +76,8 @@ class ElementListAdapter(
         val stepsFinished: MutableMap<String, Boolean>,
         val submissionField: String,
         val activationElementId: Int,
-        val syncElementId: Int
+        val syncElementId: Int,
+        val sparePartId: Int
     ) : RecyclerView.ViewHolder(containerView), LayoutContainer,
         AdapterView.OnItemSelectedListener {
         @SuppressLint("ResourceAsColor")
@@ -321,29 +324,30 @@ class ElementListAdapter(
                                 }
                             }
                             "API_INPUT" -> {
-                                ll_spare_parts.visibility = View.VISIBLE
-                                tv_name.visibility = View.VISIBLE
-                                tv_name.text = item.name
-                                if (!item.optional!!) {
-                                    iv_mandatory.visibility = View.VISIBLE
-                                    stepsFinished[item.id.toString()] = false
-                                } else {
-                                    iv_mandatory.visibility = View.INVISIBLE
-                                    stepMap[item.id.toString()] = ""
-                                    stepsFinished[item.id.toString()] = true
-                                }
-                                if (!item.optional && !item.value.isNullOrEmpty()) {
-                                    iv_mandatory.visibility = View.INVISIBLE
-                                    stepsFinished[item.id.toString()] = true
-                                }
+                                if (sparePartId == item.id) {
+                                    ll_spare_parts.visibility = View.VISIBLE
+                                    tv_name.visibility = View.VISIBLE
+                                    tv_name.text = item.name
+                                    if (!item.optional!!) {
+                                        iv_mandatory.visibility = View.VISIBLE
+                                        stepsFinished[item.id.toString()] = false
+                                    } else {
+                                        iv_mandatory.visibility = View.INVISIBLE
+                                        stepMap[item.id.toString()] = ""
+                                        stepsFinished[item.id.toString()] = true
+                                    }
+                                    if (!item.optional && !item.value.isNullOrEmpty()) {
+                                        iv_mandatory.visibility = View.INVISIBLE
+                                        stepsFinished[item.id.toString()] = true
+                                    }
 
-                                adapterClickListener?.onclick(
-                                    any = item,
-                                    pos = pos,
-                                    type = itemView,
-                                    op = Constants.SPARE_PARTS
-                                )
-
+                                    adapterClickListener?.onclick(
+                                        any = item,
+                                        pos = pos,
+                                        type = itemView,
+                                        op = Constants.SPARE_PARTS
+                                    )
+                                }
                             }
                         }
                     }
