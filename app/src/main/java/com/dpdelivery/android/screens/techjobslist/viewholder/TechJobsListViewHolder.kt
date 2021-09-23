@@ -32,8 +32,12 @@ class TechJobsListViewHolder(
             tv_jobtypevalue.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
             tv_jobidvalue.text = item.id.toString()
             tv_namevalue.text = item.customerName
-            tv_colorCodeValue.text = item.zipColorCode
-            //iv_color.setColorFilter(ContextCompat.getColor(context, R.color.color_red))
+            tv_colorCodeValue.text = item.zipColorName
+            val hexColor = item.zipColorCode
+            if (!hexColor.isNullOrEmpty()) {
+                iv_color.visibility=View.VISIBLE
+                iv_color.setColorFilter(Color.parseColor(hexColor))
+            }
 
             if (item.customerAddress?.area?.description.isNullOrEmpty()) {
                 tv_areavalue.text = ""

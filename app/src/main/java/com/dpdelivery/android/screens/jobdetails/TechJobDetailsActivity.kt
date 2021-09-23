@@ -47,10 +47,16 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_tech_job_details.*
+import kotlinx.android.synthetic.main.activity_tech_job_details.iv_color
+import kotlinx.android.synthetic.main.activity_tech_job_details.ll_alt_mobile
+import kotlinx.android.synthetic.main.activity_tech_job_details.tv_colorCodeValue
+import kotlinx.android.synthetic.main.activity_tech_job_details.tv_name
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
+import kotlinx.android.synthetic.main.item_asg_jobs_list.*
 import kotlinx.android.synthetic.main.layout_type_installation.*
+import kotlinx.android.synthetic.main.layout_type_installation.tv_status
 import okhttp3.Headers
 import org.json.JSONException
 import retrofit2.HttpException
@@ -463,7 +469,12 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         tv_job_id.text = res.id.toString()
         tv_job_type.text = res.type!!.description
         tv_name.text = res.customerName
-        tv_color_code.text = res.zipColorCode
+        tv_colorCodeValue.text = res.zipColorName
+        val hexColor = res.zipColorCode
+        if (!hexColor.isNullOrEmpty()) {
+            iv_color.visibility=View.VISIBLE
+            iv_color.setColorFilter(Color.parseColor(hexColor))
+        }
 
         if (!res.customerPhone.isNullOrEmpty()) {
             try {

@@ -41,6 +41,7 @@ data class Job(
     val agentJobStatuses: ArrayList<AgentJobStatuses?>?,
     val type: Type?,
     val customerLatLong: String?,
+    val zipColorName: String?,
     val zipColorCode: String?,
     val spareHistory: SpareHistory
 )

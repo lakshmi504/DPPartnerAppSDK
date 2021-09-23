@@ -275,6 +275,7 @@
                     android:layout_height="@dimen/dimens_15"
                     android:layout_marginStart="@dimen/dimens_5"
                     android:layout_marginEnd="@dimen/dimens_5"
+                    android:visibility="gone"
                     android:src="@color/colorBlack" />
             </LinearLayout>
 
