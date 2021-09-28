@@ -94,6 +94,17 @@ class ElementListAdapter(
                                         if (item.name.toString() == "PaymentCollected") {
                                             et_add_text.inputType = InputType.TYPE_CLASS_NUMBER
                                         }
+                                        if (item.name.toString() == "InputTDS") {
+                                            et_add_text.inputType = InputType.TYPE_CLASS_NUMBER
+                                        }
+                                        if (item.name.toString() == "OutputTDS") {
+                                            et_add_text.inputType = InputType.TYPE_CLASS_NUMBER
+                                        }
+                                        if (item.name.toString() == "HappyCode") {
+                                            et_add_text.filters =
+                                                arrayOf<InputFilter>(InputFilter.LengthFilter(6))
+                                            et_add_text.inputType = InputType.TYPE_CLASS_NUMBER
+                                        }
                                         if (item.name.toString() == "DeviceCode") {
                                             et_add_text.filters =
                                                 arrayOf<InputFilter>(InputFilter.LengthFilter(10))
