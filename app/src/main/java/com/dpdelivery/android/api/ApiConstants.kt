@@ -7,9 +7,8 @@ class ApiConstants {
         const val TEST_BASE_URL = "https://api.staging.drinkprime.in/workforce/"
         const val DEV_BASE_URL = "http://test.waterwalaprime.in:8080/"
 
-        const val LOGIN = "http://ec2-15-206-189-98.ap-south-1.compute.amazonaws.com:8084/login"
-        const val PARTNER_DETAILS =
-            "http://ec2-15-206-189-98.ap-south-1.compute.amazonaws.com:8084/auth/me"
+        const val LOGIN = "https://api.staging.drinkprime.in/auth/login"
+        const val PARTNER_DETAILS = "https://api.staging.drinkprime.in/auth/auth/me"
         const val JOBS_LIST = "workforce/job/list/v2"
         const val JOB_BY_ID = "workforce/job/"
         const val SUBMIT_PID = "device/add"
@@ -24,6 +23,8 @@ class ApiConstants {
         const val ADD_WORK_FLOW = "workflow/addData"
         const val VOIP_CALL = "https://api-voice.kaleyra.com/v1/"
         const val UPDATE_TOKEN = "notification/user"
+        const val LAST_3_JOBS = "workforce/getLast3JobsByInstallation/"
+
 
         //employee earnings
         const val EARNINGS = "earnings/entries"
