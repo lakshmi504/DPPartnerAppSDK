@@ -3,6 +3,7 @@ package com.dpdelivery.android.screens.techjobslist.viewholder
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Paint
 import android.net.Uri
 import android.view.View
@@ -31,6 +32,13 @@ class TechJobsListViewHolder(
             tv_jobtypevalue.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
             tv_jobidvalue.text = item.id.toString()
             tv_namevalue.text = item.customerName
+            tv_colorCodeValue.text = item.zipColorName
+            val hexColor = item.zipColorCode
+            if (!hexColor.isNullOrEmpty()) {
+                iv_color.visibility=View.VISIBLE
+                iv_color.setColorFilter(Color.parseColor(hexColor))
+            }
+
             if (item.customerAddress?.area?.description.isNullOrEmpty()) {
                 tv_areavalue.text = ""
             } else {
