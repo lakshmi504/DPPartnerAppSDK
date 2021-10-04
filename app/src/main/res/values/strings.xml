@@ -119,8 +119,7 @@
     <string name="confirm_pick_up">Confirm Pick Up</string>
     <string name="complete_job">Complete Job</string>
     <string name="not_mentioned">Not mentioned</string>
-    <string name="close">Close</string>
     <string name="last_changed">Last Changed</string>
     <string name="spare_name">Name</string>
-
+    <string name="color_code">Color Code :</string>
 </resources>
