@@ -31,5 +31,6 @@ class Constants {
         const val ADD_SPARES = "ADD_SPARES"
         const val INCREMENT = "INCREMENT"
         const val DECREMENT = "DECREMENT"
+        const val API_INPUT = "API_INPUT"
     }
 }
