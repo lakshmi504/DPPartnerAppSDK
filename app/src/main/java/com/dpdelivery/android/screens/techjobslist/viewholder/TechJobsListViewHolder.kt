@@ -2,10 +2,8 @@ package com.dpdelivery.android.screens.techjobslist.viewholder
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
-import android.net.Uri
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.dpdelivery.android.R
@@ -35,7 +33,7 @@ class TechJobsListViewHolder(
             tv_colorCodeValue.text = item.zipColorName
             val hexColor = item.zipColorCode
             if (!hexColor.isNullOrEmpty()) {
-                iv_color.visibility=View.VISIBLE
+                iv_color.visibility = View.VISIBLE
                 iv_color.setColorFilter(Color.parseColor(hexColor))
             }
 
@@ -83,8 +81,8 @@ class TechJobsListViewHolder(
             val text = item.customerPhone
             if (text!!.isNotEmpty()) {
                 try {
-                    //tv_cust_phn.text = text.replaceRange(5..9, "*****")
-                    tv_cust_phn.text = text
+                    tv_cust_phn.text = text.replaceRange(5..9, "*****")
+                    //tv_cust_phn.text = text
                 } catch (e: Exception) {
 
                 }
@@ -92,12 +90,17 @@ class TechJobsListViewHolder(
             tv_cust_phn.paintFlags = tv_cust_phn.paintFlags or Paint.UNDERLINE_TEXT_FLAG
             if (!item.customerPhone.isNullOrEmpty()) {
                 tv_cust_phn.setOnClickListener {
-                    val url = "tel:${item.customerPhone}"
-                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
-                    intent.putExtra("finish", true)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    context.startActivity(intent)
-                    // adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.CUST_PHONE)
+                    /* val url = "tel:${item.customerPhone}"
+                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
+                     intent.putExtra("finish", true)
+                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                     context.startActivity(intent)*/
+                    adapterClickListener.onclick(
+                        any = item,
+                        pos = adapterPosition,
+                        type = itemView,
+                        op = Constants.CUST_PHONE
+                    )
                 }
             }
 
@@ -105,18 +108,23 @@ class TechJobsListViewHolder(
                 ll_alt_mobile.visibility = View.GONE
             } else {
                 val altPhone = item.customerAltPhone
-                //tv_alternate_no.text = (altPhone).replaceRange(5..9, "*****")
-                tv_alternate_no.text = altPhone
-                tv_alternate_no.paintFlags = tv_cust_phn.paintFlags or Paint.UNDERLINE_TEXT_FLAG
-                tv_alternate_no.visibility = View.VISIBLE
-                alternate_no.visibility = View.VISIBLE
+                tv_alternate_no.text = (altPhone).replaceRange(5..9, "*****")
+                /*  tv_alternate_no.text = altPhone
+                  tv_alternate_no.paintFlags = tv_cust_phn.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+                  tv_alternate_no.visibility = View.VISIBLE
+                  alternate_no.visibility = View.VISIBLE*/
                 tv_alternate_no.setOnClickListener {
-                    val url = "tel:$altPhone"
-                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
-                    intent.putExtra("finish", true)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    context.startActivity(intent)
-                    //adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.ALT_CUST_PHONE)
+                    /* val url = "tel:$altPhone"
+                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
+                     intent.putExtra("finish", true)
+                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                     context.startActivity(intent)*/
+                    adapterClickListener.onclick(
+                        any = item,
+                        pos = adapterPosition,
+                        type = itemView,
+                        op = Constants.ALT_CUST_PHONE
+                    )
                 }
             }
             btn_know_more.setOnClickListener {
