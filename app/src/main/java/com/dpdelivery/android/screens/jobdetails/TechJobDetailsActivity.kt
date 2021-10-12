@@ -47,16 +47,10 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_tech_job_details.*
-import kotlinx.android.synthetic.main.activity_tech_job_details.iv_color
-import kotlinx.android.synthetic.main.activity_tech_job_details.ll_alt_mobile
-import kotlinx.android.synthetic.main.activity_tech_job_details.tv_colorCodeValue
-import kotlinx.android.synthetic.main.activity_tech_job_details.tv_name
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
-import kotlinx.android.synthetic.main.item_asg_jobs_list.*
 import kotlinx.android.synthetic.main.layout_type_installation.*
-import kotlinx.android.synthetic.main.layout_type_installation.tv_status
 import okhttp3.Headers
 import org.json.JSONException
 import retrofit2.HttpException
@@ -254,20 +248,20 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             }
             R.id.tv_phone -> { //call function
                 if (phone?.isNotEmpty()!!) {
-                    val url = "tel:$phone"
+                    /*val url = "tel:$phone"
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
-                    startActivity(intent)
-                    /* dialog!!.show()
-                     detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = phone!!)*/
+                    startActivity(intent)*/
+                    dialog!!.show()
+                    detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = phone!!)
                 }
             }
             R.id.tv_alt_phone -> {  // for call function(alt number)
                 if (altPhone != null) {
-                    val url = "tel:$altPhone"
+                    /*val url = "tel:$altPhone"
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
-                    startActivity(intent)
-                    /*  dialog!!.show()
-                      detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = altPhone!!)*/
+                    startActivity(intent)*/
+                    dialog!!.show()
+                    detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = altPhone!!)
                 }
             }
             R.id.btn_activate -> {
@@ -472,24 +466,24 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         tv_colorCodeValue.text = res.zipColorName
         val hexColor = res.zipColorCode
         if (!hexColor.isNullOrEmpty()) {
-            iv_color.visibility=View.VISIBLE
+            iv_color.visibility = View.VISIBLE
             iv_color.setColorFilter(Color.parseColor(hexColor))
         }
 
         if (!res.customerPhone.isNullOrEmpty()) {
             try {
-                //tv_phone.text = phone?.replaceRange(5..9, "*****")
                 phone = res.customerPhone
-                tv_phone.text = phone
+                tv_phone.text = phone?.replaceRange(5..9, "*****")
+                //tv_phone.text = phone
             } catch (e: Exception) {
 
             }
         }
         if (!res.customerAltPhone.isNullOrEmpty()) {
             try {
-                // tv_alt_phone.text = altPhone?.replaceRange(5..9, "*****")
                 altPhone = res.customerAltPhone
-                tv_alt_phone.text = altPhone
+                tv_alt_phone.text = altPhone?.replaceRange(5..9, "*****")
+                //tv_alt_phone.text = altPhone
             } catch (e: Exception) {
 
             }
@@ -658,7 +652,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
 
     override fun showVoipRes(res: Headers) {
         dialog!!.dismiss()
-        toast("Call is Connecting..")
+        Toast.makeText(mContext, "Request sent.Please wait till get call back..", Toast.LENGTH_LONG)
+            .show()
     }
 
     override fun showErrorMsg(throwable: Throwable, apiType: String) {

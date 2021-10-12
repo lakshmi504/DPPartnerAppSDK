@@ -2,10 +2,8 @@ package com.dpdelivery.android.screens.jobslist.viewholder
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
-import android.net.Uri
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.dpdelivery.android.R
@@ -13,7 +11,6 @@ import com.dpdelivery.android.commonadapter.BaseViewholder
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.model.techres.Job
-import kotlinx.android.synthetic.main.item_asg_jobs_list.*
 import kotlinx.android.synthetic.main.item_asg_jobs_list.view.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -34,7 +31,7 @@ class JobsListViewHolder(
             view.tv_colorCodeValue.text = item.zipColorName
             val hexColor = item.zipColorCode
             if (!hexColor.isNullOrEmpty()) {
-                view.iv_color.visibility=View.VISIBLE
+                view.iv_color.visibility = View.VISIBLE
                 view.iv_color.setColorFilter(Color.parseColor(hexColor))
             }
             if (item.customerAddress?.area?.description.isNullOrEmpty()) {
@@ -81,20 +78,25 @@ class JobsListViewHolder(
             val text = item.customerPhone
             if (text!!.isNotEmpty()) {
                 try {
-                    //view.tv_cust_phn.text = text.replaceRange(5..9, "*****")
-                    view.tv_cust_phn.text = text
+                    view.tv_cust_phn.text = text.replaceRange(5..9, "*****")
+                    //view.tv_cust_phn.text = text
                 } catch (e: Exception) {
                 }
             }
             view.tv_cust_phn.paintFlags = view.tv_cust_phn.paintFlags or Paint.UNDERLINE_TEXT_FLAG
             if (item.customerPhone.isNotEmpty()) {
                 view.tv_cust_phn.setOnClickListener {
-                    val url = "tel:${item.customerPhone}"
+                    /*val url = "tel:${item.customerPhone}"
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
                     intent.putExtra("finish", true)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    context.startActivity(intent)
-                    // adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.CUST_PHONE)
+                    context.startActivity(intent)*/
+                    adapterClickListener.onclick(
+                        any = item,
+                        pos = pos,
+                        type = itemView,
+                        op = Constants.CUST_PHONE
+                    )
                 }
             }
 
@@ -103,8 +105,8 @@ class JobsListViewHolder(
             } else {
                 val altPhone = item.customerAltPhone
                 try {
-                    //view.tv_alternate_no.text = (altPhone).replaceRange(5..9, "*****")
-                    view.tv_alternate_no.text = (altPhone)
+                    view.tv_alternate_no.text = (altPhone).replaceRange(5..9, "*****")
+                    //view.tv_alternate_no.text = (altPhone)
                 } catch (e: Exception) {
                 }
                 view.tv_alternate_no.paintFlags =
@@ -112,12 +114,17 @@ class JobsListViewHolder(
                 view.tv_alternate_no.visibility = View.VISIBLE
                 view.alternate_no.visibility = View.VISIBLE
                 view.tv_alternate_no.setOnClickListener {
-                    val url = "tel:$altPhone"
-                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
-                    intent.putExtra("finish", true)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    context.startActivity(intent)
-                    //adapterClickListener.onclick(any = item, pos = adapterPosition, type = itemView, op = Constants.ALT_CUST_PHONE)
+                    /*  val url = "tel:$altPhone"
+                      val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
+                      intent.putExtra("finish", true)
+                      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                      context.startActivity(intent)*/
+                    adapterClickListener.onclick(
+                        any = item,
+                        pos = pos,
+                        type = itemView,
+                        op = Constants.ALT_CUST_PHONE
+                    )
                 }
             }
             view.btn_know_more.setOnClickListener {
