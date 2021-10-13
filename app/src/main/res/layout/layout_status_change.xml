@@ -106,23 +106,36 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
                         android:fontFamily="@font/montserrat_regular"
-                        android:text="Note :"
+                        android:text="Reason :"
                         android:textColor="@color/colorBlackOverlay"
                         android:textSize="@dimen/dimens_12sp" />
 
-                    <EditText
-                        android:id="@+id/et_note"
+                    <FrameLayout
+                        android:id="@+id/ll_reasons_state"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:layout_weight="1.5"
-                        android:padding="@dimen/dimens_10"
                         android:background="@drawable/bg_grey_border"
-                        android:fontFamily="@font/montserrat_regular"
-                        android:gravity="top"
-                        android:inputType="textCapSentences|textMultiLine"
-                        android:maxLines="5"
-                        android:textCursorDrawable="@null"
-                        android:textSize="@dimen/dimens_12sp" />
+                        android:orientation="vertical">
+
+                        <Spinner
+                            android:id="@+id/sp_reasons_filter"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:background="@null"
+                            android:paddingTop="@dimen/dimens_5"
+                            android:paddingBottom="@dimen/dimens_5" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center|end"
+                            android:layout_marginEnd="@dimen/dimens_10"
+                            android:background="@drawable/ic_sidemenu_down_arrow" />
+
+                    </FrameLayout>
                 </LinearLayout>
 
 

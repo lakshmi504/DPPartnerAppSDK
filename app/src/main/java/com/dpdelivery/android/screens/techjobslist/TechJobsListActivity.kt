@@ -6,10 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -49,6 +51,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
     lateinit var jobsList: ArrayList<Job?>
     private var filter: String? = null
     private var statusFilter: String? = null
+    private var reasonsFilter: String? = null
     lateinit var dialog: Dialog
 
     @Inject
@@ -62,7 +65,9 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         "Cancelled"
     )
     private val statusFilterMode = ArrayList<String>()
-
+    private var reasonsData = ArrayList<String>()
+    private var spStatusFilter: Spinner? = null
+    private var spReasonsFilter: Spinner? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -303,58 +308,27 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
                             statusFilterMode.add(item?.description!!)
                         }
                     }
-                    val spStatusFilter =
+                    spStatusFilter =
                         (statusDialog.findViewById(R.id.sp_status_filter) as Spinner)
-                    val note = (statusDialog.findViewById(R.id.et_note) as EditText)
+                    spReasonsFilter =
+                        (statusDialog.findViewById(R.id.sp_reasons_filter) as Spinner)
                     (statusDialog.findViewById(R.id.tv_job_id) as TextView).text =
                         any.id!!.toString()
-                    val adapterStatusMode = ArrayAdapter<String>(
-                        this,
-                        android.R.layout.simple_spinner_item,
-                        statusFilterMode
-                    )
-                    adapterStatusMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                    spStatusFilter.adapter = adapterStatusMode
-                    spStatusFilter.onItemSelectedListener =
-                        object : AdapterView.OnItemSelectedListener {
-                            override fun onNothingSelected(parent: AdapterView<*>?) {
 
-                            }
+                    getStatuses(statusFilterData)
 
-                            override fun onItemSelected(
-                                parent: AdapterView<*>?,
-                                view: View?,
-                                position: Int,
-                                id: Long
-                            ) {
-                                statusFilter = spStatusFilter.selectedItem.toString()
-                                if (statusFilter != "Select Status") {
-                                    for (statusCodes in statusFilterData) {
-                                        if (statusCodes!!.description == statusFilter) {
-                                            statusFilter = statusCodes.code
-                                            break
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
                     if (!(context as Activity).isFinishing) {
                         statusDialog.show()
                     }
                     (statusDialog.findViewById(R.id.btn_submit) as AppCompatButton).setOnClickListener {
                         if (statusFilter != "Select Status") {
-                            if (note.text.toString().isNotEmpty()) {
-                                dialog.show()
-                                val jobStatus = FinishJobIp(
-                                    status = statusFilter,
-                                    note = note.text!!.toString()
-                                )
-                                presenter.updateJob(any.id, jobStatus)
-                                statusDialog.dismiss()
-                            } else {
-                                toast("Note should not be empty")
-                            }
+                            dialog.show()
+                            val jobStatus = FinishJobIp(
+                                status = statusFilter,
+                                note = reasonsFilter
+                            )
+                            presenter.updateJob(any.id, jobStatus)
+                            statusDialog.dismiss()
                         } else {
                             toast("Please Select Status")
                         }
@@ -362,6 +336,86 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
                 }
             }
         }
+    }
+
+    private fun getStatuses(statusFilterData: ArrayList<AgentJobStatuses?>) {
+        val adapterStatusMode : ArrayAdapter<String?> = object : ArrayAdapter<String?>(
+            this,
+            android.R.layout.simple_spinner_item,
+            statusFilterMode as List<String?>
+        ){
+            override fun isEnabled(position: Int): Boolean {
+                return position != 0
+            }
+
+            override fun getDropDownView(
+                position: Int, convertView: View?,
+                parent: ViewGroup
+            ): View {
+                val view = super.getDropDownView(position, convertView, parent)
+                val tv = view as TextView
+                if (position == 0) {
+                    // Set the hint text color grey
+                    tv.setTextColor(Color.GRAY)
+                } else {
+                    tv.setTextColor(Color.BLACK)
+                }
+                return view
+            }
+        }
+        adapterStatusMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spStatusFilter!!.adapter = adapterStatusMode
+        spStatusFilter!!.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    statusFilter = spStatusFilter!!.selectedItem.toString()
+                    if (statusFilter != "Select Status") {
+                        for (statusCodes in statusFilterData) {
+                            if (statusCodes!!.description == statusFilter) {
+                                statusFilter = statusCodes.code
+                                reasonsData = statusCodes.reasons!!
+                                getReasonsData(reasonsData)
+                                break
+                            }
+                        }
+                    }
+                }
+            }
+    }
+
+    private fun getReasonsData(reasonsData: ArrayList<String>) {
+        val adapterReasonsMode = ArrayAdapter<String>(
+            this,
+            android.R.layout.simple_spinner_item,
+            reasonsData
+        )
+        adapterReasonsMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spReasonsFilter!!.adapter = adapterReasonsMode
+        spReasonsFilter!!.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                }
+
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    reasonsFilter = spReasonsFilter!!.selectedItem.toString()
+                }
+
+            }
     }
 
     override fun showAddNoteRes(res: StartJobRes) {
