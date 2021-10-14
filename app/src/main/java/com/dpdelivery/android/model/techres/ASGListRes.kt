@@ -144,7 +144,8 @@ data class JobStatuses(
 data class AgentJobStatuses(
     val code: String?,
     val description: String?,
-    val id: Int?
+    val id: Int?,
+    val reasons: ArrayList<String>?
 )
 
 @Keep
