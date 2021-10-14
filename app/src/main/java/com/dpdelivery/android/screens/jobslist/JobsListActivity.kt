@@ -195,7 +195,7 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
 
     override fun showVoipRes(res: Headers) {
         dialog.dismiss()
-        toast("Call is Connecting..")
+        Toast.makeText(mContext,"Request sent.Please wait till get call back..",Toast.LENGTH_LONG).show()
     }
 
     override fun showErrorMsg(throwable: Throwable, apiType: String) {

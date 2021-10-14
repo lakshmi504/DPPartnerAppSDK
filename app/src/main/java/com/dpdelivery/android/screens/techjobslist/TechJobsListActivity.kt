@@ -384,7 +384,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
 
     override fun showVoipRes(res: Headers) {
         dialog.dismiss()
-        toast("Call is Connecting..")
+        Toast.makeText(mContext,"Request sent.Please wait till get call back..",Toast.LENGTH_LONG).show()
     }
 
     override fun showViewState(state: Int) {
