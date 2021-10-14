@@ -248,20 +248,27 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             }
             R.id.tv_phone -> { //call function
                 if (phone?.isNotEmpty()!!) {
-                    /*val url = "tel:$phone"
-                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
-                    startActivity(intent)*/
-                    dialog!!.show()
-                    detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = phone!!)
+
+                    if (CommonUtils.getRole() == "Technician") {
+                        dialog!!.show()
+                        detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = phone!!)
+                    } else {
+                        val url = "tel:$phone"
+                        val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
+                        startActivity(intent)
+                    }
                 }
             }
             R.id.tv_alt_phone -> {  // for call function(alt number)
                 if (altPhone != null) {
-                    /*val url = "tel:$altPhone"
-                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
-                    startActivity(intent)*/
-                    dialog!!.show()
-                    detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = altPhone!!)
+                    if (CommonUtils.getRole() == "Technician") {
+                        dialog!!.show()
+                        detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = altPhone!!)
+                    } else {
+                        val url = "tel:$altPhone"
+                        val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
+                        startActivity(intent)
+                    }
                 }
             }
             R.id.btn_activate -> {
@@ -473,8 +480,11 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         if (!res.customerPhone.isNullOrEmpty()) {
             try {
                 phone = res.customerPhone
-                tv_phone.text = phone?.replaceRange(5..9, "*****")
-                //tv_phone.text = phone
+                if (CommonUtils.getRole() == "Technician")
+                    tv_phone.text = phone?.replaceRange(5..9, "*****")
+                else {
+                    tv_phone.text = phone
+                }
             } catch (e: Exception) {
 
             }
@@ -482,8 +492,11 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         if (!res.customerAltPhone.isNullOrEmpty()) {
             try {
                 altPhone = res.customerAltPhone
-                tv_alt_phone.text = altPhone?.replaceRange(5..9, "*****")
-                //tv_alt_phone.text = altPhone
+                if (CommonUtils.getRole() == "Technician")
+                    tv_alt_phone.text = altPhone?.replaceRange(5..9, "*****")
+                else {
+                    tv_alt_phone.text = altPhone
+                }
             } catch (e: Exception) {
 
             }

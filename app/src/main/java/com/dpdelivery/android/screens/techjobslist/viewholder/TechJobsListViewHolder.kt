@@ -2,8 +2,10 @@ package com.dpdelivery.android.screens.techjobslist.viewholder
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
+import android.net.Uri
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.dpdelivery.android.R
@@ -11,6 +13,7 @@ import com.dpdelivery.android.commonadapter.BaseViewholder
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.model.techres.Job
+import com.dpdelivery.android.utils.CommonUtils
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_asg_jobs_list.*
 import java.text.ParseException
@@ -81,8 +84,11 @@ class TechJobsListViewHolder(
             val text = item.customerPhone
             if (text!!.isNotEmpty()) {
                 try {
-                    tv_cust_phn.text = text.replaceRange(5..9, "*****")
-                    //tv_cust_phn.text = text
+                    if (CommonUtils.getRole() == "Technician")
+                        tv_cust_phn.text = text.replaceRange(5..9, "*****")
+                    else {
+                        tv_cust_phn.text = text
+                    }
                 } catch (e: Exception) {
 
                 }
@@ -90,17 +96,20 @@ class TechJobsListViewHolder(
             tv_cust_phn.paintFlags = tv_cust_phn.paintFlags or Paint.UNDERLINE_TEXT_FLAG
             if (!item.customerPhone.isNullOrEmpty()) {
                 tv_cust_phn.setOnClickListener {
-                    /* val url = "tel:${item.customerPhone}"
-                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
-                     intent.putExtra("finish", true)
-                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                     context.startActivity(intent)*/
-                    adapterClickListener.onclick(
-                        any = item,
-                        pos = adapterPosition,
-                        type = itemView,
-                        op = Constants.CUST_PHONE
-                    )
+                    if (CommonUtils.getRole() == "Technician") {
+                        adapterClickListener.onclick(
+                            any = item,
+                            pos = pos,
+                            type = itemView,
+                            op = Constants.CUST_PHONE
+                        )
+                    } else {
+                        val url = "tel:${item.customerPhone}"
+                        val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
+                        intent.putExtra("finish", true)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        context.startActivity(intent)
+                    }
                 }
             }
 
@@ -108,23 +117,29 @@ class TechJobsListViewHolder(
                 ll_alt_mobile.visibility = View.GONE
             } else {
                 val altPhone = item.customerAltPhone
-                tv_alternate_no.text = (altPhone).replaceRange(5..9, "*****")
-                /*  tv_alternate_no.text = altPhone
-                  tv_alternate_no.paintFlags = tv_cust_phn.paintFlags or Paint.UNDERLINE_TEXT_FLAG
-                  tv_alternate_no.visibility = View.VISIBLE
-                  alternate_no.visibility = View.VISIBLE*/
+                tv_alternate_no.paintFlags = tv_cust_phn.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+                tv_alternate_no.visibility = View.VISIBLE
+                alternate_no.visibility = View.VISIBLE
+                if (CommonUtils.getRole() == "Technician")
+                    tv_alternate_no.text = (altPhone).replaceRange(5..9, "*****")
+                else {
+                    tv_alternate_no.text = altPhone
+                }
                 tv_alternate_no.setOnClickListener {
-                    /* val url = "tel:$altPhone"
-                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
-                     intent.putExtra("finish", true)
-                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                     context.startActivity(intent)*/
-                    adapterClickListener.onclick(
-                        any = item,
-                        pos = adapterPosition,
-                        type = itemView,
-                        op = Constants.ALT_CUST_PHONE
-                    )
+                    if (CommonUtils.getRole() == "Technician"){
+                        adapterClickListener.onclick(
+                            any = item,
+                            pos = pos,
+                            type = itemView,
+                            op = Constants.ALT_CUST_PHONE
+                        )
+                    }else{
+                        val url = "tel:$altPhone"
+                        val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
+                        intent.putExtra("finish", true)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        context.startActivity(intent)
+                    }
                 }
             }
             btn_know_more.setOnClickListener {
