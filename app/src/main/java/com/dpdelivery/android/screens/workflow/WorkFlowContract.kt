@@ -19,7 +19,7 @@ interface WorkFlowContract {
         fun showFinishJobRes(res: SubmiPidRes)
         fun showSubmittedPidRes(submiPidRes: SubmiPidRes)
         fun showRefreshPidRes(res: PIdStatusRes)
-        fun showSparePartsRes(res: ArrayList<SparePartsData>)
+        fun showSparePartsRes(res: InventoryRes)
         fun showPidDetailsRes(res: BLEDetailsRes)
         fun showSyncRes(res: BLEDetailsRes)
         fun showJobRes(res: Job)

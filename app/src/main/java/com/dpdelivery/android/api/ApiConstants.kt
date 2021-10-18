@@ -25,6 +25,7 @@ class ApiConstants {
         const val UPDATE_TOKEN = "notification/user"
         const val LAST_3_JOBS = "workforce/getLast3JobsByInstallation/"
 
+
         //employee earnings
         const val EARNINGS = "earnings/entries"
 
@@ -35,5 +36,6 @@ class ApiConstants {
         const val INVENTORY_TO_BE_RETURNED = "employee/returnInventory/item"
         const val SUBMIT_INVENTORY = "inventory/submitQrDetails"
         const val CANCEL_INVENTORY = "inventory/cancelQr"
+        const val SUBMIT_TECH_INVENTORY = "inventory/submitQrDetailsForTechnician"
     }
 }

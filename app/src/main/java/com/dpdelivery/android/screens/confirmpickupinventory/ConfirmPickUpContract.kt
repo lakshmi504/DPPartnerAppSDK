@@ -15,5 +15,6 @@ interface ConfirmPickUpContract {
 
     interface Presenter : BasePresenter<View> {
         fun confirmInventory(submitInventoryIp: SubmitInventoryIp)
+        fun confirmTechInventory(submitInventoryIp: SubmitInventoryIp)
     }
 }

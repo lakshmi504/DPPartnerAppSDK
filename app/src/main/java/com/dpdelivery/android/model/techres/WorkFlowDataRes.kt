@@ -14,7 +14,8 @@ data class WorkFlowDataRes(
             val statusElementId: Int,
             val submissionField: String,
             val activationElementId: Int,
-            val syncElementId: Int
+            val syncElementId: Int,
+            val sparePartId: Int
     ) {
         @Keep
         data class Step(

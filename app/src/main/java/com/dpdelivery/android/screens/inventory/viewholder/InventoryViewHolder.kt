@@ -31,17 +31,23 @@ class InventoryViewHolder(
                 CommonUtils.getToBePickUpText(context, item.not_picked.toString())
             tv_returnable.text = CommonUtils.getReturnText(context, item.to_be_returned.toString())
             if (item.picked.toString() != "0") {
-                tv_picked_up.isEnabled = true
+                if (item.serializable) {
+                    tv_picked_up.isEnabled = true
+                }
                 tv_picked_up.alpha = 1f
                 tv_picked_up.setBackgroundResource(R.drawable.btn_theme_bg)
             }
             if (item.not_picked.toString() != "0") {
-                tv_to_be_pickup.isEnabled = true
+                if (item.serializable) {
+                    tv_to_be_pickup.isEnabled = true
+                }
                 tv_to_be_pickup.alpha = 1f
                 tv_to_be_pickup.setBackgroundResource(R.drawable.btn_green_bg)
             }
             if (item.to_be_returned.toString() != "0") {
-                tv_returnable.isEnabled = true
+                if (item.serializable) {
+                    tv_returnable.isEnabled = true
+                }
                 tv_returnable.alpha = 1f
                 tv_returnable.setBackgroundResource(R.drawable.btn_red_bg)
             }

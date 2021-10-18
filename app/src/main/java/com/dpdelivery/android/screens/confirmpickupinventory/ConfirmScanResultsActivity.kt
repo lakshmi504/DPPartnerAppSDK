@@ -92,13 +92,23 @@ class ConfirmScanResultsActivity : TechBaseActivity(), ConfirmPickUpContract.Vie
         btn_confirm.setOnClickListener {
             if (et_result.text.toString().isNotEmpty()) {
                 showViewState(MultiStateView.VIEW_STATE_LOADING)
-                confirmPickUpPresenter.confirmInventory(
-                    submitInventoryIp = SubmitInventoryIp(
-                        employee_id = CommonUtils.getId(),
-                        product_id = productId.toInt(),
-                        qr_code = content
+                if (CommonUtils.getRole() == "Technician") {
+                    confirmPickUpPresenter.confirmTechInventory(
+                        submitInventoryIp = SubmitInventoryIp(
+                            employee_id = CommonUtils.getId(),
+                            product_id = productId.toInt(),
+                            qr_code = content
+                        )
                     )
-                )
+                } else {
+                    confirmPickUpPresenter.confirmInventory(
+                        submitInventoryIp = SubmitInventoryIp(
+                            employee_id = CommonUtils.getId(),
+                            product_id = productId.toInt(),
+                            qr_code = content
+                        )
+                    )
+                }
             } else {
                 toast("Please enter device code")
             }

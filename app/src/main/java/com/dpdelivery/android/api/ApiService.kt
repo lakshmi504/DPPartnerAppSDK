@@ -106,7 +106,7 @@ interface ApiService {
     fun getSpareParts(
         @Header("Authorization") token: String,
         @Url url: String
-    ): Observable<ArrayList<SparePartsData>>
+    ): Observable<InventoryRes>
 
     @PUT(ApiConstants.FINISH_JOB + "{jobId}")
     fun finishJob(
@@ -196,6 +196,11 @@ interface ApiService {
 
     @POST(ApiConstants.SUBMIT_INVENTORY)
     fun submitInventoryDetails(
+        @Header("Authorization") token: String, @Body submitInventoryIp: SubmitInventoryIp
+    ): Observable<CommonRes>
+
+    @POST(ApiConstants.SUBMIT_TECH_INVENTORY)
+    fun submitTechInventoryDetails(
         @Header("Authorization") token: String, @Body submitInventoryIp: SubmitInventoryIp
     ): Observable<CommonRes>
 

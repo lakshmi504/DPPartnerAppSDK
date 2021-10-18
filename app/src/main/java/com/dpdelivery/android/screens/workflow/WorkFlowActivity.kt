@@ -15,6 +15,7 @@ import android.media.ExifInterface
 import android.media.MediaScannerConnection
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.text.InputFilter
@@ -23,6 +24,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
@@ -30,6 +32,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dpdelivery.android.R
@@ -37,9 +40,7 @@ import com.dpdelivery.android.commonadapter.BasicAdapter
 import com.dpdelivery.android.commonviews.MultiStateView
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
-import com.dpdelivery.android.model.techinp.AddWorkFlowData
-import com.dpdelivery.android.model.techinp.FinishJobIp
-import com.dpdelivery.android.model.techinp.SubmitPidIp
+import com.dpdelivery.android.model.techinp.*
 import com.dpdelivery.android.model.techres.*
 import com.dpdelivery.android.screens.base.TechBaseActivity
 import com.dpdelivery.android.screens.login.LoginActivity
@@ -48,6 +49,7 @@ import com.dpdelivery.android.screens.sync.Command
 import com.dpdelivery.android.screens.sync.DatabaseHandler
 import com.dpdelivery.android.screens.sync.SyncActivity
 import com.dpdelivery.android.screens.techjobslist.TechJobsListActivity
+import com.dpdelivery.android.screens.workflow.workflowadapter.SparesListAdapter
 import com.dpdelivery.android.screens.workflow.workflowadapter.TemplateListAdapter
 import com.dpdelivery.android.utils.*
 import com.google.android.gms.location.LocationCallback
@@ -61,6 +63,9 @@ import kotlinx.android.synthetic.main.activity_work_flow.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.error_view.*
 import kotlinx.android.synthetic.main.item_element_list.view.*
+import kotlinx.android.synthetic.main.item_spares.*
+import kotlinx.android.synthetic.main.item_spares.view.*
+import kotlinx.android.synthetic.main.item_template_list.*
 import kotlinx.android.synthetic.main.item_timeline.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -112,19 +117,24 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var submissionField: String = ""
     private var syncElementId: Int = 0
     private var activationElementId: Int = 0
+    private var sparePartId: Int = 0
     private var et_device_code: AppCompatEditText? = null
     private var et_purifier_id: AppCompatEditText? = null
     private var btn_activate: AppCompatButton? = null
     private var iv_refresh: AppCompatImageView? = null
     private var tv_status: AppCompatTextView? = null
     private var LOCATION_PERMISSION_REQUEST_CODE = 123
-    lateinit var partList: ArrayList<SparePartsData>
-    private var spinnerSpares: Spinner? = null
+    lateinit var partList: ArrayList<PartInfo>
+
+    private var rvSpares: RecyclerView? = null
+    private var searchView: SearchView? = null
     private var value: String? = null
     lateinit var dbH: DatabaseHandler
     private var ownerName: String = ""
     private var synctext: TextView? = null
     private var isSync: Boolean = false
+    lateinit var adapterPartsList: SparesListAdapter
+    private var itemsMap: MutableMap<Int, String> = mutableMapOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -243,7 +253,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 stepsFinished = stepsFinished,
                 submissionField = submissionField,
                 activationElementId = activationElementId,
-                syncElementId = syncElementId
+                syncElementId = syncElementId,
+                sparePartId = sparePartId
             )
             adapter = workFlowAdapter
         }
@@ -262,6 +273,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             submissionField = res.body.submissionField
             activationElementId = res.body.activationElementId
             syncElementId = res.body.syncElementId
+            sparePartId = res.body.sparePartId
             //setting up steps based on position
             setStep(currentPosition)
         }
@@ -282,7 +294,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 mTemplateList,
                 submissionField,
                 activationElementId,
-                syncElementId
+                syncElementId,
+                sparePartId
             )
             if (currentPosition == mDataList!!.size - 1) {
                 btn_next.visibility = View.GONE
@@ -371,6 +384,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (res.success!!) {
             stepMap.clear()
+            itemsMap.clear()
             stepsFinished.clear()
             stepMapList.clear()
             if (currentPosition < mDataList!!.size) {
@@ -403,17 +417,19 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (res.success!!) {
             showViewState(MultiStateView.VIEW_STATE_LOADING)
-            val currentTime = Date()
-            val output = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
-            output.timeZone = TimeZone.getTimeZone("GMT")
-            val jobEndTime = output.format(currentTime)
-            val finishJobIp = FinishJobIp(
-                status = "COM",
-                latitude = latitude,
-                longitude = longitude,
-                jobEndTime = jobEndTime
-            )
-            workFlowPresenter.finishJob(jobId!!, finishJobIp)
+            Handler().postDelayed(Runnable {
+                val currentTime = Date()
+                val output = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
+                output.timeZone = TimeZone.getTimeZone("GMT")
+                val jobEndTime = output.format(currentTime)
+                val finishJobIp = FinishJobIp(
+                    status = "COM",
+                    latitude = latitude,
+                    longitude = longitude,
+                    jobEndTime = jobEndTime
+                )
+                workFlowPresenter.finishJob(jobId!!, finishJobIp)
+            }, 5000)
         } else {
             toast(res.message!!)
         }
@@ -459,6 +475,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         multistateview.viewState = state
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onclick(any: Any, pos: Int, type: Any, op: String) {
         if (any is WorkFlowDataRes.WorkFlowDataResBody.Step.Template.Element && type is View) {
             when (op) {
@@ -530,14 +547,72 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     dialog.show()
                     elementId = any.id
                     value = any.value
-                    spinnerSpares = type.spinner_spares
-                    workFlowPresenter.getSparePartsList(any.functionName.toString())
+                    searchView = type.searchView
+                    rvSpares = type.rv_spares
+                    rvSpares!!.layoutManager = LinearLayoutManager(context)
+                    val api = any.functionName
+                    workFlowPresenter.getSparePartsList("$api${CommonUtils.getId()}")
                 }
                 Constants.SYNC -> {
                     dialog.show()
                     synctext = type.tv_sync
                     elementId = any.id
                     getPidDetails(deviceCode)
+                }
+            }
+        }
+        if (any is PartInfo && type is View) {
+            when (op) {
+                Constants.ADD_SPARES -> {
+                    if (any.picked > 0) {
+                        any.mycart += 1
+                        type.tv_quantity.text = any.mycart.toString()
+                        type.iv_add.visibility = View.GONE
+                        type.ll_add.visibility = View.VISIBLE
+
+                        itemsMap[any.item_id] =
+                            "{item_id:${any.item_id}/item_name:${any.item_name}/quantity:${any.mycart}/serializable:${any.serializable}}"
+                        stepMap[elementId.toString()] = itemsMap.values.toString()
+                    } else {
+                        Toast.makeText(context, "Inventory items not available", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+                Constants.INCREMENT -> {
+                    if (any.mycart < any.picked) {
+                        any.mycart += 1
+                        type.tv_quantity.text = any.mycart.toString()
+
+                        itemsMap[any.item_id] =
+                            "{item_id:${any.item_id}/item_name:${any.item_name}/quantity:${any.mycart}/serializable:${any.serializable}}"
+                        stepMap[elementId.toString()] = itemsMap.values.toString()
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Inventory items not available",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                Constants.DECREMENT -> {
+                    if (any.mycart != 0) {
+                        any.mycart -= 1
+                        if (any.mycart == 0) {
+                            type.iv_add.visibility = View.VISIBLE
+                            type.ll_add.visibility = View.GONE
+                        }
+                        type.tv_quantity.text = any.mycart.toString()
+
+                        itemsMap[any.item_id] =
+                            "{item_id:${any.item_id}/item_name:${any.item_name}/quantity:${any.mycart}/serializable:${any.serializable}}"
+                        if (itemsMap.values.contains("{item_id:${any.item_id}/item_name:${any.item_name}/quantity:${0}/serializable:${any.serializable}}")) {
+                            itemsMap.remove(
+                                any.item_id,
+                                "{item_id:${any.item_id}/item_name:${any.item_name}/quantity:${any.mycart}/serializable:${any.serializable}}"
+                            )
+                        }
+                        stepMap[elementId.toString()] = itemsMap.values.toString()
+                    }
                 }
             }
         }
@@ -630,39 +705,35 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         }
     }
 
-    override fun showSparePartsRes(res: ArrayList<SparePartsData>) {
+    override fun showSparePartsRes(res: InventoryRes) {
         dialog.dismiss()
-        if (res.isNotEmpty()) {
-            partList = res
-            if (partList.isNotEmpty()) {
-                val adapterMode = ArrayAdapter<SparePartsData>(
+        if (res.part_info.isNotEmpty()) {
+            partList = res.part_info
+            adapterPartsList = SparesListAdapter(context, adapterClickListener = this)
+            rvSpares!!.addItemDecoration(
+                DividerItemDecoration(
                     context,
-                    android.R.layout.simple_spinner_item,
-                    partList
+                    LinearLayoutManager.VERTICAL
                 )
-                adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                spinnerSpares!!.adapter = adapterMode
-                spinnerSpares!!.onItemSelectedListener =
-                    object : AdapterView.OnItemSelectedListener {
-                        override fun onNothingSelected(parent: AdapterView<*>?) {
+            )
+            rvSpares!!.adapter = adapterPartsList
+            rvSpares!!.setItemViewCacheSize(100)
+            rvSpares!!.isNestedScrollingEnabled = false
+            adapterPartsList.addList(partList)
+            searchView!!.visibility = View.VISIBLE
+            searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return false
+                }
 
-                        }
-
-                        override fun onItemSelected(
-                            parent: AdapterView<*>?,
-                            view: View?,
-                            position: Int,
-                            id: Long
-                        ) {
-                            val selectedString = partList[position].itemname
-                            stepMap[elementId.toString()] = selectedString
-                            stepsFinished[elementId.toString()] = true
-                        }
-
-                    }
-            }
-
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    // calling a method to filter our recycler view.
+                    adapterPartsList.filter.filter(newText)
+                    return false
+                }
+            })
         } else {
+            searchView!!.visibility = View.GONE
             toast("No Spares Found")
         }
     }

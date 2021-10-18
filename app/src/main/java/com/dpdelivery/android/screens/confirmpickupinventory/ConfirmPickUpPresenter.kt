@@ -40,6 +40,22 @@ class ConfirmPickUpPresenter @Inject constructor(
         )
     }
 
+    override fun confirmTechInventory(submitInventoryIp: SubmitInventoryIp) {
+        view?.showProgress()
+        subscription.add(
+            apiService.submitTechInventoryDetails(CommonUtils.getLoginToken(), submitInventoryIp)
+                .subscribeOn(baseScheduler.io())
+                .observeOn(baseScheduler.ui())
+                .subscribe(
+                    { res ->
+                        view?.showConfirmedPickUpRes(res)
+                    },
+                    { throwable ->
+                        view?.showErrorMsg(throwable)
+                    })
+        )
+    }
+
     override fun dropView() {
         subscription.clear()
         this.view = null
