@@ -26,7 +26,7 @@ class NetworkModule {
             .client(okHttpClient.build())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .baseUrl(ApiConstants.TEST_BASE_URL)
+            .baseUrl(ApiConstants.BASE_URL)
             .build()
             .create(ApiService::class.java)
     }

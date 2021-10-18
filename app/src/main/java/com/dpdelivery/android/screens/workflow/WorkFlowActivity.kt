@@ -15,6 +15,7 @@ import android.media.ExifInterface
 import android.media.MediaScannerConnection
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.text.InputFilter
@@ -416,17 +417,19 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (res.success!!) {
             showViewState(MultiStateView.VIEW_STATE_LOADING)
-            val currentTime = Date()
-            val output = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
-            output.timeZone = TimeZone.getTimeZone("GMT")
-            val jobEndTime = output.format(currentTime)
-            val finishJobIp = FinishJobIp(
-                status = "COM",
-                latitude = latitude,
-                longitude = longitude,
-                jobEndTime = jobEndTime
-            )
-            workFlowPresenter.finishJob(jobId!!, finishJobIp)
+            Handler().postDelayed(Runnable {
+                val currentTime = Date()
+                val output = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
+                output.timeZone = TimeZone.getTimeZone("GMT")
+                val jobEndTime = output.format(currentTime)
+                val finishJobIp = FinishJobIp(
+                    status = "COM",
+                    latitude = latitude,
+                    longitude = longitude,
+                    jobEndTime = jobEndTime
+                )
+                workFlowPresenter.finishJob(jobId!!, finishJobIp)
+            }, 5000)
         } else {
             toast(res.message!!)
         }
