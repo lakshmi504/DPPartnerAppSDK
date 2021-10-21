@@ -33,7 +33,6 @@ import kotlinx.android.synthetic.main.error_view.*
 import okhttp3.Headers
 import retrofit2.HttpException
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.math.ceil
 
 class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClickListener,
@@ -91,6 +90,12 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
             }
             data.equals("CAN") -> {
                 setTitle("Cancelled Jobs")
+            }
+            data.equals("CANT") -> {
+                setTitle("Cancelled Jobs")
+            }
+            data.equals("PPNT") -> {
+                setTitle("Postponed Jobs")
             }
         }
         showBack()
@@ -197,7 +202,8 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
 
     override fun showVoipRes(res: Headers) {
         dialog.dismiss()
-        Toast.makeText(mContext,"Request sent.Please wait till get call back..",Toast.LENGTH_LONG).show()
+        Toast.makeText(mContext, "Request sent, you will get the call back soon", Toast.LENGTH_LONG)
+            .show()
     }
 
     override fun showErrorMsg(throwable: Throwable, apiType: String) {
@@ -290,11 +296,11 @@ class JobsListActivity : TechBaseActivity(), JobsListContract.View, View.OnClick
     }
 
     private fun getStatuses(statusFilterData: ArrayList<AgentJobStatuses?>) {
-        val adapterStatusMode : ArrayAdapter<String?> = object : ArrayAdapter<String?>(
+        val adapterStatusMode: ArrayAdapter<String?> = object : ArrayAdapter<String?>(
             this,
             android.R.layout.simple_spinner_item,
             statusFilterMode as List<String?>
-        ){
+        ) {
             override fun isEnabled(position: Int): Boolean {
                 return position != 0
             }

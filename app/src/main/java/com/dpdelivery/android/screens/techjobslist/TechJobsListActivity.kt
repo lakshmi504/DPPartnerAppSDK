@@ -64,6 +64,13 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         "Postponed",
         "Cancelled"
     )
+    private val techFilterMode: Array<String> = arrayOf<String>(
+        "Assigned",
+        "In-Progress",
+        "Completed",
+        "Cancelled - Technician",
+        "Postponed - Technician"
+    )
     private val statusFilterMode = ArrayList<String>()
     private var reasonsData = ArrayList<String>()
     private var spStatusFilter: Spinner? = null
@@ -163,12 +170,21 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
     }
 
     private fun loadDefaultSpinner() {
-        val adapterMode =
-            ArrayAdapter<String>(this, R.layout.spinner_item, filterMode)
-        adapterMode.setDropDownViewResource(R.layout.spinner_item)
-        sp_filter!!.adapter = adapterMode
-        sp_filter.setSelection(0, false)
-        sp_filter.onItemSelectedListener = this
+        if (CommonUtils.getRole() == "Technician") {
+            val adapterMode =
+                ArrayAdapter<String>(this, R.layout.spinner_item, techFilterMode)
+            adapterMode.setDropDownViewResource(R.layout.spinner_item)
+            sp_filter!!.adapter = adapterMode
+            sp_filter.setSelection(0, false)
+            sp_filter.onItemSelectedListener = this
+        } else {
+            val adapterMode =
+                ArrayAdapter<String>(this, R.layout.spinner_item, filterMode)
+            adapterMode.setDropDownViewResource(R.layout.spinner_item)
+            sp_filter!!.adapter = adapterMode
+            sp_filter.setSelection(0, false)
+            sp_filter.onItemSelectedListener = this
+        }
     }
 
     override fun onClick(v: View?) {
@@ -217,6 +233,12 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
                     }
                     "Cancelled" -> {
                         filter = "CAN"
+                    }
+                    "Cancelled - Technician" -> {
+                        filter = "CANT"
+                    }
+                    "Postponed - Technician" -> {
+                        filter = "PPNT"
                     }
                 }
                 if (filter != "Assigned") {
@@ -339,11 +361,11 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
     }
 
     private fun getStatuses(statusFilterData: ArrayList<AgentJobStatuses?>) {
-        val adapterStatusMode : ArrayAdapter<String?> = object : ArrayAdapter<String?>(
+        val adapterStatusMode: ArrayAdapter<String?> = object : ArrayAdapter<String?>(
             this,
             android.R.layout.simple_spinner_item,
             statusFilterMode as List<String?>
-        ){
+        ) {
             override fun isEnabled(position: Int): Boolean {
                 return position != 0
             }
@@ -438,7 +460,8 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
 
     override fun showVoipRes(res: Headers) {
         dialog.dismiss()
-        Toast.makeText(mContext,"Request sent.Please wait till get call back..",Toast.LENGTH_LONG).show()
+        Toast.makeText(mContext, "Request sent, you will get the call back soon", Toast.LENGTH_LONG)
+            .show()
     }
 
     override fun showViewState(state: Int) {
