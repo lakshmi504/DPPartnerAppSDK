@@ -665,7 +665,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
 
     override fun showVoipRes(res: Headers) {
         dialog!!.dismiss()
-        Toast.makeText(mContext, "Request sent.Please wait till get call back..", Toast.LENGTH_LONG)
+        Toast.makeText(mContext, "Request sent, you will get the call back soon", Toast.LENGTH_LONG)
             .show()
     }
 

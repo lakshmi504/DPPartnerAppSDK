@@ -2,7 +2,6 @@ package com.dpdelivery.android.screens.workflow
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -11,11 +10,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Matrix
-import android.media.ExifInterface
-import android.media.MediaScannerConnection
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
+import android.os.Environment
 import android.os.Looper
 import android.provider.MediaStore
 import android.text.InputFilter
@@ -32,6 +30,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.exifinterface.media.ExifInterface
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -73,6 +72,7 @@ import org.json.JSONObject
 import retrofit2.HttpException
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
@@ -135,6 +135,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var isSync: Boolean = false
     lateinit var adapterPartsList: SparesListAdapter
     private var itemsMap: MutableMap<Int, String> = mutableMapOf()
+    val REQUEST_IMAGE_CAPTURE = 1
+    lateinit var currentPhotoPath: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -197,6 +199,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     toast("Please submit mandatory fields")
                 } else {
                     finishJob()
+                    btn_Finish.isEnabled = false
                 }
             }
             R.id.btn_submit -> {
@@ -417,20 +420,19 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (res.success!!) {
             showViewState(MultiStateView.VIEW_STATE_LOADING)
-            Handler().postDelayed(Runnable {
-                val currentTime = Date()
-                val output = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
-                output.timeZone = TimeZone.getTimeZone("GMT")
-                val jobEndTime = output.format(currentTime)
-                val finishJobIp = FinishJobIp(
-                    status = "COM",
-                    latitude = latitude,
-                    longitude = longitude,
-                    jobEndTime = jobEndTime
-                )
-                workFlowPresenter.finishJob(jobId!!, finishJobIp)
-            }, 5000)
+            val currentTime = Date()
+            val output = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ROOT)
+            output.timeZone = TimeZone.getTimeZone("GMT")
+            val jobEndTime = output.format(currentTime)
+            val finishJobIp = FinishJobIp(
+                status = "COM",
+                latitude = latitude,
+                longitude = longitude,
+                jobEndTime = jobEndTime
+            )
+            workFlowPresenter.finishJob(jobId!!, finishJobIp)
         } else {
+            btn_Finish.isEnabled = true
             toast(res.message!!)
         }
     }
@@ -446,6 +448,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             finish()
         } else {
             toast(res.message)
+            btn_Finish.isEnabled = true
             showViewState(MultiStateView.VIEW_STATE_CONTENT)
         }
     }
@@ -739,55 +742,77 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     }
 
     private fun startCamera() {
-        val intent = Intent(
-            MediaStore.ACTION_IMAGE_CAPTURE
-        )
-        val path = mContext.getExternalFilesDir(null)!!.absolutePath
-        val dir = File(path, "DP Partner 2.0/Image")
-        if (!dir.exists())
-            dir.mkdirs()
-        val photoURI = FileProvider.getUriForFile(
-            context, "com.dpdelivery.android.provider",
-            File(dir.absolutePath, PHOTO_FILE_NAME)
-        )
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-        startActivityForResult(intent, CAMERA_REQUEST)
+        /* val intent = Intent(
+             MediaStore.ACTION_IMAGE_CAPTURE
+         )
+         val path = mContext.getExternalFilesDir(null)!!.absolutePath
+         val dir = File(path, "DP Partner 2.0/Image")
+         if (!dir.exists())
+             dir.mkdirs()
+         val photoURI = FileProvider.getUriForFile(
+             context, "com.dpdelivery.android.provider",
+             File(dir.absolutePath, PHOTO_FILE_NAME)
+         )
+         intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+         startActivityForResult(intent, CAMERA_REQUEST)*/
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            // Ensure that there's a camera activity to handle the intent
+            takePictureIntent.resolveActivity(packageManager)?.also {
+                // Create the File where the photo should go
+                val photoFile: File? = try {
+                    createImageFile()
+                } catch (ex: IOException) {
+                    // Error occurred while creating the File
+                    null
+                }
+                // Continue only if the File was successfully created
+                photoFile?.also {
+                    val photoURI: Uri = FileProvider.getUriForFile(
+                        this,
+                        "com.example.android.fileprovider",
+                        it
+                    )
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                }
+            }
+        }
+    }
+
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${timeStamp}_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir /* directory */
+        ).apply {
+            // Save a file: path for use with ACTION_VIEW intents
+            currentPhotoPath = absolutePath
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-        if (resultCode == Activity.RESULT_OK && requestCode == CAMERA_REQUEST) {
-            val f = File(mContext.getExternalFilesDir(null)!!.absolutePath)
-            var dir = File(f, "DP Partner 2.0/Image")
-            if (!dir.exists())
-                dir.mkdirs()
-            for (temp in dir.listFiles()!!) {
-                if (temp.name == PHOTO_FILE_NAME) {
-                    dir = temp
-                    imgpath = dir.absolutePath.toString()
-                    break
-                }
-            }
-            MediaScannerConnection.scanFile(
-                context,
-                arrayOf<String>(dir.absolutePath),
-                null
-            ) { path, uri ->
-                Log.i("ExternalStorage", "Scanned $path:")
-                Log.i("ExternalStorage", "-> uri=$uri")
-            }
-
-            if (!dir.exists()) {
-                Toast.makeText(baseContext, "Error while capturing image", Toast.LENGTH_LONG).show()
-                return
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            dialog.show()
+            if (currentPhotoPath.isNotEmpty()) {
+                mandatory!!.visibility = View.INVISIBLE
+                stepsFinished[elementId.toString()] = true
+                workFlowPresenter.addImage(
+                    jobid = jobId!!,
+                    elementId = elementId,
+                    file = Compressor(this).compressToFile(File(currentPhotoPath))
+                )
             }
             try {
-                bitmap = BitmapFactory.decodeFile(dir.absolutePath)
+                bitmap = BitmapFactory.decodeFile(currentPhotoPath)
                 bitmap = Bitmap.createScaledBitmap(bitmap, 400, 400, true)
                 var rotate = 0
                 try {
-                    val exif = ExifInterface(dir.absolutePath)
+                    val exif = ExifInterface(currentPhotoPath)
                     val orientation = exif.getAttributeInt(
                         ExifInterface.TAG_ORIENTATION,
                         ExifInterface.ORIENTATION_NORMAL
@@ -801,30 +826,88 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-
                 val matrix = Matrix()
                 matrix.postRotate(rotate.toFloat())
                 bitmap =
                     Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
 
                 val stream = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
                 image!!.setImageBitmap(bitmap)
-                dialog.show()
-                if (imgpath.isNotEmpty()) {
-                    mandatory!!.visibility = View.INVISIBLE
-                    stepsFinished[elementId.toString()] = true
-                    workFlowPresenter.addImage(
-                        jobid = jobId!!,
-                        elementId = elementId,
-                        file = Compressor(this).compressToFile(File(imgpath))
-                    )
-                }
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
                 CommonUtils.setUserImagebitmap(mContext, image!!, stream)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
+
+        /* if (resultCode == Activity.RESULT_OK && requestCode == CAMERA_REQUEST) {
+             val f = File(mContext.getExternalFilesDir(null)!!.absolutePath)
+             var dir = File(f, "DP Partner 2.0/Image")
+             if (!dir.exists())
+                 dir.mkdirs()
+             for (temp in dir.listFiles()!!) {
+                 if (temp.name == PHOTO_FILE_NAME) {
+                     dir = temp
+                     imgpath = dir.absolutePath.toString()
+                     break
+                 }
+             }
+             MediaScannerConnection.scanFile(
+                 context,
+                 arrayOf<String>(dir.absolutePath),
+                 null
+             ) { path, uri ->
+                 Log.i("ExternalStorage", "Scanned $path:")
+                 Log.i("ExternalStorage", "-> uri=$uri")
+             }
+
+             if (!dir.exists()) {
+                 Toast.makeText(baseContext, "Error while capturing image", Toast.LENGTH_LONG).show()
+                 return
+             }
+             try {
+                 bitmap = BitmapFactory.decodeFile(dir.absolutePath)
+                 bitmap = Bitmap.createScaledBitmap(bitmap, 400, 400, true)
+                 var rotate = 0
+                 try {
+                     val exif = ExifInterface(dir.absolutePath)
+                     val orientation = exif.getAttributeInt(
+                         ExifInterface.TAG_ORIENTATION,
+                         ExifInterface.ORIENTATION_NORMAL
+                     )
+
+                     when (orientation) {
+                         ExifInterface.ORIENTATION_ROTATE_270 -> rotate = 270
+                         ExifInterface.ORIENTATION_ROTATE_180 -> rotate = 180
+                         ExifInterface.ORIENTATION_ROTATE_90 -> rotate = 90
+                     }
+                 } catch (e: Exception) {
+                     e.printStackTrace()
+                 }
+
+                 val matrix = Matrix()
+                 matrix.postRotate(rotate.toFloat())
+                 bitmap =
+                     Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+
+                 val stream = ByteArrayOutputStream()
+                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
+                 image!!.setImageBitmap(bitmap)
+                 dialog.show()
+                 if (imgpath.isNotEmpty()) {
+                     mandatory!!.visibility = View.INVISIBLE
+                     stepsFinished[elementId.toString()] = true
+                     workFlowPresenter.addImage(
+                         jobid = jobId!!,
+                         elementId = elementId,
+                         file = Compressor(this).compressToFile(File(imgpath))
+                     )
+                 }
+                 CommonUtils.setUserImagebitmap(mContext, image!!, stream)
+             } catch (e: Exception) {
+                 e.printStackTrace()
+             }
+         }*/
         //We will get scan results here
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         //check for null
