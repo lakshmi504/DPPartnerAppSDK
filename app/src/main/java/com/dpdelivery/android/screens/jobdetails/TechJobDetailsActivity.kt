@@ -481,7 +481,11 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             try {
                 phone = res.customerPhone
                 if (CommonUtils.getRole() == "Technician")
-                    tv_phone.text = phone?.replaceRange(5..9, "*****")
+                    try {
+                        tv_phone.text = phone?.replaceRange(5..9, "*****")
+                    } catch (e: Exception) {
+
+                    }
                 else {
                     tv_phone.text = phone
                 }
@@ -493,7 +497,11 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             try {
                 altPhone = res.customerAltPhone
                 if (CommonUtils.getRole() == "Technician")
-                    tv_alt_phone.text = altPhone?.replaceRange(5..9, "*****")
+                    try {
+                        tv_alt_phone.text = altPhone?.replaceRange(5..9, "*****")
+                    } catch (e: Exception) {
+
+                    }
                 else {
                     tv_alt_phone.text = altPhone
                 }
