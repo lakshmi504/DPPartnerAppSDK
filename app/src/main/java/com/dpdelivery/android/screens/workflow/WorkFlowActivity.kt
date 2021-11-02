@@ -136,7 +136,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     lateinit var adapterPartsList: SparesListAdapter
     private var itemsMap: MutableMap<Int, String> = mutableMapOf()
     val REQUEST_IMAGE_CAPTURE = 1
-    lateinit var currentPhotoPath: String
+    private var currentPhotoPath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -572,9 +572,20 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                         type.tv_quantity.text = any.mycart.toString()
                         type.iv_add.visibility = View.GONE
                         type.ll_add.visibility = View.VISIBLE
-
+                        val itemName =
+                            when {
+                                any.item_name.contains(",") -> {
+                                    any.item_name.replace(",", "-", true)
+                                }
+                                any.item_name.contains("/") -> {
+                                    any.item_name.replace("/", "|", true)
+                                }
+                                else -> {
+                                    any.item_name
+                                }
+                            }
                         itemsMap[any.item_id] =
-                            "{item_id:${any.item_id}/item_name:${any.item_name}/quantity:${any.mycart}/serializable:${any.serializable}}"
+                            "{item_id:${any.item_id}/item_name:$itemName/quantity:${any.mycart}/serializable:${any.serializable}}"
                         stepMap[elementId.toString()] = itemsMap.values.toString()
                     } else {
                         Toast.makeText(context, "Inventory items not available", Toast.LENGTH_SHORT)
@@ -585,9 +596,20 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     if (any.mycart < any.picked) {
                         any.mycart += 1
                         type.tv_quantity.text = any.mycart.toString()
-
+                        val itemName =
+                            when {
+                                any.item_name.contains(",") -> {
+                                    any.item_name.replace(",", "-", true)
+                                }
+                                any.item_name.contains("/") -> {
+                                    any.item_name.replace("/", "|", true)
+                                }
+                                else -> {
+                                    any.item_name
+                                }
+                            }
                         itemsMap[any.item_id] =
-                            "{item_id:${any.item_id}/item_name:${any.item_name}/quantity:${any.mycart}/serializable:${any.serializable}}"
+                            "{item_id:${any.item_id}/item_name:$itemName/quantity:${any.mycart}/serializable:${any.serializable}}"
                         stepMap[elementId.toString()] = itemsMap.values.toString()
                     } else {
                         Toast.makeText(
@@ -605,13 +627,24 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                             type.ll_add.visibility = View.GONE
                         }
                         type.tv_quantity.text = any.mycart.toString()
-
+                        val itemName =
+                            when {
+                                any.item_name.contains(",") -> {
+                                    any.item_name.replace(",", "-", true)
+                                }
+                                any.item_name.contains("/") -> {
+                                    any.item_name.replace("/", "|", true)
+                                }
+                                else -> {
+                                    any.item_name
+                                }
+                            }
                         itemsMap[any.item_id] =
-                            "{item_id:${any.item_id}/item_name:${any.item_name}/quantity:${any.mycart}/serializable:${any.serializable}}"
-                        if (itemsMap.values.contains("{item_id:${any.item_id}/item_name:${any.item_name}/quantity:${0}/serializable:${any.serializable}}")) {
+                            "{item_id:${any.item_id}/item_name:$itemName/quantity:${any.mycart}/serializable:${any.serializable}}"
+                        if (itemsMap.values.contains("{item_id:${any.item_id}/item_name:$itemName/quantity:${0}/serializable:${any.serializable}}")) {
                             itemsMap.remove(
                                 any.item_id,
-                                "{item_id:${any.item_id}/item_name:${any.item_name}/quantity:${any.mycart}/serializable:${any.serializable}}"
+                                "{item_id:${any.item_id}/item_name:$itemName/quantity:${any.mycart}/serializable:${any.serializable}}"
                             )
                         }
                         stepMap[elementId.toString()] = itemsMap.values.toString()
@@ -797,22 +830,24 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            dialog.show()
-            if (currentPhotoPath.isNotEmpty()) {
+            if (!currentPhotoPath.isNullOrEmpty()) {
+                dialog.show()
                 mandatory!!.visibility = View.INVISIBLE
                 stepsFinished[elementId.toString()] = true
                 workFlowPresenter.addImage(
                     jobid = jobId!!,
                     elementId = elementId,
-                    file = Compressor(this).compressToFile(File(currentPhotoPath))
+                    file = Compressor(this).compressToFile(File(currentPhotoPath!!))
                 )
+            } else {
+                toast("Problem in Taking Photo..Please try again")
             }
             try {
                 bitmap = BitmapFactory.decodeFile(currentPhotoPath)
                 bitmap = Bitmap.createScaledBitmap(bitmap, 400, 400, true)
                 var rotate = 0
                 try {
-                    val exif = ExifInterface(currentPhotoPath)
+                    val exif = ExifInterface(currentPhotoPath!!)
                     val orientation = exif.getAttributeInt(
                         ExifInterface.TAG_ORIENTATION,
                         ExifInterface.ORIENTATION_NORMAL

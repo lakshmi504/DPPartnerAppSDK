@@ -56,8 +56,7 @@ class ImageActivity : TechBaseActivity(), View.OnClickListener, ImageContract.Vi
     @Inject
     lateinit var presenter: ImagePresenter
     val REQUEST_IMAGE_CAPTURE = 1
-    lateinit var currentPhotoPath: String
-
+    private var currentPhotoPath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,9 +110,9 @@ class ImageActivity : TechBaseActivity(), View.OnClickListener, ImageContract.Vi
                 }
             }
             R.id.btn_upload -> {
-                if (currentPhotoPath.isNotEmpty()) {
+                if (currentPhotoPath!!.isNotEmpty()) {
                     dialog.show()
-                    val file = File(currentPhotoPath)
+                    val file = File(currentPhotoPath!!)
                     val compressedImgFile: File = Compressor(this).compressToFile(file)
                     presenter.uploadPhoto(jobId, compressedImgFile)
                 }
@@ -183,9 +182,11 @@ class ImageActivity : TechBaseActivity(), View.OnClickListener, ImageContract.Vi
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            if (currentPhotoPath.isNotEmpty()) {
+            if (!currentPhotoPath!!.isNullOrEmpty()) {
                 btn_upload.visibility = View.VISIBLE
                 btn_capture.visibility = View.GONE
+            } else {
+                toast("Problem in Taking Photo..Please try again")
             }
             try {
                 bitmap = BitmapFactory.decodeFile(currentPhotoPath)

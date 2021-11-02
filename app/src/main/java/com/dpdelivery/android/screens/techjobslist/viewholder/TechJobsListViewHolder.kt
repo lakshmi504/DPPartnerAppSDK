@@ -85,7 +85,11 @@ class TechJobsListViewHolder(
             if (text!!.isNotEmpty()) {
                 try {
                     if (CommonUtils.getRole() == "Technician")
-                        tv_cust_phn.text = text.replaceRange(5..9, "*****")
+                        try {
+                            tv_cust_phn.text = text.replaceRange(5..9, "*****")
+                        } catch (e: Exception) {
+
+                        }
                     else {
                         tv_cust_phn.text = text
                     }
@@ -117,23 +121,27 @@ class TechJobsListViewHolder(
                 ll_alt_mobile.visibility = View.GONE
             } else {
                 val altPhone = item.customerAltPhone
-                tv_alternate_no.paintFlags = tv_cust_phn.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+                tv_alternate_no.paintFlags = tv_alternate_no.paintFlags or Paint.UNDERLINE_TEXT_FLAG
                 tv_alternate_no.visibility = View.VISIBLE
                 alternate_no.visibility = View.VISIBLE
                 if (CommonUtils.getRole() == "Technician")
-                    tv_alternate_no.text = (altPhone).replaceRange(5..9, "*****")
+                    try {
+                        tv_alternate_no.text = (altPhone).replaceRange(5..9, "*****")
+                    } catch (e: Exception) {
+
+                    }
                 else {
                     tv_alternate_no.text = altPhone
                 }
                 tv_alternate_no.setOnClickListener {
-                    if (CommonUtils.getRole() == "Technician"){
+                    if (CommonUtils.getRole() == "Technician") {
                         adapterClickListener.onclick(
                             any = item,
                             pos = pos,
                             type = itemView,
                             op = Constants.ALT_CUST_PHONE
                         )
-                    }else{
+                    } else {
                         val url = "tel:$altPhone"
                         val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
                         intent.putExtra("finish", true)
