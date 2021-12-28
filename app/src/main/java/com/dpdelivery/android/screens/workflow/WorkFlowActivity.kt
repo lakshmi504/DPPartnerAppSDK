@@ -2,6 +2,7 @@ package com.dpdelivery.android.screens.workflow
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -10,7 +11,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Matrix
-import android.net.Uri
+import android.media.MediaScannerConnection
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -21,6 +22,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
@@ -44,6 +46,7 @@ import com.dpdelivery.android.model.techres.*
 import com.dpdelivery.android.screens.base.TechBaseActivity
 import com.dpdelivery.android.screens.login.LoginActivity
 import com.dpdelivery.android.screens.scanner.ScannerActivity
+import com.dpdelivery.android.screens.smartconfig.SmartConfigActivity
 import com.dpdelivery.android.screens.sync.Command
 import com.dpdelivery.android.screens.sync.DatabaseHandler
 import com.dpdelivery.android.screens.sync.SyncActivity
@@ -61,6 +64,7 @@ import kotlinx.android.synthetic.main.activity_inventory.*
 import kotlinx.android.synthetic.main.activity_work_flow.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.error_view.*
+import kotlinx.android.synthetic.main.item_element_list.*
 import kotlinx.android.synthetic.main.item_element_list.view.*
 import kotlinx.android.synthetic.main.item_spares.*
 import kotlinx.android.synthetic.main.item_spares.view.*
@@ -86,7 +90,9 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var jobId: Int? = 0
     private var deviceCode: String? = null
     private var botId: String? = null
+    private var wifiBotId: Int? = 0
     private var connectivity: String? = null
+    private var wifiBotAddress: String? = null
     lateinit var mLayoutManager: LinearLayoutManager
     private var workFlowAdapter: TemplateListAdapter? = null
     private var currentPosition: Int = 0
@@ -107,6 +113,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var image: AppCompatImageView? = null
     private var mandatory: AppCompatImageView? = null
     private var elementId: Int = 0
+    private var spareelementId: Int = 0
     private var mTemplateList: ArrayList<WorkFlowDataRes.WorkFlowDataResBody.Step.Template>? = null
     private var noteList: ArrayList<Note?>? = null
     private val stepMap: MutableMap<String, String> = mutableMapOf()
@@ -117,21 +124,24 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var submissionField: String = ""
     private var syncElementId: Int = 0
     private var activationElementId: Int = 0
+    private var wifiConfigId: Int = 0
     private var sparePartId: Int = 0
     private var et_device_code: AppCompatEditText? = null
     private var et_purifier_id: AppCompatEditText? = null
     private var btn_activate: AppCompatButton? = null
+    private var btn_set_up_wifi: AppCompatButton? = null
     private var iv_refresh: AppCompatImageView? = null
     private var tv_status: AppCompatTextView? = null
     private var LOCATION_PERMISSION_REQUEST_CODE = 123
     lateinit var partList: ArrayList<PartInfo>
-
+    private var spinnerSpares: Spinner? = null
     private var rvSpares: RecyclerView? = null
     private var searchView: SearchView? = null
     private var value: String? = null
     lateinit var dbH: DatabaseHandler
     private var ownerName: String = ""
     private var synctext: TextView? = null
+    private var statusText: TextView? = null
     private var isSync: Boolean = false
     lateinit var adapterPartsList: SparesListAdapter
     private var itemsMap: MutableMap<Int, String> = mutableMapOf()
@@ -162,7 +172,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         dialog = CommonUtils.progressDialog(context)
         btn_next.setOnClickListener(this)
         btn_Finish.setOnClickListener(this)
-        btn_submit.setOnClickListener(this)
         tv_view_notes.visibility = View.VISIBLE
         tv_view_notes.setOnClickListener(this)
         error_button.setOnClickListener(this)
@@ -254,8 +263,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 adapterClickListener = this@WorkFlowActivity,
                 stepMap = stepMap,
                 stepsFinished = stepsFinished,
-                submissionField = submissionField,
                 activationElementId = activationElementId,
+                wifiConfigId = wifiConfigId,
                 syncElementId = syncElementId,
                 sparePartId = sparePartId
             )
@@ -273,10 +282,14 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (res.success!!) {
             mDataList = res.body!!.steps
-            submissionField = res.body.submissionField
             activationElementId = res.body.activationElementId
+            wifiConfigId = res.body.wifiConfigID
             syncElementId = res.body.syncElementId
             sparePartId = res.body.sparePartId
+            /* wifiBotId = res.body.wifiBotId
+             if (wifiBotId == res.body.steps?.get(1)?.templates?.get(0)?.elements!![1].id) {
+                 wifiBotAddress = res.body.steps[0].templates?.get(0)?.elements!![1].value
+             }*/
             //setting up steps based on position
             setStep(currentPosition)
         }
@@ -295,14 +308,13 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             mTemplateList = mDataList?.get(position)?.templates
             workFlowAdapter!!.addList(
                 mTemplateList,
-                submissionField,
                 activationElementId,
+                wifiConfigId,
                 syncElementId,
                 sparePartId
             )
             if (currentPosition == mDataList!!.size - 1) {
                 btn_next.visibility = View.GONE
-                btn_submit.visibility = View.GONE
                 btn_Finish.visibility = View.VISIBLE
             }
         }
@@ -394,7 +406,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 setStep(currentPosition + 1)
                 if (currentPosition == mDataList!!.size - 1) {
                     btn_next.visibility = View.GONE
-                    btn_submit.visibility = View.GONE
                     btn_Finish.visibility = View.VISIBLE
                 }
             }
@@ -432,6 +443,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             )
             workFlowPresenter.finishJob(jobId!!, finishJobIp)
         } else {
+
             btn_Finish.isEnabled = true
             toast(res.message!!)
         }
@@ -548,7 +560,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 }
                 Constants.SPARE_PARTS -> {
                     dialog.show()
-                    elementId = any.id
+                    spareelementId = any.id
                     value = any.value
                     searchView = type.searchView
                     rvSpares = type.rv_spares
@@ -556,11 +568,35 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     val api = any.functionName
                     workFlowPresenter.getSparePartsList("$api${CommonUtils.getId()}")
                 }
+                Constants.API_INPUT -> {
+                    dialog.show()
+                    elementId = any.id
+                    value = any.value
+                    mandatory = type.iv_mandatory
+                    spinnerSpares = type.spinner_spares
+                    workFlowPresenter.getApiDataList(any.functionName.toString())
+                }
                 Constants.SYNC -> {
                     dialog.show()
                     synctext = type.tv_sync
                     elementId = any.id
                     getPidDetails(deviceCode)
+                }
+                Constants.SET_UP_WIFI -> {
+                    startActivity(Intent(this, SmartConfigActivity::class.java))
+                }
+                Constants.REFRESH_WIFI -> {
+                    dialog.show()
+                    elementId = any.id
+                    mandatory = type.iv_mandatory
+                    statusText = type.tv_wifi_bot_status
+                    btn_set_up_wifi = type.btn_setup_wifi
+                    workFlowPresenter.getBidStatus(
+                        data = BIDStatusIp(
+                            botId = botId!!,
+                            connectivity = connectivity!!
+                        )
+                    )
                 }
             }
         }
@@ -586,7 +622,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                             }
                         itemsMap[any.item_id] =
                             "{item_id:${any.item_id}/item_name:$itemName/quantity:${any.mycart}/serializable:${any.serializable}}"
-                        stepMap[elementId.toString()] = itemsMap.values.toString()
+                        stepMap[spareelementId.toString()] = itemsMap.values.toString()
                     } else {
                         Toast.makeText(context, "Inventory items not available", Toast.LENGTH_SHORT)
                             .show()
@@ -610,7 +646,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                             }
                         itemsMap[any.item_id] =
                             "{item_id:${any.item_id}/item_name:$itemName/quantity:${any.mycart}/serializable:${any.serializable}}"
-                        stepMap[elementId.toString()] = itemsMap.values.toString()
+                        stepMap[spareelementId.toString()] = itemsMap.values.toString()
                     } else {
                         Toast.makeText(
                             context,
@@ -647,10 +683,24 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                                 "{item_id:${any.item_id}/item_name:$itemName/quantity:${any.mycart}/serializable:${any.serializable}}"
                             )
                         }
-                        stepMap[elementId.toString()] = itemsMap.values.toString()
+                        stepMap[spareelementId.toString()] = itemsMap.values.toString()
                     }
                 }
             }
+        }
+    }
+
+    override fun showBidStatus(res: BIDStatusRes) {
+        dialog.dismiss()
+        if (res.success) {
+            mandatory!!.visibility = View.INVISIBLE
+            statusText!!.text = "SUCCESS"
+            stepMap[elementId.toString()] = "SUCCESS"
+            stepsFinished[elementId.toString()] = true
+            btn_set_up_wifi!!.visibility = View.GONE
+        } else {
+            statusText!!.text = "FAILED"
+            btn_set_up_wifi!!.visibility = View.VISIBLE
         }
     }
 
@@ -774,42 +824,100 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         }
     }
 
-    private fun startCamera() {
-        /* val intent = Intent(
-             MediaStore.ACTION_IMAGE_CAPTURE
-         )
-         val path = mContext.getExternalFilesDir(null)!!.absolutePath
-         val dir = File(path, "DP Partner 2.0/Image")
-         if (!dir.exists())
-             dir.mkdirs()
-         val photoURI = FileProvider.getUriForFile(
-             context, "com.dpdelivery.android.provider",
-             File(dir.absolutePath, PHOTO_FILE_NAME)
-         )
-         intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-         startActivityForResult(intent, CAMERA_REQUEST)*/
-        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-            // Ensure that there's a camera activity to handle the intent
-            takePictureIntent.resolveActivity(packageManager)?.also {
-                // Create the File where the photo should go
-                val photoFile: File? = try {
-                    createImageFile()
-                } catch (ex: IOException) {
-                    // Error occurred while creating the File
-                    null
+    override fun showApiInputRes(res: ApiInputRes) {
+        dialog.dismiss()
+        val data = ArrayList<String>()
+        if (res.isNotEmpty()) {
+            data.clear()
+            data.add("-")
+            for (i in res) {
+                data.add(i)
+            }
+            val adapterMode: ArrayAdapter<String?> = object : ArrayAdapter<String?>(
+                this, android.R.layout.simple_spinner_item, data as List<String?>
+            ) {
+                override fun isEnabled(position: Int): Boolean {
+                    return position != 0
                 }
-                // Continue only if the File was successfully created
-                photoFile?.also {
-                    val photoURI: Uri = FileProvider.getUriForFile(
-                        this,
-                        "com.example.android.fileprovider",
-                        it
-                    )
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+
+                override fun getDropDownView(
+                    position: Int, convertView: View?,
+                    parent: ViewGroup
+                ): View {
+                    val view = super.getDropDownView(position, convertView, parent)
+                    val tv = view as TextView
+                    if (position == 0) {
+                        // Set the hint text color grey
+                        tv.setTextColor(Color.GRAY)
+                    } else {
+                        tv.setTextColor(Color.BLACK)
+                    }
+                    return view
                 }
             }
+            adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinnerSpares!!.adapter = adapterMode
+            spinnerSpares!!.onItemSelectedListener =
+                object : AdapterView.OnItemSelectedListener {
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                    }
+
+                    override fun onItemSelected(
+                        parent: AdapterView<*>?,
+                        view: View?,
+                        position: Int,
+                        id: Long
+                    ) {
+                        if (position > 0) {
+                            val selectedString = spinnerSpares!!.selectedItem.toString()
+                            stepMap[elementId.toString()] = selectedString
+                            stepsFinished[elementId.toString()] = true
+                            mandatory!!.visibility = View.INVISIBLE
+                        }
+                    }
+                }
+        } else {
+            toast("No Data Found")
         }
+    }
+
+    private fun startCamera() {
+        val intent = Intent(
+            MediaStore.ACTION_IMAGE_CAPTURE
+        )
+        val path = mContext.getExternalFilesDir(null)!!.absolutePath
+        val dir = File(path, "DP Partner 2.0/Image")
+        if (!dir.exists())
+            dir.mkdirs()
+        val photoURI = FileProvider.getUriForFile(
+            context, "com.dpdelivery.android.provider",
+            File(dir.absolutePath, PHOTO_FILE_NAME)
+        )
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+        startActivityForResult(intent, CAMERA_REQUEST)
+        /*  Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+              // Ensure that there's a camera activity to handle the intent
+              takePictureIntent.resolveActivity(packageManager)?.also {
+                  // Create the File where the photo should go
+                  val photoFile: File? = try {
+                      createImageFile()
+                  } catch (ex: IOException) {
+                      // Error occurred while creating the File
+                      null
+                  }
+                  // Continue only if the File was successfully created
+                  photoFile?.also {
+                      val photoURI: Uri = FileProvider.getUriForFile(
+                          this,
+                          "com.example.android.fileprovider",
+                          it
+                      )
+                      takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                      startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                  }
+              }
+          }*/
     }
 
     @Throws(IOException::class)
@@ -829,25 +937,38 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            if (!currentPhotoPath.isNullOrEmpty()) {
-                dialog.show()
-                mandatory!!.visibility = View.INVISIBLE
-                stepsFinished[elementId.toString()] = true
-                workFlowPresenter.addImage(
-                    jobid = jobId!!,
-                    elementId = elementId,
-                    file = Compressor(this).compressToFile(File(currentPhotoPath!!))
-                )
-            } else {
-                toast("Problem in Taking Photo..Please try again")
+
+        if (resultCode == Activity.RESULT_OK && requestCode == CAMERA_REQUEST) {
+            val f = File(mContext.getExternalFilesDir(null)!!.absolutePath)
+            var dir = File(f, "DP Partner 2.0/Image")
+            if (!dir.exists())
+                dir.mkdirs()
+            for (temp in dir.listFiles()!!) {
+                if (temp.name == PHOTO_FILE_NAME) {
+                    dir = temp
+                    imgpath = dir.absolutePath.toString()
+                    break
+                }
+            }
+            MediaScannerConnection.scanFile(
+                context,
+                arrayOf<String>(dir.absolutePath),
+                null
+            ) { path, uri ->
+                Log.i("ExternalStorage", "Scanned $path:")
+                Log.i("ExternalStorage", "-> uri=$uri")
+            }
+
+            if (!dir.exists()) {
+                Toast.makeText(baseContext, "Error while capturing image", Toast.LENGTH_LONG).show()
+                return
             }
             try {
-                bitmap = BitmapFactory.decodeFile(currentPhotoPath)
+                bitmap = BitmapFactory.decodeFile(dir.absolutePath)
                 bitmap = Bitmap.createScaledBitmap(bitmap, 400, 400, true)
                 var rotate = 0
                 try {
-                    val exif = ExifInterface(currentPhotoPath!!)
+                    val exif = ExifInterface(dir.absolutePath)
                     val orientation = exif.getAttributeInt(
                         ExifInterface.TAG_ORIENTATION,
                         ExifInterface.ORIENTATION_NORMAL
@@ -861,88 +982,32 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
+
                 val matrix = Matrix()
                 matrix.postRotate(rotate.toFloat())
                 bitmap =
                     Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
 
                 val stream = ByteArrayOutputStream()
-                image!!.setImageBitmap(bitmap)
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
+                image!!.setImageBitmap(bitmap)
+                if (imgpath.isNotEmpty()) {
+                    dialog.show()
+                    mandatory!!.visibility = View.INVISIBLE
+                    stepsFinished[elementId.toString()] = true
+                    workFlowPresenter.addImage(
+                        jobid = jobId!!,
+                        elementId = elementId,
+                        file = Compressor(this).compressToFile(File(imgpath))
+                    )
+                } else {
+                    toast("Problem in Taking Photo..Please try again")
+                }
                 CommonUtils.setUserImagebitmap(mContext, image!!, stream)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
-
-        /* if (resultCode == Activity.RESULT_OK && requestCode == CAMERA_REQUEST) {
-             val f = File(mContext.getExternalFilesDir(null)!!.absolutePath)
-             var dir = File(f, "DP Partner 2.0/Image")
-             if (!dir.exists())
-                 dir.mkdirs()
-             for (temp in dir.listFiles()!!) {
-                 if (temp.name == PHOTO_FILE_NAME) {
-                     dir = temp
-                     imgpath = dir.absolutePath.toString()
-                     break
-                 }
-             }
-             MediaScannerConnection.scanFile(
-                 context,
-                 arrayOf<String>(dir.absolutePath),
-                 null
-             ) { path, uri ->
-                 Log.i("ExternalStorage", "Scanned $path:")
-                 Log.i("ExternalStorage", "-> uri=$uri")
-             }
-
-             if (!dir.exists()) {
-                 Toast.makeText(baseContext, "Error while capturing image", Toast.LENGTH_LONG).show()
-                 return
-             }
-             try {
-                 bitmap = BitmapFactory.decodeFile(dir.absolutePath)
-                 bitmap = Bitmap.createScaledBitmap(bitmap, 400, 400, true)
-                 var rotate = 0
-                 try {
-                     val exif = ExifInterface(dir.absolutePath)
-                     val orientation = exif.getAttributeInt(
-                         ExifInterface.TAG_ORIENTATION,
-                         ExifInterface.ORIENTATION_NORMAL
-                     )
-
-                     when (orientation) {
-                         ExifInterface.ORIENTATION_ROTATE_270 -> rotate = 270
-                         ExifInterface.ORIENTATION_ROTATE_180 -> rotate = 180
-                         ExifInterface.ORIENTATION_ROTATE_90 -> rotate = 90
-                     }
-                 } catch (e: Exception) {
-                     e.printStackTrace()
-                 }
-
-                 val matrix = Matrix()
-                 matrix.postRotate(rotate.toFloat())
-                 bitmap =
-                     Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-
-                 val stream = ByteArrayOutputStream()
-                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
-                 image!!.setImageBitmap(bitmap)
-                 dialog.show()
-                 if (imgpath.isNotEmpty()) {
-                     mandatory!!.visibility = View.INVISIBLE
-                     stepsFinished[elementId.toString()] = true
-                     workFlowPresenter.addImage(
-                         jobid = jobId!!,
-                         elementId = elementId,
-                         file = Compressor(this).compressToFile(File(imgpath))
-                     )
-                 }
-                 CommonUtils.setUserImagebitmap(mContext, image!!, stream)
-             } catch (e: Exception) {
-                 e.printStackTrace()
-             }
-         }*/
         //We will get scan results here
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         //check for null
@@ -1108,7 +1173,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     setStep(currentPosition - 1)
                     btn_next.visibility = View.VISIBLE
                     btn_Finish.visibility = View.GONE
-                    btn_submit.visibility = View.GONE
                 } else {
                     finish()
                 }
@@ -1124,7 +1188,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             setStep(currentPosition - 1)
             btn_next.visibility = View.VISIBLE
             btn_Finish.visibility = View.GONE
-            btn_submit.visibility = View.GONE
         } else {
             finish()
         }

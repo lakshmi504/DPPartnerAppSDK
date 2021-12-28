@@ -2,6 +2,7 @@ package com.dpdelivery.android.screens.workflow.workflowadapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
@@ -10,19 +11,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.dpdelivery.android.R
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.model.techres.WorkFlowDataRes
-import com.dpdelivery.android.screens.workflow.WorkFlowActivity
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.inflate
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.activity_work_flow.*
 import kotlinx.android.synthetic.main.item_element_list.*
-import java.util.*
 
 
 class ElementListAdapter(
@@ -30,8 +29,8 @@ class ElementListAdapter(
     var adapterClickListener: IAdapterClickListener? = null,
     val stepMap: MutableMap<String, String>,
     val stepsFinished: MutableMap<String, Boolean>,
-    var submissionField: String,
     var activationElementId: Int,
+    var wifiConfigId: Int,
     var syncElementId: Int,
     var sparePartId: Int
 ) : RecyclerView.Adapter<ElementListAdapter.ElementListViewHolder>() {
@@ -51,8 +50,8 @@ class ElementListAdapter(
             adapterClickListener,
             stepMap,
             stepsFinished,
-            submissionField,
             activationElementId,
+            wifiConfigId,
             syncElementId,
             sparePartId
         )
@@ -74,12 +73,11 @@ class ElementListAdapter(
         var adapterClickListener: IAdapterClickListener? = null,
         val stepMap: MutableMap<String, String>,
         val stepsFinished: MutableMap<String, Boolean>,
-        val submissionField: String,
         val activationElementId: Int,
+        val wifiConfigId: Int,
         val syncElementId: Int,
         val sparePartId: Int
-    ) : RecyclerView.ViewHolder(containerView), LayoutContainer,
-        AdapterView.OnItemSelectedListener {
+    ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
         @SuppressLint("ResourceAsColor")
         fun bind(context: Context, item: Any, pos: Int) {
             if (item is WorkFlowDataRes.WorkFlowDataResBody.Step.Template.Element) {
@@ -180,6 +178,26 @@ class ElementListAdapter(
                                                             op = Constants.REFRESH_STATUS
                                                         )
                                                     }
+                                                }
+                                            }
+                                            wifiConfigId == item.id -> {
+                                                et_add_text.visibility = View.GONE
+                                                layout_wifi_config.visibility = View.VISIBLE
+                                                btn_setup_wifi.setOnClickListener {
+                                                    adapterClickListener?.onclick(
+                                                        any = item,
+                                                        pos = pos,
+                                                        type = itemView,
+                                                        op = Constants.SET_UP_WIFI
+                                                    )
+                                                }
+                                                iv_wifi_bot_refresh.setOnClickListener {
+                                                    adapterClickListener?.onclick(
+                                                        any = item,
+                                                        pos = pos,
+                                                        type = itemView,
+                                                        op = Constants.REFRESH_WIFI
+                                                    )
                                                 }
                                             }
                                             syncElementId == item.id -> {
@@ -300,35 +318,133 @@ class ElementListAdapter(
                                 }
 
                                 if (!item.dropdownContents.isNullOrEmpty()) {
+                                    val data = ArrayList<String>()
+                                    data.clear()
+                                    data.add("-")
+                                    for (i in item.dropdownContents) {
+                                        data.add(i!!)
+                                    }
                                     ll_spinner_center.visibility = View.VISIBLE
-                                    for (i in item.dropdownContents.indices) {
+                                    for (i in data.indices) {
                                         if (!item.value.isNullOrEmpty()) {
-                                            if (item.dropdownContents[i].equals(
+                                            if (data[i].equals(
                                                     (item.value),
                                                     true
                                                 )
                                             ) {
-                                                val adapterMode = ArrayAdapter<String>(
-                                                    context,
-                                                    android.R.layout.simple_spinner_item,
-                                                    item.dropdownContents
-                                                )
+                                                val adapterMode: ArrayAdapter<String?> =
+                                                    object : ArrayAdapter<String?>(
+                                                        context,
+                                                        android.R.layout.simple_spinner_item,
+                                                        data as List<String?>
+                                                    ) {
+                                                        override fun isEnabled(position: Int): Boolean {
+                                                            return position != 0
+                                                        }
+
+                                                        override fun getDropDownView(
+                                                            position: Int, convertView: View?,
+                                                            parent: ViewGroup
+                                                        ): View {
+                                                            val view = super.getDropDownView(
+                                                                position,
+                                                                convertView,
+                                                                parent
+                                                            )
+                                                            val tv = view as TextView
+                                                            if (position == 0) {
+                                                                // Set the hint text color grey
+                                                                tv.setTextColor(Color.GRAY)
+                                                            } else {
+                                                                tv.setTextColor(Color.BLACK)
+                                                            }
+                                                            return view
+                                                        }
+                                                    }
                                                 adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                                                 spinner_center!!.adapter = adapterMode
-                                                spinner_center.tag = item
-                                                spinner_center!!.onItemSelectedListener = this
+                                                spinner_center!!.onItemSelectedListener =
+                                                    object : AdapterView.OnItemSelectedListener {
+                                                        override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                                                        }
+
+                                                        override fun onItemSelected(
+                                                            parent: AdapterView<*>?,
+                                                            view: View?,
+                                                            position: Int,
+                                                            id: Long
+                                                        ) {
+                                                            if (position > 0) {
+                                                                val selectedString =
+                                                                    spinner_center!!.selectedItem.toString()
+                                                                iv_mandatory1.visibility =
+                                                                    View.INVISIBLE
+                                                                stepMap[item.id.toString()] =
+                                                                    selectedString
+                                                                stepsFinished[item.id.toString()] =
+                                                                    true
+                                                            }
+                                                        }
+                                                    }
                                                 spinner_center.setSelection(i)
                                             }
                                         } else {
-                                            val adapterMode = ArrayAdapter<String>(
-                                                context,
-                                                android.R.layout.simple_spinner_item,
-                                                item.dropdownContents
-                                            )
+                                            val adapterMode: ArrayAdapter<String?> =
+                                                object : ArrayAdapter<String?>(
+                                                    context,
+                                                    android.R.layout.simple_spinner_item,
+                                                    data as List<String?>
+                                                ) {
+                                                    override fun isEnabled(position: Int): Boolean {
+                                                        return position != 0
+                                                    }
+
+                                                    override fun getDropDownView(
+                                                        position: Int, convertView: View?,
+                                                        parent: ViewGroup
+                                                    ): View {
+                                                        val view = super.getDropDownView(
+                                                            position,
+                                                            convertView,
+                                                            parent
+                                                        )
+                                                        val tv = view as TextView
+                                                        if (position == 0) {
+                                                            // Set the hint text color grey
+                                                            tv.setTextColor(Color.GRAY)
+                                                        } else {
+                                                            tv.setTextColor(Color.BLACK)
+                                                        }
+                                                        return view
+                                                    }
+                                                }
                                             adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                                             spinner_center!!.adapter = adapterMode
-                                            spinner_center.tag = item
-                                            spinner_center!!.onItemSelectedListener = this
+                                            spinner_center!!.onItemSelectedListener =
+                                                object : AdapterView.OnItemSelectedListener {
+                                                    override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                                                    }
+
+                                                    override fun onItemSelected(
+                                                        parent: AdapterView<*>?,
+                                                        view: View?,
+                                                        position: Int,
+                                                        id: Long
+                                                    ) {
+                                                        if (position > 0) {
+                                                            val selectedString =
+                                                                spinner_center!!.selectedItem.toString()
+                                                            iv_mandatory1.visibility =
+                                                                View.INVISIBLE
+                                                            stepMap[item.id.toString()] =
+                                                                selectedString
+                                                            stepsFinished[item.id.toString()] =
+                                                                true
+                                                        }
+                                                    }
+                                                }
                                             spinner_center.setSelection(0)
                                         }
                                     }
@@ -370,18 +486,17 @@ class ElementListAdapter(
                                         stepMap[item.id.toString()] = ""
                                         stepsFinished[item.id.toString()] = true
                                     }
-                                    if (!item.optional && !item.value.isNullOrEmpty()) {
-                                        iv_mandatory.visibility = View.INVISIBLE
-                                        stepsFinished[item.id.toString()] = true
-                                    }
-                                    ll_spinner_spares.setOnClickListener {
-                                        adapterClickListener?.onclick(
-                                            any = item,
-                                            pos = pos,
-                                            type = itemView,
-                                            op = Constants.API_INPUT
-                                        )
-                                    }
+                                    /* if (!item.optional && !item.value.isNullOrEmpty()) {
+                                         iv_mandatory.visibility = View.INVISIBLE
+                                         stepsFinished[item.id.toString()] = true
+                                     }*/
+                                    adapterClickListener?.onclick(
+                                        any = item,
+                                        pos = pos,
+                                        type = itemView,
+                                        op = Constants.API_INPUT
+                                    )
+
                                 }
                             }
                         }
@@ -420,43 +535,6 @@ class ElementListAdapter(
                         }
                     }
                 }
-            }
-        }
-
-        override fun onNothingSelected(parent: AdapterView<*>?) {
-
-        }
-
-        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            when (parent!!.id) {
-                R.id.spinner_center -> {
-                    val item =
-                        parent.tag as WorkFlowDataRes.WorkFlowDataResBody.Step.Template.Element
-                    val selectedString = item.dropdownContents?.get(position)
-                    selectedText(selectedString!!)
-                    iv_mandatory1.visibility = View.INVISIBLE
-                    stepMap[item.id.toString()] = selectedString
-                    stepsFinished[item.id.toString()] = true
-                }
-            }
-        }
-
-        private fun selectedText(selectedString: String) {
-            if (submissionField != selectedString && submissionField.isNotEmpty()) {
-                (context as WorkFlowActivity).btn_submit.visibility = View.VISIBLE
-                (context as WorkFlowActivity).btn_next.visibility = View.GONE
-                if ((context as WorkFlowActivity).btn_Finish.visibility == View.VISIBLE) {
-                    (context as WorkFlowActivity).btn_submit.visibility = View.GONE
-                }
-            } else if (submissionField.isEmpty()) {
-                (context as WorkFlowActivity).btn_submit.visibility = View.GONE
-                (context as WorkFlowActivity).btn_next.visibility = View.VISIBLE
-                if ((context as WorkFlowActivity).btn_Finish.visibility == View.VISIBLE) {
-                    (context as WorkFlowActivity).btn_submit.visibility = View.GONE
-                }
-            } else {
-                (context as WorkFlowActivity).btn_next.visibility = View.VISIBLE
-                (context as WorkFlowActivity).btn_submit.visibility = View.GONE
             }
         }
     }

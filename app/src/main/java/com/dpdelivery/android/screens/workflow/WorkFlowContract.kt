@@ -3,6 +3,7 @@ package com.dpdelivery.android.screens.workflow
 import com.dpdelivery.android.BasePresenter
 import com.dpdelivery.android.BaseView
 import com.dpdelivery.android.model.techinp.AddWorkFlowData
+import com.dpdelivery.android.model.techinp.BIDStatusIp
 import com.dpdelivery.android.model.techinp.FinishJobIp
 import com.dpdelivery.android.model.techinp.SubmitPidIp
 import com.dpdelivery.android.model.techres.*
@@ -23,6 +24,8 @@ interface WorkFlowContract {
         fun showPidDetailsRes(res: BLEDetailsRes)
         fun showSyncRes(res: BLEDetailsRes)
         fun showJobRes(res: Job)
+        fun showBidStatus(res:BIDStatusRes)
+        fun showApiInputRes(res:ApiInputRes)
     }
 
     interface Presenter : BasePresenter<View> {
@@ -38,5 +41,7 @@ interface WorkFlowContract {
         fun getPidDetails(hashMap: HashMap<String, String>)
         fun updateServerCmds(hashMap: HashMap<String, String>)
         fun getJob(jobId: Int)
+        fun getBidStatus(data:BIDStatusIp)
+        fun getApiDataList(functionName: String?)
     }
 }

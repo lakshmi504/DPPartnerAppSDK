@@ -32,5 +32,7 @@ class Constants {
         const val INCREMENT = "INCREMENT"
         const val DECREMENT = "DECREMENT"
         const val API_INPUT = "API_INPUT"
+        const val SET_UP_WIFI = "SET_UP_WIFI"
+        const val REFRESH_WIFI = "REFRESH_WIFI"
     }
 }

@@ -24,6 +24,7 @@ class ApiConstants {
         const val VOIP_CALL = "https://api-voice.kaleyra.com/v1/"
         const val UPDATE_TOKEN = "notification/user"
         const val LAST_3_JOBS = "workforce/getLast3JobsByInstallation/"
+        const val CONN_CHECK = "https://api.drinkprime.in/sponsor/device/life/conn-check"
 
 
         //employee earnings

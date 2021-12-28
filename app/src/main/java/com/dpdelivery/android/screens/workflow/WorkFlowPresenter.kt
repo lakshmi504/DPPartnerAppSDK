@@ -3,6 +3,7 @@ package com.dpdelivery.android.screens.workflow
 import android.content.Context
 import com.dpdelivery.android.api.ApiService
 import com.dpdelivery.android.model.techinp.AddWorkFlowData
+import com.dpdelivery.android.model.techinp.BIDStatusIp
 import com.dpdelivery.android.model.techinp.FinishJobIp
 import com.dpdelivery.android.model.techinp.SubmitPidIp
 import com.dpdelivery.android.utils.CommonUtils
@@ -189,6 +190,22 @@ class WorkFlowPresenter @Inject constructor(
         )
     }
 
+    override fun getApiDataList(functionName: String?) {
+        view?.showProgress()
+        subscription.add(
+            apiService.getApiInputData(CommonUtils.getLoginToken(), functionName!!)
+                .subscribeOn(baseScheduler.io())
+                .observeOn(baseScheduler.ui())
+                .subscribe(
+                    { res ->
+                        view?.showApiInputRes(res)
+                    },
+                    { throwable ->
+                        view?.showErrorMsg(throwable)
+                    })
+        )
+    }
+
     override fun getPidDetails(hashMap: HashMap<String, String>) {
         view?.showProgress()
         subscription.add(
@@ -232,6 +249,28 @@ class WorkFlowPresenter @Inject constructor(
                         { res ->
                             view?.hideProgress()
                             view?.showJobRes(res)
+                        },
+                        { throwable ->
+                            view?.hideProgress()
+                            view?.showErrorMsg(throwable)
+                        })
+            )
+        } catch (e: KotlinNullPointerException) {
+
+        }
+    }
+
+    override fun getBidStatus(data: BIDStatusIp) {
+        view?.showProgress()
+        try {
+            subscription.add(
+                apiService.getBotStatus(CommonUtils.getLoginToken(), bidStatusIp = data)
+                    .subscribeOn(baseScheduler.io())
+                    .observeOn(baseScheduler.ui())
+                    .subscribe(
+                        { res ->
+                            view?.hideProgress()
+                            view?.showBidStatus(res)
                         },
                         { throwable ->
                             view?.hideProgress()

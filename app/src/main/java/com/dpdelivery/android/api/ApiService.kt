@@ -108,6 +108,12 @@ interface ApiService {
         @Url url: String
     ): Observable<InventoryRes>
 
+    @GET
+    fun getApiInputData(
+        @Header("Authorization") token: String,
+        @Url url: String
+    ): Observable<ApiInputRes>
+
     @PUT(ApiConstants.FINISH_JOB + "{jobId}")
     fun finishJob(
         @Header("Authorization") token: String,
@@ -214,5 +220,11 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("jobId", encoded = true) id: Int
     ): Observable<LastJobsRes>
+
+    @POST(ApiConstants.CONN_CHECK)
+    fun getBotStatus(
+        @Header("Authorization") token: String,
+        @Body bidStatusIp: BIDStatusIp
+    ): Observable<BIDStatusRes>
 
 }
