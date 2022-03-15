@@ -90,6 +90,7 @@
             android:id="@+id/iv_mandatory1"
             android:layout_width="@dimen/dimens_10"
             android:layout_height="@dimen/dimens_10"
+            android:layout_gravity="end"
             android:layout_marginTop="@dimen/dimens_5"
             android:src="@drawable/ic_star"
             android:visibility="gone" />
@@ -343,6 +344,7 @@
 
             </RelativeLayout>
         </LinearLayout>
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_setup_wifi"
             android:layout_width="@dimen/dimens_100"
@@ -352,10 +354,10 @@
             android:background="@drawable/btn_orange_bg"
             android:fontFamily="@font/stolzl_regular"
             android:gravity="center"
-            android:visibility="gone"
             android:text="@string/setup_wifi"
             android:textAllCaps="false"
-            android:textColor="@color/colorWhite" />
+            android:textColor="@color/colorWhite"
+            android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout
@@ -369,6 +371,7 @@
             android:id="@+id/ll_spinner_spares"
             android:layout_width="@dimen/dimens_150"
             android:layout_height="@dimen/dimens_25"
+            android:layout_marginTop="@dimen/dimens_5"
             android:background="@drawable/btn_background_grey_border"
             android:orientation="vertical">
 
@@ -390,6 +393,16 @@
                 android:background="@drawable/ic_sidemenu_down_arrow" />
 
         </FrameLayout>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_mandatory_list"
+            android:layout_width="@dimen/dimens_10"
+            android:layout_height="@dimen/dimens_10"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:src="@drawable/ic_star"
+            android:visibility="gone" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -423,11 +436,28 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <SearchView
-            android:id="@+id/searchView"
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:queryHint="Search Item" />
+            android:background="@null"
+            android:drawableStart="@drawable/ic_search_black"
+            android:drawablePadding="@dimen/dimens_5"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:fontFamily="@font/montserrat_regular"
+            android:hint="Search Item"
+            android:padding="@dimen/dimens_10"
+            android:textColor="@color/colorBlackOverlay"
+            android:textColorHint="@color/colorTextGrey"
+            android:textSize="@dimen/dimens_12sp" />
+
+        <!--  <androidx.appcompat.widget.SearchView
+              android:id="@+id/searchView"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              app:iconifiedByDefault="false"
+              app:queryHint="Search Item" />-->
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_spares"

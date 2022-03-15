@@ -26,7 +26,11 @@ import androidx.core.content.ContextCompat
 import com.dpdelivery.android.R
 import com.dpdelivery.android.commonviews.MultiStateView
 import com.dpdelivery.android.constants.Constants
+import com.dpdelivery.android.model.techinp.Cmd
 import com.dpdelivery.android.model.techinp.FinishJobIp
+import com.dpdelivery.android.model.techinp.HomeIP
+import com.dpdelivery.android.model.techinp.SyncIP
+import com.dpdelivery.android.model.techres.AddTextRes
 import com.dpdelivery.android.model.techres.BLEDetailsRes
 import com.dpdelivery.android.model.techres.SparePartsData
 import com.dpdelivery.android.model.techres.SubmiPidRes
@@ -109,7 +113,7 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener,
     private var amountCollected: Float = 0.0f
     private var syncAt: String? = null
     private var jobType: String? = null
-
+    private val cmds = ArrayList<Cmd>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -195,50 +199,40 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener,
 
     private fun updateServerCmds() {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
-        val params = HashMap<String, String>()
-        params["purifierid"] = deviceCode.toString()
-        params["currentliters"] = CommonUtils.current.toString() + ""
-        params["validity"] = CommonUtils.validity!!
-        params["flowlimit"] = CommonUtils.flowlimit.toString() + ""
-        params["status"] = CommonUtils.purifierStatus.toString() + ""
-        params["techApp"] = "1"
-
-        val ja = JSONArray()
         try {
             val list = dbH.allAcks
             for (i in list.indices) {
-                val cmd = list[i]
-                val temp = JSONObject()
-                temp.put("cmdid", cmd.id)
-                temp.put("cmd", cmd.cmd)
-                temp.put("status", cmd.status)
-                ja.put(temp)
+                cmds.add(Cmd(cmdid = list[i].id, cmd = list[i].cmd!!, status = list[i].status!!))
             }
-            params["cmds"] = ja.toString()
-
         } catch (e: Exception) {
 
         }
-        presenter.updateServerCmds(params)
+        val syncIP = SyncIP(
+            purifierid = deviceCode.toString(),
+            currentliters = CommonUtils.current.toString() + "",
+            validity = CommonUtils.validity,
+            flowlimit = CommonUtils.flowlimit.toString() + "",
+            status = CommonUtils.purifierStatus.toString() + "",
+            cmds = cmds
+        )
+        presenter.updateServerCmds(syncIP)
+        Log.d("syncparams", syncIP.toString())
     }
 
-    override fun showSyncRes(res: BLEDetailsRes) {
+    override fun showSyncRes(res: AddTextRes) {
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
-        if (res.status.equals("OK")) {
+        if (res.success!!) {
             dbH.clearAcks()
-            CommonUtils.resetUpdate()
             getPidDetails(deviceCode)
+            CommonUtils.resetUpdate()
         } else {
-            updateServerCmds()
-            toast(res.output!!.message!!)
+            toast(res.message!!)
         }
     }
 
     private fun getPidDetails(deviceCode: String?) {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
-        val params = HashMap<String, String>()
-        params["purifierid"] = deviceCode.toString()
-        presenter.getPidDetails(params)
+        presenter.getPidDetails(HomeIP(purifierid = deviceCode!!))
     }
 
     override fun showPidDetailsRes(res: BLEDetailsRes) {
@@ -579,7 +573,7 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener,
             item = selectedItems[i]
             Log.e(TAG, selectedItems[i])
             for (j in purifierParts.indices) {
-                if (item == purifierParts[j]?.itemname) {
+                if (item == purifierParts[j].itemname) {
                     chl.setItemChecked(j, true)
                 }
             }

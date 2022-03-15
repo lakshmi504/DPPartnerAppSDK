@@ -17,7 +17,9 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Looper
 import android.provider.MediaStore
+import android.text.Editable
 import android.text.InputFilter
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -42,6 +44,7 @@ import com.dpdelivery.android.commonviews.MultiStateView
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.model.techinp.*
+import com.dpdelivery.android.model.techinp.Cmd
 import com.dpdelivery.android.model.techres.*
 import com.dpdelivery.android.screens.base.TechBaseActivity
 import com.dpdelivery.android.screens.login.LoginActivity
@@ -53,24 +56,22 @@ import com.dpdelivery.android.screens.sync.SyncActivity
 import com.dpdelivery.android.screens.techjobslist.TechJobsListActivity
 import com.dpdelivery.android.screens.workflow.workflowadapter.SparesListAdapter
 import com.dpdelivery.android.screens.workflow.workflowadapter.TemplateListAdapter
-import com.dpdelivery.android.utils.*
+import com.dpdelivery.android.utils.CommonUtils
+import com.dpdelivery.android.utils.SharedPreferenceManager
+import com.dpdelivery.android.utils.toast
+import com.dpdelivery.android.utils.withNotNullNorEmpty
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.zxing.integration.android.IntentIntegrator
 import id.zelory.compressor.Compressor
-import kotlinx.android.synthetic.main.activity_inventory.*
 import kotlinx.android.synthetic.main.activity_work_flow.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.error_view.*
-import kotlinx.android.synthetic.main.item_element_list.*
 import kotlinx.android.synthetic.main.item_element_list.view.*
-import kotlinx.android.synthetic.main.item_spares.*
 import kotlinx.android.synthetic.main.item_spares.view.*
-import kotlinx.android.synthetic.main.item_template_list.*
 import kotlinx.android.synthetic.main.item_timeline.*
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.HttpException
@@ -81,7 +82,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClickListener,
     IAdapterClickListener {
@@ -90,9 +90,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var jobId: Int? = 0
     private var deviceCode: String? = null
     private var botId: String? = null
-    private var wifiBotId: Int? = 0
     private var connectivity: String? = null
-    private var wifiBotAddress: String? = null
     lateinit var mLayoutManager: LinearLayoutManager
     private var workFlowAdapter: TemplateListAdapter? = null
     private var currentPosition: Int = 0
@@ -112,6 +110,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     lateinit var data: JSONObject
     private var image: AppCompatImageView? = null
     private var mandatory: AppCompatImageView? = null
+    private var mandatoryIcon: AppCompatImageView? = null
     private var elementId: Int = 0
     private var spareelementId: Int = 0
     private var mTemplateList: ArrayList<WorkFlowDataRes.WorkFlowDataResBody.Step.Template>? = null
@@ -121,7 +120,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private val stepMapList = ArrayList<AddWorkFlowData.Data>()
     private var latitude: String = ""
     private var longitude: String = ""
-    private var submissionField: String = ""
     private var syncElementId: Int = 0
     private var activationElementId: Int = 0
     private var wifiConfigId: Int = 0
@@ -136,7 +134,9 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     lateinit var partList: ArrayList<PartInfo>
     private var spinnerSpares: Spinner? = null
     private var rvSpares: RecyclerView? = null
-    private var searchView: SearchView? = null
+
+    //private var searchView: androidx.appcompat.widget.SearchView? = null
+    private var etSearch: AppCompatEditText? = null
     private var value: String? = null
     lateinit var dbH: DatabaseHandler
     private var ownerName: String = ""
@@ -145,8 +145,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var isSync: Boolean = false
     lateinit var adapterPartsList: SparesListAdapter
     private var itemsMap: MutableMap<Int, String> = mutableMapOf()
-    val REQUEST_IMAGE_CAPTURE = 1
     private var currentPhotoPath: String? = null
+    private val cmds = ArrayList<Cmd>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -443,7 +443,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             )
             workFlowPresenter.finishJob(jobId!!, finishJobIp)
         } else {
-
             btn_Finish.isEnabled = true
             toast(res.message!!)
         }
@@ -562,7 +561,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     dialog.show()
                     spareelementId = any.id
                     value = any.value
-                    searchView = type.searchView
+                    etSearch = type.et_search
                     rvSpares = type.rv_spares
                     rvSpares!!.layoutManager = LinearLayoutManager(context)
                     val api = any.functionName
@@ -572,7 +571,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     dialog.show()
                     elementId = any.id
                     value = any.value
-                    mandatory = type.iv_mandatory
+                    mandatoryIcon = type.iv_mandatory_list
                     spinnerSpares = type.spinner_spares
                     workFlowPresenter.getApiDataList(any.functionName.toString())
                 }
@@ -705,38 +704,35 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     }
 
     private fun getPidDetails(deviceCode: String?) {
-        val params = HashMap<String, String>()
-        params["purifierid"] = deviceCode.toString()
-        workFlowPresenter.getPidDetails(params)
+        workFlowPresenter.getPidDetails(homeIP = HomeIP(purifierid = deviceCode!!))
     }
 
     private fun updateServerCmds() {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
-        val params = HashMap<String, String>()
-        params["purifierid"] = deviceCode.toString()
-        params["currentliters"] = CommonUtils.current.toString() + ""
-        params["validity"] = CommonUtils.validity
-        params["flowlimit"] = CommonUtils.flowlimit.toString() + ""
-        params["status"] = CommonUtils.purifierStatus.toString() + ""
-        params["techApp"] = "1"
-
-        val ja = JSONArray()
         try {
             val list = dbH.allAcks
             for (i in list.indices) {
-                val cmd = list[i]
-                val temp = JSONObject()
-                temp.put("cmdid", cmd.id)
-                temp.put("cmd", cmd.cmd)
-                temp.put("status", cmd.status)
-                ja.put(temp)
+                cmds.add(Cmd(cmdid = list[i].id, cmd = list[i].cmd!!, status = list[i].status!!))
             }
-            params["cmds"] = ja.toString()
-
         } catch (e: Exception) {
 
         }
-        workFlowPresenter.updateServerCmds(params)
+        val syncIP = SyncIP(
+            purifierid = deviceCode.toString(),
+            currentliters = CommonUtils.current.toString() + "",
+            validity = CommonUtils.validity,
+            flowlimit = CommonUtils.flowlimit.toString() + "",
+            status = CommonUtils.purifierStatus.toString() + "",
+            mode = CommonUtils.purifierStatus.toString() + "",
+            tdsIn = "0.0",
+            tdsOut = "0.0",
+            tempIn = "0",
+            tempOut = "0",
+            latLong = "",
+            cmds = cmds
+        )
+        workFlowPresenter.updateServerCmds(syncIP)
+        Log.d("syncparams", syncIP.toString())
     }
 
     override fun showPidDetailsRes(res: BLEDetailsRes) {
@@ -779,15 +775,15 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         }
     }
 
-    override fun showSyncRes(res: BLEDetailsRes) {
+    override fun showSyncRes(res: AddTextRes) {
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
-        if (res.status.equals("OK")) {
+        if (res.success!!) {
             dbH.clearAcks()
             isSync = true
             getPidDetails(deviceCode)
             CommonUtils.resetUpdate()
         } else {
-            toast(res.output!!.message!!)
+            toast(res.message!!)
         }
     }
 
@@ -806,8 +802,21 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             rvSpares!!.setItemViewCacheSize(100)
             rvSpares!!.isNestedScrollingEnabled = false
             adapterPartsList.addList(partList)
-            searchView!!.visibility = View.VISIBLE
-            searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            etSearch!!.visibility = View.VISIBLE
+            etSearch!!.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(editable: Editable?) {
+
+                }
+
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                }
+
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    adapterPartsList.filter.filter(p0)
+                }
+            })
+            /*searchView!!.setOnQueryTextListener(object :
+                androidx.appcompat.widget.SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     return false
                 }
@@ -817,9 +826,9 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     adapterPartsList.filter.filter(newText)
                     return false
                 }
-            })
+            })*/
         } else {
-            searchView!!.visibility = View.GONE
+            etSearch!!.visibility = View.GONE
             toast("No Spares Found")
         }
     }
@@ -833,50 +842,108 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             for (i in res) {
                 data.add(i)
             }
-            val adapterMode: ArrayAdapter<String?> = object : ArrayAdapter<String?>(
-                this, android.R.layout.simple_spinner_item, data as List<String?>
-            ) {
-                override fun isEnabled(position: Int): Boolean {
-                    return position != 0
-                }
-
-                override fun getDropDownView(
-                    position: Int, convertView: View?,
-                    parent: ViewGroup
-                ): View {
-                    val view = super.getDropDownView(position, convertView, parent)
-                    val tv = view as TextView
-                    if (position == 0) {
-                        // Set the hint text color grey
-                        tv.setTextColor(Color.GRAY)
-                    } else {
-                        tv.setTextColor(Color.BLACK)
-                    }
-                    return view
-                }
-            }
-            adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinnerSpares!!.adapter = adapterMode
-            spinnerSpares!!.onItemSelectedListener =
-                object : AdapterView.OnItemSelectedListener {
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-
-                    }
-
-                    override fun onItemSelected(
-                        parent: AdapterView<*>?,
-                        view: View?,
-                        position: Int,
-                        id: Long
+            for (i in data.indices) {
+                if (!value.isNullOrEmpty()) {
+                    if (data[i].equals(
+                            (value),
+                            true
+                        )
                     ) {
-                        if (position > 0) {
-                            val selectedString = spinnerSpares!!.selectedItem.toString()
-                            stepMap[elementId.toString()] = selectedString
-                            stepsFinished[elementId.toString()] = true
-                            mandatory!!.visibility = View.INVISIBLE
+                        val adapterMode: ArrayAdapter<String?> = object : ArrayAdapter<String?>(
+                            this, android.R.layout.simple_spinner_item, data as List<String?>
+                        ) {
+                            override fun isEnabled(position: Int): Boolean {
+                                return position != 0
+                            }
+
+                            override fun getDropDownView(
+                                position: Int, convertView: View?,
+                                parent: ViewGroup
+                            ): View {
+                                val view = super.getDropDownView(position, convertView, parent)
+                                val tv = view as TextView
+                                if (position == 0) {
+                                    // Set the hint text color grey
+                                    tv.setTextColor(Color.GRAY)
+                                } else {
+                                    tv.setTextColor(Color.BLACK)
+                                }
+                                return view
+                            }
+                        }
+                        adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        spinnerSpares!!.adapter = adapterMode
+                        spinnerSpares!!.onItemSelectedListener =
+                            object : AdapterView.OnItemSelectedListener {
+                                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                                }
+
+                                override fun onItemSelected(
+                                    parent: AdapterView<*>?,
+                                    view: View?,
+                                    position: Int,
+                                    id: Long
+                                ) {
+                                    if (position > 0) {
+                                        val selectedString = spinnerSpares!!.selectedItem.toString()
+                                        stepMap[elementId.toString()] = selectedString
+                                        stepsFinished[elementId.toString()] = true
+                                        mandatoryIcon!!.visibility = View.INVISIBLE
+                                    }
+                                }
+                            }
+                        spinnerSpares!!.setSelection(i)
+                    }
+                } else {
+                    val adapterMode: ArrayAdapter<String?> = object : ArrayAdapter<String?>(
+                        this, android.R.layout.simple_spinner_item, data as List<String?>
+                    ) {
+                        override fun isEnabled(position: Int): Boolean {
+                            return position != 0
+                        }
+
+                        override fun getDropDownView(
+                            position: Int, convertView: View?,
+                            parent: ViewGroup
+                        ): View {
+                            val view = super.getDropDownView(position, convertView, parent)
+                            val tv = view as TextView
+                            if (position == 0) {
+                                // Set the hint text color grey
+                                tv.setTextColor(Color.GRAY)
+                            } else {
+                                tv.setTextColor(Color.BLACK)
+                            }
+                            return view
                         }
                     }
+                    adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    spinnerSpares!!.adapter = adapterMode
+                    spinnerSpares!!.onItemSelectedListener =
+                        object : AdapterView.OnItemSelectedListener {
+                            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                            }
+
+                            override fun onItemSelected(
+                                parent: AdapterView<*>?,
+                                view: View?,
+                                position: Int,
+                                id: Long
+                            ) {
+                                if (position > 0) {
+                                    val selectedString = spinnerSpares!!.selectedItem.toString()
+                                    stepMap[elementId.toString()] = selectedString
+                                    stepsFinished[elementId.toString()] = true
+                                    mandatoryIcon!!.visibility = View.INVISIBLE
+                                }
+                            }
+                        }
+                    spinnerSpares!!.setSelection(0)
                 }
+            }
+
         } else {
             toast("No Data Found")
         }
@@ -960,7 +1027,11 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             }
 
             if (!dir.exists()) {
-                Toast.makeText(baseContext, "Error while capturing image", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    baseContext,
+                    "Error while capturing image",
+                    Toast.LENGTH_LONG
+                ).show()
                 return
             }
             try {
@@ -986,7 +1057,15 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 val matrix = Matrix()
                 matrix.postRotate(rotate.toFloat())
                 bitmap =
-                    Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                    Bitmap.createBitmap(
+                        bitmap,
+                        0,
+                        0,
+                        bitmap.width,
+                        bitmap.height,
+                        matrix,
+                        true
+                    )
 
                 val stream = ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
@@ -1019,7 +1098,11 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 val pattern = Pattern.compile(regex)
                 val matcher = pattern.matcher(result.contents)
                 if (matcher.matches()) {
-                    et_device_code!!.setText(result.contents)
+                    if (result.contents.length == 10) {
+                        et_device_code!!.setText(result.contents)
+                    } else {
+                        toast("Purifier ID Is Not Valid")
+                    }
                 } else
                     toast("Purifier ID Is Not Valid")
             }
@@ -1038,7 +1121,11 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     startCamera()
                 } else {
-                    Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_SHORT)
+                    Toast.makeText(
+                        this,
+                        getString(R.string.permission_denied),
+                        Toast.LENGTH_SHORT
+                    )
                         .show()
                 }
             }
@@ -1109,7 +1196,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
      * Location
      */
     private fun setUpLocationListener() {
-        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        val fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(this)
         // for getting the current location update after every 2 seconds with high accuracy
         val locationRequest = LocationRequest.create().apply {
             interval = 2000

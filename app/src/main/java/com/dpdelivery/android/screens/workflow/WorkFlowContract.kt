@@ -2,10 +2,7 @@ package com.dpdelivery.android.screens.workflow
 
 import com.dpdelivery.android.BasePresenter
 import com.dpdelivery.android.BaseView
-import com.dpdelivery.android.model.techinp.AddWorkFlowData
-import com.dpdelivery.android.model.techinp.BIDStatusIp
-import com.dpdelivery.android.model.techinp.FinishJobIp
-import com.dpdelivery.android.model.techinp.SubmitPidIp
+import com.dpdelivery.android.model.techinp.*
 import com.dpdelivery.android.model.techres.*
 import java.io.File
 
@@ -22,10 +19,10 @@ interface WorkFlowContract {
         fun showRefreshPidRes(res: PIdStatusRes)
         fun showSparePartsRes(res: InventoryRes)
         fun showPidDetailsRes(res: BLEDetailsRes)
-        fun showSyncRes(res: BLEDetailsRes)
+        fun showSyncRes(res: AddTextRes)
         fun showJobRes(res: Job)
-        fun showBidStatus(res:BIDStatusRes)
-        fun showApiInputRes(res:ApiInputRes)
+        fun showBidStatus(res: BIDStatusRes)
+        fun showApiInputRes(res: ApiInputRes)
     }
 
     interface Presenter : BasePresenter<View> {
@@ -38,10 +35,10 @@ interface WorkFlowContract {
         fun submitPid(submitPidIp: SubmitPidIp)
         fun refreshPidStatus(purifierId: String)
         fun getSparePartsList(functionName: String?)
-        fun getPidDetails(hashMap: HashMap<String, String>)
-        fun updateServerCmds(hashMap: HashMap<String, String>)
+        fun getPidDetails(homeIP: HomeIP)
+        fun updateServerCmds(syncIP: SyncIP)
         fun getJob(jobId: Int)
-        fun getBidStatus(data:BIDStatusIp)
+        fun getBidStatus(data: BIDStatusIp)
         fun getApiDataList(functionName: String?)
     }
 }

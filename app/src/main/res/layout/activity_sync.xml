@@ -158,64 +158,70 @@
         android:progress="50"
         android:rotation="360" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_coonect"
-        android:layout_width="@dimen/dimens_30"
-        android:layout_height="@dimen/dimens_30"
-        android:layout_below="@id/iv_sync"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dimens_20"
-        android:src="@drawable/ic_tick"
-        android:visibility="gone"
-        tools:ignore="VectorDrawableCompat" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/synctext_completed"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/progress1"
-        android:layout_marginTop="@dimen/dimens_10"
-        android:fontFamily="@font/stolzl_medium"
-        android:gravity="center"
-        android:text="Sync Completed !"
-        android:textColor="@color/colorBlack"
-        android:textSize="@dimen/dimens_12sp"
-        android:visibility="gone" />
+        android:layout_below="@id/progress2"
+        android:orientation="vertical">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_not_coonect"
-        android:layout_width="@dimen/dimens_30"
-        android:layout_height="@dimen/dimens_30"
-        android:layout_below="@id/iv_sync"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dimens_20"
-        android:src="@drawable/ic_cancel"
-        android:visibility="gone"
-        tools:ignore="VectorDrawableCompat" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_coonect"
+            android:layout_width="@dimen/dimens_30"
+            android:layout_height="@dimen/dimens_30"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dimens_20"
+            android:src="@drawable/ic_tick"
+            android:visibility="gone"
+            tools:ignore="VectorDrawableCompat" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/synctext_notcompleted"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/progress1"
-        android:layout_marginTop="@dimen/dimens_10"
-        android:fontFamily="@font/stolzl_medium"
-        android:gravity="center"
-        android:text="Not able to sync !"
-        android:textColor="@color/colorBlack"
-        android:textSize="@dimen/dimens_12sp"
-        android:visibility="gone" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/synctext_completed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dimens_10"
+            android:fontFamily="@font/stolzl_medium"
+            android:gravity="center"
+            android:text="Sync Completed !"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/dimens_12sp"
+            android:visibility="gone" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/synctext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/progress1"
-        android:layout_marginTop="@dimen/dimens_20"
-        android:fontFamily="@font/stolzl_medium"
-        android:gravity="center"
-        android:text="@string/connecting_to_your_prime_device"
-        android:textColor="@color/colorBlack"
-        android:textSize="@dimen/dimens_12sp" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_not_coonect"
+            android:layout_width="@dimen/dimens_30"
+            android:layout_height="@dimen/dimens_30"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dimens_20"
+            android:src="@drawable/ic_cancel"
+            android:visibility="gone"
+            tools:ignore="VectorDrawableCompat" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/synctext_notcompleted"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dimens_10"
+            android:fontFamily="@font/stolzl_medium"
+            android:gravity="center"
+            android:text="Not able to sync !"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/dimens_12sp"
+            android:visibility="gone" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/synctext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dimens_20"
+            android:fontFamily="@font/stolzl_medium"
+            android:gravity="center"
+            android:text="@string/connecting_to_your_prime_device"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/dimens_12sp" />
+
+    </LinearLayout>
 
 </RelativeLayout>

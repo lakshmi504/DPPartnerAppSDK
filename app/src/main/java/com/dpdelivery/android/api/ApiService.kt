@@ -124,13 +124,11 @@ interface ApiService {
     @GET(ApiConstants.SUMMARY)
     fun getSummary(@Header("Authorization") token: String): Observable<SummaryRes>
 
-    @FormUrlEncoded
     @POST(ApiConstants.GET_BLE_DETAILS)
-    fun getBLEDetails(@FieldMap purifierid: HashMap<String, String>): Observable<BLEDetailsRes>
+    fun getBLEDetails(@Body homeIP: HomeIP): Observable<BLEDetailsRes>
 
-    @FormUrlEncoded
     @POST(ApiConstants.SYNC)
-    fun updateServerCmds(@FieldMap params: HashMap<String, String>): Observable<BLEDetailsRes>
+    fun updateServerCmds(@Body syncIP: SyncIP): Observable<AddTextRes>
 
     @GET(ApiConstants.GET_WORK_FLOW_DATA)
     fun getWorkFlowData(
