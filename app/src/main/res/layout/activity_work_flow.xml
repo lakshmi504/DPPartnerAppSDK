@@ -45,22 +45,6 @@
             android:textSize="@dimen/dimens_12sp"
             android:visibility="gone" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_submit"
-            android:layout_width="@dimen/dimens_150"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/dimens_10"
-            android:background="@drawable/btn_theme_bg"
-            android:fontFamily="@font/stolzl_medium"
-            android:gravity="center"
-            android:padding="@dimen/dimens_8"
-            android:text="Submit"
-            android:textAllCaps="false"
-            android:textColor="@color/colorWhite"
-            android:textSize="@dimen/dimens_12sp"
-            android:visibility="gone" />
-
     </LinearLayout>
 
 

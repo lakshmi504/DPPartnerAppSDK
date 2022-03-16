@@ -2,6 +2,7 @@ package com.dpdelivery.android.screens.workflow
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -10,17 +11,20 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Matrix
-import android.net.Uri
+import android.media.MediaScannerConnection
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Looper
 import android.provider.MediaStore
+import android.text.Editable
 import android.text.InputFilter
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
@@ -40,33 +44,34 @@ import com.dpdelivery.android.commonviews.MultiStateView
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.model.techinp.*
+import com.dpdelivery.android.model.techinp.Cmd
 import com.dpdelivery.android.model.techres.*
 import com.dpdelivery.android.screens.base.TechBaseActivity
 import com.dpdelivery.android.screens.login.LoginActivity
 import com.dpdelivery.android.screens.scanner.ScannerActivity
+import com.dpdelivery.android.screens.smartconfig.SmartConfigActivity
 import com.dpdelivery.android.screens.sync.Command
 import com.dpdelivery.android.screens.sync.DatabaseHandler
 import com.dpdelivery.android.screens.sync.SyncActivity
 import com.dpdelivery.android.screens.techjobslist.TechJobsListActivity
 import com.dpdelivery.android.screens.workflow.workflowadapter.SparesListAdapter
 import com.dpdelivery.android.screens.workflow.workflowadapter.TemplateListAdapter
-import com.dpdelivery.android.utils.*
+import com.dpdelivery.android.utils.CommonUtils
+import com.dpdelivery.android.utils.SharedPreferenceManager
+import com.dpdelivery.android.utils.toast
+import com.dpdelivery.android.utils.withNotNullNorEmpty
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.zxing.integration.android.IntentIntegrator
 import id.zelory.compressor.Compressor
-import kotlinx.android.synthetic.main.activity_inventory.*
 import kotlinx.android.synthetic.main.activity_work_flow.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.error_view.*
 import kotlinx.android.synthetic.main.item_element_list.view.*
-import kotlinx.android.synthetic.main.item_spares.*
 import kotlinx.android.synthetic.main.item_spares.view.*
-import kotlinx.android.synthetic.main.item_template_list.*
 import kotlinx.android.synthetic.main.item_timeline.*
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.HttpException
@@ -77,7 +82,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClickListener,
     IAdapterClickListener {
@@ -106,7 +110,9 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     lateinit var data: JSONObject
     private var image: AppCompatImageView? = null
     private var mandatory: AppCompatImageView? = null
+    private var mandatoryIcon: AppCompatImageView? = null
     private var elementId: Int = 0
+    private var spareelementId: Int = 0
     private var mTemplateList: ArrayList<WorkFlowDataRes.WorkFlowDataResBody.Step.Template>? = null
     private var noteList: ArrayList<Note?>? = null
     private val stepMap: MutableMap<String, String> = mutableMapOf()
@@ -114,29 +120,33 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private val stepMapList = ArrayList<AddWorkFlowData.Data>()
     private var latitude: String = ""
     private var longitude: String = ""
-    private var submissionField: String = ""
     private var syncElementId: Int = 0
     private var activationElementId: Int = 0
+    private var wifiConfigId: Int = 0
     private var sparePartId: Int = 0
     private var et_device_code: AppCompatEditText? = null
     private var et_purifier_id: AppCompatEditText? = null
     private var btn_activate: AppCompatButton? = null
+    private var btn_set_up_wifi: AppCompatButton? = null
     private var iv_refresh: AppCompatImageView? = null
     private var tv_status: AppCompatTextView? = null
     private var LOCATION_PERMISSION_REQUEST_CODE = 123
     lateinit var partList: ArrayList<PartInfo>
-
+    private var spinnerSpares: Spinner? = null
     private var rvSpares: RecyclerView? = null
-    private var searchView: SearchView? = null
+
+    //private var searchView: androidx.appcompat.widget.SearchView? = null
+    private var etSearch: AppCompatEditText? = null
     private var value: String? = null
     lateinit var dbH: DatabaseHandler
     private var ownerName: String = ""
     private var synctext: TextView? = null
+    private var statusText: TextView? = null
     private var isSync: Boolean = false
     lateinit var adapterPartsList: SparesListAdapter
     private var itemsMap: MutableMap<Int, String> = mutableMapOf()
-    val REQUEST_IMAGE_CAPTURE = 1
     private var currentPhotoPath: String? = null
+    private val cmds = ArrayList<Cmd>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -162,7 +172,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         dialog = CommonUtils.progressDialog(context)
         btn_next.setOnClickListener(this)
         btn_Finish.setOnClickListener(this)
-        btn_submit.setOnClickListener(this)
         tv_view_notes.visibility = View.VISIBLE
         tv_view_notes.setOnClickListener(this)
         error_button.setOnClickListener(this)
@@ -254,8 +263,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 adapterClickListener = this@WorkFlowActivity,
                 stepMap = stepMap,
                 stepsFinished = stepsFinished,
-                submissionField = submissionField,
                 activationElementId = activationElementId,
+                wifiConfigId = wifiConfigId,
                 syncElementId = syncElementId,
                 sparePartId = sparePartId
             )
@@ -273,10 +282,14 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
         if (res.success!!) {
             mDataList = res.body!!.steps
-            submissionField = res.body.submissionField
             activationElementId = res.body.activationElementId
+            wifiConfigId = res.body.wifiConfigID
             syncElementId = res.body.syncElementId
             sparePartId = res.body.sparePartId
+            /* wifiBotId = res.body.wifiBotId
+             if (wifiBotId == res.body.steps?.get(1)?.templates?.get(0)?.elements!![1].id) {
+                 wifiBotAddress = res.body.steps[0].templates?.get(0)?.elements!![1].value
+             }*/
             //setting up steps based on position
             setStep(currentPosition)
         }
@@ -295,14 +308,13 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             mTemplateList = mDataList?.get(position)?.templates
             workFlowAdapter!!.addList(
                 mTemplateList,
-                submissionField,
                 activationElementId,
+                wifiConfigId,
                 syncElementId,
                 sparePartId
             )
             if (currentPosition == mDataList!!.size - 1) {
                 btn_next.visibility = View.GONE
-                btn_submit.visibility = View.GONE
                 btn_Finish.visibility = View.VISIBLE
             }
         }
@@ -394,7 +406,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 setStep(currentPosition + 1)
                 if (currentPosition == mDataList!!.size - 1) {
                     btn_next.visibility = View.GONE
-                    btn_submit.visibility = View.GONE
                     btn_Finish.visibility = View.VISIBLE
                 }
             }
@@ -548,19 +559,43 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 }
                 Constants.SPARE_PARTS -> {
                     dialog.show()
-                    elementId = any.id
+                    spareelementId = any.id
                     value = any.value
-                    searchView = type.searchView
+                    etSearch = type.et_search
                     rvSpares = type.rv_spares
                     rvSpares!!.layoutManager = LinearLayoutManager(context)
                     val api = any.functionName
                     workFlowPresenter.getSparePartsList("$api${CommonUtils.getId()}")
+                }
+                Constants.API_INPUT -> {
+                    dialog.show()
+                    elementId = any.id
+                    value = any.value
+                    mandatoryIcon = type.iv_mandatory_list
+                    spinnerSpares = type.spinner_spares
+                    workFlowPresenter.getApiDataList(any.functionName.toString())
                 }
                 Constants.SYNC -> {
                     dialog.show()
                     synctext = type.tv_sync
                     elementId = any.id
                     getPidDetails(deviceCode)
+                }
+                Constants.SET_UP_WIFI -> {
+                    startActivity(Intent(this, SmartConfigActivity::class.java))
+                }
+                Constants.REFRESH_WIFI -> {
+                    dialog.show()
+                    elementId = any.id
+                    mandatory = type.iv_mandatory
+                    statusText = type.tv_wifi_bot_status
+                    btn_set_up_wifi = type.btn_setup_wifi
+                    workFlowPresenter.getBidStatus(
+                        data = BIDStatusIp(
+                            botId = botId!!,
+                            connectivity = connectivity!!
+                        )
+                    )
                 }
             }
         }
@@ -586,7 +621,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                             }
                         itemsMap[any.item_id] =
                             "{item_id:${any.item_id}/item_name:$itemName/quantity:${any.mycart}/serializable:${any.serializable}}"
-                        stepMap[elementId.toString()] = itemsMap.values.toString()
+                        stepMap[spareelementId.toString()] = itemsMap.values.toString()
                     } else {
                         Toast.makeText(context, "Inventory items not available", Toast.LENGTH_SHORT)
                             .show()
@@ -610,7 +645,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                             }
                         itemsMap[any.item_id] =
                             "{item_id:${any.item_id}/item_name:$itemName/quantity:${any.mycart}/serializable:${any.serializable}}"
-                        stepMap[elementId.toString()] = itemsMap.values.toString()
+                        stepMap[spareelementId.toString()] = itemsMap.values.toString()
                     } else {
                         Toast.makeText(
                             context,
@@ -647,46 +682,57 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                                 "{item_id:${any.item_id}/item_name:$itemName/quantity:${any.mycart}/serializable:${any.serializable}}"
                             )
                         }
-                        stepMap[elementId.toString()] = itemsMap.values.toString()
+                        stepMap[spareelementId.toString()] = itemsMap.values.toString()
                     }
                 }
             }
         }
     }
 
+    override fun showBidStatus(res: BIDStatusRes) {
+        dialog.dismiss()
+        if (res.success) {
+            mandatory!!.visibility = View.INVISIBLE
+            statusText!!.text = "SUCCESS"
+            stepMap[elementId.toString()] = "SUCCESS"
+            stepsFinished[elementId.toString()] = true
+            btn_set_up_wifi!!.visibility = View.GONE
+        } else {
+            statusText!!.text = "FAILED"
+            btn_set_up_wifi!!.visibility = View.VISIBLE
+        }
+    }
+
     private fun getPidDetails(deviceCode: String?) {
-        val params = HashMap<String, String>()
-        params["purifierid"] = deviceCode.toString()
-        workFlowPresenter.getPidDetails(params)
+        workFlowPresenter.getPidDetails(homeIP = HomeIP(purifierid = deviceCode!!))
     }
 
     private fun updateServerCmds() {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
-        val params = HashMap<String, String>()
-        params["purifierid"] = deviceCode.toString()
-        params["currentliters"] = CommonUtils.current.toString() + ""
-        params["validity"] = CommonUtils.validity
-        params["flowlimit"] = CommonUtils.flowlimit.toString() + ""
-        params["status"] = CommonUtils.purifierStatus.toString() + ""
-        params["techApp"] = "1"
-
-        val ja = JSONArray()
         try {
             val list = dbH.allAcks
             for (i in list.indices) {
-                val cmd = list[i]
-                val temp = JSONObject()
-                temp.put("cmdid", cmd.id)
-                temp.put("cmd", cmd.cmd)
-                temp.put("status", cmd.status)
-                ja.put(temp)
+                cmds.add(Cmd(cmdid = list[i].id, cmd = list[i].cmd!!, status = list[i].status!!))
             }
-            params["cmds"] = ja.toString()
-
         } catch (e: Exception) {
 
         }
-        workFlowPresenter.updateServerCmds(params)
+        val syncIP = SyncIP(
+            purifierid = deviceCode.toString(),
+            currentliters = CommonUtils.current.toString() + "",
+            validity = CommonUtils.validity,
+            flowlimit = CommonUtils.flowlimit.toString() + "",
+            status = CommonUtils.purifierStatus.toString() + "",
+            mode = CommonUtils.purifierStatus.toString() + "",
+            tdsIn = "0.0",
+            tdsOut = "0.0",
+            tempIn = "0",
+            tempOut = "0",
+            latLong = "",
+            cmds = cmds
+        )
+        workFlowPresenter.updateServerCmds(syncIP)
+        Log.d("syncparams", syncIP.toString())
     }
 
     override fun showPidDetailsRes(res: BLEDetailsRes) {
@@ -729,15 +775,15 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         }
     }
 
-    override fun showSyncRes(res: BLEDetailsRes) {
+    override fun showSyncRes(res: AddTextRes) {
         showViewState(MultiStateView.VIEW_STATE_CONTENT)
-        if (res.status.equals("OK")) {
+        if (res.success!!) {
             dbH.clearAcks()
             isSync = true
             getPidDetails(deviceCode)
             CommonUtils.resetUpdate()
         } else {
-            toast(res.output!!.message!!)
+            toast(res.message!!)
         }
     }
 
@@ -756,8 +802,21 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             rvSpares!!.setItemViewCacheSize(100)
             rvSpares!!.isNestedScrollingEnabled = false
             adapterPartsList.addList(partList)
-            searchView!!.visibility = View.VISIBLE
-            searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            etSearch!!.visibility = View.VISIBLE
+            etSearch!!.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(editable: Editable?) {
+
+                }
+
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                }
+
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    adapterPartsList.filter.filter(p0)
+                }
+            })
+            /*searchView!!.setOnQueryTextListener(object :
+                androidx.appcompat.widget.SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     return false
                 }
@@ -767,49 +826,165 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     adapterPartsList.filter.filter(newText)
                     return false
                 }
-            })
+            })*/
         } else {
-            searchView!!.visibility = View.GONE
+            etSearch!!.visibility = View.GONE
             toast("No Spares Found")
         }
     }
 
-    private fun startCamera() {
-        /* val intent = Intent(
-             MediaStore.ACTION_IMAGE_CAPTURE
-         )
-         val path = mContext.getExternalFilesDir(null)!!.absolutePath
-         val dir = File(path, "DP Partner 2.0/Image")
-         if (!dir.exists())
-             dir.mkdirs()
-         val photoURI = FileProvider.getUriForFile(
-             context, "com.dpdelivery.android.provider",
-             File(dir.absolutePath, PHOTO_FILE_NAME)
-         )
-         intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-         startActivityForResult(intent, CAMERA_REQUEST)*/
-        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-            // Ensure that there's a camera activity to handle the intent
-            takePictureIntent.resolveActivity(packageManager)?.also {
-                // Create the File where the photo should go
-                val photoFile: File? = try {
-                    createImageFile()
-                } catch (ex: IOException) {
-                    // Error occurred while creating the File
-                    null
-                }
-                // Continue only if the File was successfully created
-                photoFile?.also {
-                    val photoURI: Uri = FileProvider.getUriForFile(
-                        this,
-                        "com.example.android.fileprovider",
-                        it
-                    )
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+    override fun showApiInputRes(res: ApiInputRes) {
+        dialog.dismiss()
+        val data = ArrayList<String>()
+        if (res.isNotEmpty()) {
+            data.clear()
+            data.add("-")
+            for (i in res) {
+                data.add(i)
+            }
+            for (i in data.indices) {
+                if (!value.isNullOrEmpty()) {
+                    if (data[i].equals(
+                            (value),
+                            true
+                        )
+                    ) {
+                        val adapterMode: ArrayAdapter<String?> = object : ArrayAdapter<String?>(
+                            this, android.R.layout.simple_spinner_item, data as List<String?>
+                        ) {
+                            override fun isEnabled(position: Int): Boolean {
+                                return position != 0
+                            }
+
+                            override fun getDropDownView(
+                                position: Int, convertView: View?,
+                                parent: ViewGroup
+                            ): View {
+                                val view = super.getDropDownView(position, convertView, parent)
+                                val tv = view as TextView
+                                if (position == 0) {
+                                    // Set the hint text color grey
+                                    tv.setTextColor(Color.GRAY)
+                                } else {
+                                    tv.setTextColor(Color.BLACK)
+                                }
+                                return view
+                            }
+                        }
+                        adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        spinnerSpares!!.adapter = adapterMode
+                        spinnerSpares!!.onItemSelectedListener =
+                            object : AdapterView.OnItemSelectedListener {
+                                override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                                }
+
+                                override fun onItemSelected(
+                                    parent: AdapterView<*>?,
+                                    view: View?,
+                                    position: Int,
+                                    id: Long
+                                ) {
+                                    if (position > 0) {
+                                        val selectedString = spinnerSpares!!.selectedItem.toString()
+                                        stepMap[elementId.toString()] = selectedString
+                                        stepsFinished[elementId.toString()] = true
+                                        mandatoryIcon!!.visibility = View.INVISIBLE
+                                    }
+                                }
+                            }
+                        spinnerSpares!!.setSelection(i)
+                    }
+                } else {
+                    val adapterMode: ArrayAdapter<String?> = object : ArrayAdapter<String?>(
+                        this, android.R.layout.simple_spinner_item, data as List<String?>
+                    ) {
+                        override fun isEnabled(position: Int): Boolean {
+                            return position != 0
+                        }
+
+                        override fun getDropDownView(
+                            position: Int, convertView: View?,
+                            parent: ViewGroup
+                        ): View {
+                            val view = super.getDropDownView(position, convertView, parent)
+                            val tv = view as TextView
+                            if (position == 0) {
+                                // Set the hint text color grey
+                                tv.setTextColor(Color.GRAY)
+                            } else {
+                                tv.setTextColor(Color.BLACK)
+                            }
+                            return view
+                        }
+                    }
+                    adapterMode.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    spinnerSpares!!.adapter = adapterMode
+                    spinnerSpares!!.onItemSelectedListener =
+                        object : AdapterView.OnItemSelectedListener {
+                            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                            }
+
+                            override fun onItemSelected(
+                                parent: AdapterView<*>?,
+                                view: View?,
+                                position: Int,
+                                id: Long
+                            ) {
+                                if (position > 0) {
+                                    val selectedString = spinnerSpares!!.selectedItem.toString()
+                                    stepMap[elementId.toString()] = selectedString
+                                    stepsFinished[elementId.toString()] = true
+                                    mandatoryIcon!!.visibility = View.INVISIBLE
+                                }
+                            }
+                        }
+                    spinnerSpares!!.setSelection(0)
                 }
             }
+
+        } else {
+            toast("No Data Found")
         }
+    }
+
+    private fun startCamera() {
+        val intent = Intent(
+            MediaStore.ACTION_IMAGE_CAPTURE
+        )
+        val path = mContext.getExternalFilesDir(null)!!.absolutePath
+        val dir = File(path, "DP Partner 2.0/Image")
+        if (!dir.exists())
+            dir.mkdirs()
+        val photoURI = FileProvider.getUriForFile(
+            context, "com.dpdelivery.android.provider",
+            File(dir.absolutePath, PHOTO_FILE_NAME)
+        )
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+        startActivityForResult(intent, CAMERA_REQUEST)
+        /*  Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+              // Ensure that there's a camera activity to handle the intent
+              takePictureIntent.resolveActivity(packageManager)?.also {
+                  // Create the File where the photo should go
+                  val photoFile: File? = try {
+                      createImageFile()
+                  } catch (ex: IOException) {
+                      // Error occurred while creating the File
+                      null
+                  }
+                  // Continue only if the File was successfully created
+                  photoFile?.also {
+                      val photoURI: Uri = FileProvider.getUriForFile(
+                          this,
+                          "com.example.android.fileprovider",
+                          it
+                      )
+                      takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                      startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                  }
+              }
+          }*/
     }
 
     @Throws(IOException::class)
@@ -829,25 +1004,42 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            if (!currentPhotoPath.isNullOrEmpty()) {
-                dialog.show()
-                mandatory!!.visibility = View.INVISIBLE
-                stepsFinished[elementId.toString()] = true
-                workFlowPresenter.addImage(
-                    jobid = jobId!!,
-                    elementId = elementId,
-                    file = Compressor(this).compressToFile(File(currentPhotoPath!!))
-                )
-            } else {
-                toast("Problem in Taking Photo..Please try again")
+
+        if (resultCode == Activity.RESULT_OK && requestCode == CAMERA_REQUEST) {
+            val f = File(mContext.getExternalFilesDir(null)!!.absolutePath)
+            var dir = File(f, "DP Partner 2.0/Image")
+            if (!dir.exists())
+                dir.mkdirs()
+            for (temp in dir.listFiles()!!) {
+                if (temp.name == PHOTO_FILE_NAME) {
+                    dir = temp
+                    imgpath = dir.absolutePath.toString()
+                    break
+                }
+            }
+            MediaScannerConnection.scanFile(
+                context,
+                arrayOf<String>(dir.absolutePath),
+                null
+            ) { path, uri ->
+                Log.i("ExternalStorage", "Scanned $path:")
+                Log.i("ExternalStorage", "-> uri=$uri")
+            }
+
+            if (!dir.exists()) {
+                Toast.makeText(
+                    baseContext,
+                    "Error while capturing image",
+                    Toast.LENGTH_LONG
+                ).show()
+                return
             }
             try {
-                bitmap = BitmapFactory.decodeFile(currentPhotoPath)
+                bitmap = BitmapFactory.decodeFile(dir.absolutePath)
                 bitmap = Bitmap.createScaledBitmap(bitmap, 400, 400, true)
                 var rotate = 0
                 try {
-                    val exif = ExifInterface(currentPhotoPath!!)
+                    val exif = ExifInterface(dir.absolutePath)
                     val orientation = exif.getAttributeInt(
                         ExifInterface.TAG_ORIENTATION,
                         ExifInterface.ORIENTATION_NORMAL
@@ -861,88 +1053,40 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
+
                 val matrix = Matrix()
                 matrix.postRotate(rotate.toFloat())
                 bitmap =
-                    Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                    Bitmap.createBitmap(
+                        bitmap,
+                        0,
+                        0,
+                        bitmap.width,
+                        bitmap.height,
+                        matrix,
+                        true
+                    )
 
                 val stream = ByteArrayOutputStream()
-                image!!.setImageBitmap(bitmap)
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
+                image!!.setImageBitmap(bitmap)
+                if (imgpath.isNotEmpty()) {
+                    dialog.show()
+                    mandatory!!.visibility = View.INVISIBLE
+                    stepsFinished[elementId.toString()] = true
+                    workFlowPresenter.addImage(
+                        jobid = jobId!!,
+                        elementId = elementId,
+                        file = Compressor(this).compressToFile(File(imgpath))
+                    )
+                } else {
+                    toast("Problem in Taking Photo..Please try again")
+                }
                 CommonUtils.setUserImagebitmap(mContext, image!!, stream)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
-
-        /* if (resultCode == Activity.RESULT_OK && requestCode == CAMERA_REQUEST) {
-             val f = File(mContext.getExternalFilesDir(null)!!.absolutePath)
-             var dir = File(f, "DP Partner 2.0/Image")
-             if (!dir.exists())
-                 dir.mkdirs()
-             for (temp in dir.listFiles()!!) {
-                 if (temp.name == PHOTO_FILE_NAME) {
-                     dir = temp
-                     imgpath = dir.absolutePath.toString()
-                     break
-                 }
-             }
-             MediaScannerConnection.scanFile(
-                 context,
-                 arrayOf<String>(dir.absolutePath),
-                 null
-             ) { path, uri ->
-                 Log.i("ExternalStorage", "Scanned $path:")
-                 Log.i("ExternalStorage", "-> uri=$uri")
-             }
-
-             if (!dir.exists()) {
-                 Toast.makeText(baseContext, "Error while capturing image", Toast.LENGTH_LONG).show()
-                 return
-             }
-             try {
-                 bitmap = BitmapFactory.decodeFile(dir.absolutePath)
-                 bitmap = Bitmap.createScaledBitmap(bitmap, 400, 400, true)
-                 var rotate = 0
-                 try {
-                     val exif = ExifInterface(dir.absolutePath)
-                     val orientation = exif.getAttributeInt(
-                         ExifInterface.TAG_ORIENTATION,
-                         ExifInterface.ORIENTATION_NORMAL
-                     )
-
-                     when (orientation) {
-                         ExifInterface.ORIENTATION_ROTATE_270 -> rotate = 270
-                         ExifInterface.ORIENTATION_ROTATE_180 -> rotate = 180
-                         ExifInterface.ORIENTATION_ROTATE_90 -> rotate = 90
-                     }
-                 } catch (e: Exception) {
-                     e.printStackTrace()
-                 }
-
-                 val matrix = Matrix()
-                 matrix.postRotate(rotate.toFloat())
-                 bitmap =
-                     Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-
-                 val stream = ByteArrayOutputStream()
-                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
-                 image!!.setImageBitmap(bitmap)
-                 dialog.show()
-                 if (imgpath.isNotEmpty()) {
-                     mandatory!!.visibility = View.INVISIBLE
-                     stepsFinished[elementId.toString()] = true
-                     workFlowPresenter.addImage(
-                         jobid = jobId!!,
-                         elementId = elementId,
-                         file = Compressor(this).compressToFile(File(imgpath))
-                     )
-                 }
-                 CommonUtils.setUserImagebitmap(mContext, image!!, stream)
-             } catch (e: Exception) {
-                 e.printStackTrace()
-             }
-         }*/
         //We will get scan results here
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         //check for null
@@ -954,7 +1098,11 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 val pattern = Pattern.compile(regex)
                 val matcher = pattern.matcher(result.contents)
                 if (matcher.matches()) {
-                    et_device_code!!.setText(result.contents)
+                    if (result.contents.length == 10) {
+                        et_device_code!!.setText(result.contents)
+                    } else {
+                        toast("Purifier ID Is Not Valid")
+                    }
                 } else
                     toast("Purifier ID Is Not Valid")
             }
@@ -973,7 +1121,11 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     startCamera()
                 } else {
-                    Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_SHORT)
+                    Toast.makeText(
+                        this,
+                        getString(R.string.permission_denied),
+                        Toast.LENGTH_SHORT
+                    )
                         .show()
                 }
             }
@@ -1044,7 +1196,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
      * Location
      */
     private fun setUpLocationListener() {
-        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        val fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(this)
         // for getting the current location update after every 2 seconds with high accuracy
         val locationRequest = LocationRequest.create().apply {
             interval = 2000
@@ -1108,7 +1261,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     setStep(currentPosition - 1)
                     btn_next.visibility = View.VISIBLE
                     btn_Finish.visibility = View.GONE
-                    btn_submit.visibility = View.GONE
                 } else {
                     finish()
                 }
@@ -1124,7 +1276,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             setStep(currentPosition - 1)
             btn_next.visibility = View.VISIBLE
             btn_Finish.visibility = View.GONE
-            btn_submit.visibility = View.GONE
         } else {
             finish()
         }

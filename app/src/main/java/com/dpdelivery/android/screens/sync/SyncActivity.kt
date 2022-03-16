@@ -84,8 +84,8 @@ class SyncActivity : DaggerAppCompatActivity() {
                 displayGattServices(mBluetoothLeService!!.supportedGattServices)
 
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE == action) {
-                displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA))
-                val output = intent.getStringExtra(BluetoothLeService.EXTRA_DATA)
+                displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA)!!)
+                val output = intent.getStringExtra(BluetoothLeService.EXTRA_DATA)!!
                 if (output.substring(0, 2) == CommandHandler.READ_LITERS.substring(6, 8)) {
                     currentliters = cmdH.readLiters(output.substring(2))
                     Log.i("reached here", "current liters are $currentliters")
@@ -150,7 +150,7 @@ class SyncActivity : DaggerAppCompatActivity() {
                 Log.i("reached here", "reached here dude")
                 val cmd = dbH.getCmd(currentcmd)
                 if (cmd != null) {
-                    displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA))
+                    displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA)!!)
                     val cmdStr = cmd.cmd
                     val pieces = cmdStr?.split("-".toRegex())!!.dropLastWhile { it.isEmpty() }.toTypedArray()
                     if (pieces[0] == "101") {
@@ -165,7 +165,7 @@ class SyncActivity : DaggerAppCompatActivity() {
             } else if (BluetoothLeService.ACTION_DATA_NOTIFY == action) {
 
             } else if (BluetoothLeService.ACTION_DATA_COMMAND == action) {
-                val data = intent.getStringExtra(BluetoothLeService.EXTRA_DATA)
+                val data = intent.getStringExtra(BluetoothLeService.EXTRA_DATA)!!
                 //Log.i(TAG, "the data written in command is "+data);
                 val flc = mBluetoothLeService!!.primeService.getCharacteristic(UUID.fromString(SampleGattAttributes.COMMAND))
 

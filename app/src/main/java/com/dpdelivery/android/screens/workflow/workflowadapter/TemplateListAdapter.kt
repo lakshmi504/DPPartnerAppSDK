@@ -17,8 +17,8 @@ class TemplateListAdapter(
     var adapterClickListener: IAdapterClickListener? = null,
     val stepMap: MutableMap<String, String>,
     val stepsFinished: MutableMap<String, Boolean>,
-    var submissionField: String,
     var activationElementId: Int,
+    var wifiConfigId: Int,
     var syncElementId: Int,
     var sparePartId: Int
 ) : RecyclerView.Adapter<TemplateListAdapter.TemplateListViewHolder>() {
@@ -27,14 +27,14 @@ class TemplateListAdapter(
 
     fun addList(
         list: ArrayList<WorkFlowDataRes.WorkFlowDataResBody.Step.Template>?,
-        submissionField: String,
         activationElementId: Int,
+        wifiConfigId: Int,
         syncElementId: Int,
         sparePartId: Int
     ) {
         this.list = list
-        this.submissionField = submissionField
         this.activationElementId = activationElementId
+        this.wifiConfigId = wifiConfigId
         this.syncElementId = syncElementId
         this.sparePartId = sparePartId
         notifyDataSetChanged()
@@ -47,8 +47,8 @@ class TemplateListAdapter(
             adapterClickListener,
             stepMap,
             stepsFinished,
-            submissionField,
             activationElementId,
+            wifiConfigId,
             syncElementId,
             sparePartId
         )
@@ -69,8 +69,8 @@ class TemplateListAdapter(
         var adapterClickListener: IAdapterClickListener? = null,
         val stepMap: MutableMap<String, String>,
         val stepsFinished: MutableMap<String, Boolean>,
-        val submissionField: String,
         val activationElementId: Int,
+        val wifiConfigId: Int,
         val syncElementId: Int,
         val sparePartId: Int
     ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
@@ -84,8 +84,8 @@ class TemplateListAdapter(
                     adapterClickListener,
                     stepMap = stepMap,
                     stepsFinished = stepsFinished,
-                    submissionField = submissionField,
                     activationElementId = activationElementId,
+                    wifiConfigId = wifiConfigId,
                     syncElementId = syncElementId,
                     sparePartId = sparePartId
                 )

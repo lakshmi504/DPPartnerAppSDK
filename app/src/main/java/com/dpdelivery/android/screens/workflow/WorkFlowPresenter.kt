@@ -2,9 +2,7 @@ package com.dpdelivery.android.screens.workflow
 
 import android.content.Context
 import com.dpdelivery.android.api.ApiService
-import com.dpdelivery.android.model.techinp.AddWorkFlowData
-import com.dpdelivery.android.model.techinp.FinishJobIp
-import com.dpdelivery.android.model.techinp.SubmitPidIp
+import com.dpdelivery.android.model.techinp.*
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.schedulers.BaseScheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -189,10 +187,26 @@ class WorkFlowPresenter @Inject constructor(
         )
     }
 
-    override fun getPidDetails(hashMap: HashMap<String, String>) {
+    override fun getApiDataList(functionName: String?) {
         view?.showProgress()
         subscription.add(
-            apiService.getBLEDetails(purifierid = hashMap)
+            apiService.getApiInputData(CommonUtils.getLoginToken(), functionName!!)
+                .subscribeOn(baseScheduler.io())
+                .observeOn(baseScheduler.ui())
+                .subscribe(
+                    { res ->
+                        view?.showApiInputRes(res)
+                    },
+                    { throwable ->
+                        view?.showErrorMsg(throwable)
+                    })
+        )
+    }
+
+    override fun getPidDetails(homeIP: HomeIP) {
+        view?.showProgress()
+        subscription.add(
+            apiService.getBLEDetails(homeIP = homeIP)
                 .subscribeOn(baseScheduler.io())
                 .observeOn(baseScheduler.ui())
                 .subscribe(
@@ -205,10 +219,10 @@ class WorkFlowPresenter @Inject constructor(
         )
     }
 
-    override fun updateServerCmds(hashMap: HashMap<String, String>) {
+    override fun updateServerCmds(syncIP: SyncIP) {
         view?.showProgress()
         subscription.add(
-            apiService.updateServerCmds(params = hashMap)
+            apiService.updateServerCmds(syncIP = syncIP)
                 .subscribeOn(baseScheduler.io())
                 .observeOn(baseScheduler.ui())
                 .subscribe(
@@ -232,6 +246,28 @@ class WorkFlowPresenter @Inject constructor(
                         { res ->
                             view?.hideProgress()
                             view?.showJobRes(res)
+                        },
+                        { throwable ->
+                            view?.hideProgress()
+                            view?.showErrorMsg(throwable)
+                        })
+            )
+        } catch (e: KotlinNullPointerException) {
+
+        }
+    }
+
+    override fun getBidStatus(data: BIDStatusIp) {
+        view?.showProgress()
+        try {
+            subscription.add(
+                apiService.getBotStatus(CommonUtils.getLoginToken(), bidStatusIp = data)
+                    .subscribeOn(baseScheduler.io())
+                    .observeOn(baseScheduler.ui())
+                    .subscribe(
+                        { res ->
+                            view?.hideProgress()
+                            view?.showBidStatus(res)
                         },
                         { throwable ->
                             view?.hideProgress()

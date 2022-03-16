@@ -80,7 +80,7 @@
                 android:id="@+id/iv_spinner_center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center|right"
+                android:layout_gravity="center|end"
                 android:layout_marginEnd="@dimen/dimens_4"
                 android:background="@drawable/ic_sidemenu_down_arrow" />
 
@@ -90,6 +90,7 @@
             android:id="@+id/iv_mandatory1"
             android:layout_width="@dimen/dimens_10"
             android:layout_height="@dimen/dimens_10"
+            android:layout_gravity="end"
             android:layout_marginTop="@dimen/dimens_5"
             android:src="@drawable/ic_star"
             android:visibility="gone" />
@@ -239,6 +240,127 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layout_wifi_config"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <!--
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/stolzl_medium"
+                        android:text="@string/pid"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="@dimen/dimens_12sp" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dimens_10"
+                        android:gravity="center">
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/purifier_id"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginTop="@dimen/dimens_10"
+                            android:layout_marginBottom="@dimen/dimens_10"
+                            android:layout_toStartOf="@id/iv_qr_code"
+                            android:background="@drawable/bg_edit_text"
+                            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
+                            android:fontFamily="@font/stolzl_regular"
+                            android:gravity="center"
+                            android:inputType="textCapCharacters"
+                            android:maxLength="10"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/dimens_12sp" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/iv_qr_code"
+                            android:layout_width="@dimen/dimens_20"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="@dimen/dimens_10"
+                            android:layout_marginEnd="@dimen/dimens_10"
+                            android:src="@drawable/qr" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+        -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_10"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="@string/status"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_wifi_bot_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/dimens_10"
+                    android:layout_toStartOf="@id/iv_wifi_bot_refresh"
+                    android:background="@drawable/bg_edit_text"
+                    android:fontFamily="@font/stolzl_regular"
+                    android:gravity="center"
+                    android:textSize="@dimen/dimens_14sp" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_wifi_bot_refresh"
+                    android:layout_width="@dimen/dimens_30"
+                    android:layout_height="@dimen/dimens_30"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/dimens_10"
+                    android:src="@drawable/ic_refresh" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_setup_wifi"
+            android:layout_width="@dimen/dimens_100"
+            android:layout_height="@dimen/dimens_30"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/dimens_10"
+            android:background="@drawable/btn_orange_bg"
+            android:fontFamily="@font/stolzl_regular"
+            android:gravity="center"
+            android:text="@string/setup_wifi"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/ll_spares"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -249,6 +371,7 @@
             android:id="@+id/ll_spinner_spares"
             android:layout_width="@dimen/dimens_150"
             android:layout_height="@dimen/dimens_25"
+            android:layout_marginTop="@dimen/dimens_5"
             android:background="@drawable/btn_background_grey_border"
             android:orientation="vertical">
 
@@ -265,11 +388,21 @@
                 android:id="@+id/iv_spinner_spares"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center|right"
+                android:layout_gravity="center|end"
                 android:layout_marginEnd="@dimen/dimens_4"
                 android:background="@drawable/ic_sidemenu_down_arrow" />
 
         </FrameLayout>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_mandatory_list"
+            android:layout_width="@dimen/dimens_10"
+            android:layout_height="@dimen/dimens_10"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:src="@drawable/ic_star"
+            android:visibility="gone" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -303,11 +436,28 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <SearchView
-            android:id="@+id/searchView"
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:queryHint="Search Item" />
+            android:background="@null"
+            android:drawableStart="@drawable/ic_search_black"
+            android:drawablePadding="@dimen/dimens_5"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:fontFamily="@font/montserrat_regular"
+            android:hint="Search Item"
+            android:padding="@dimen/dimens_10"
+            android:textColor="@color/colorBlackOverlay"
+            android:textColorHint="@color/colorTextGrey"
+            android:textSize="@dimen/dimens_12sp" />
+
+        <!--  <androidx.appcompat.widget.SearchView
+              android:id="@+id/searchView"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              app:iconifiedByDefault="false"
+              app:queryHint="Search Item" />-->
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_spares"

@@ -25,7 +25,6 @@ import com.dpdelivery.android.utils.withNotNullNorEmpty
 import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.android.synthetic.main.activity_detail_earnings.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
-import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
 import retrofit2.HttpException
 import java.text.SimpleDateFormat
@@ -76,7 +75,7 @@ class DetailEarningsActivity : TechBaseActivity(), IAdapterClickListener, View.O
                     picker.dismiss()
                 }
                 picker.addOnPositiveButtonClickListener {
-                    val formatter = SimpleDateFormat("dd-MMM-yyyy", Locale.ROOT)
+                    val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.ROOT)
                     val startDateString = formatter.format(Date(it.first!!))
                     val endDateString = formatter.format(Date(it.second!!))
                     //toast("$startDateString:: to :: $endDateString")
@@ -109,32 +108,32 @@ class DetailEarningsActivity : TechBaseActivity(), IAdapterClickListener, View.O
 
     @SuppressLint("SetTextI18n")
     override fun showEarningsRes(res: EarningsRes) {
-        if (res.entryWMList.isNotEmpty()) {
-            showViewState(MultiStateView.VIEW_STATE_CONTENT)
+        showViewState(MultiStateView.VIEW_STATE_CONTENT)
+        if (res.entryWMList.isEmpty()) {
+            rv_detail_earnings.visibility = View.INVISIBLE
+        } else {
+            rv_detail_earnings.visibility = View.VISIBLE
             res.entryWMList.withNotNullNorEmpty {
                 earningsList = res.entryWMList
                 adapterDetailEarnings!!.addList(earningsList!!)
             }
-            //setting up the data
-            tv_name.text = "${CommonUtils.getName()}, You are doing great!"
-            tv_total.text = res.totalAmount.toString()
-            tv_credit.setTextColor(ContextCompat.getColor(context, R.color.colorGreen))
-            tv_debit.setTextColor(ContextCompat.getColor(context, R.color.color_red))
-            //colour based on data
-            if (res.credit > 0)
-                tv_credit.text = CommonUtils.getRupeesSymbol(context, res.credit)
-            else
-                tv_credit.text = res.credit.toInt().toString()
-
-            if (res.debit > 0)
-                tv_debit.text = CommonUtils.getMinusRupeesSymbol(context, res.debit)
-            else
-                tv_debit.text = res.debit.toInt().toString()
-
-        } else {
-            showViewState(MultiStateView.VIEW_STATE_EMPTY)
-            empty_button.visibility = View.GONE
         }
+        //setting up the data
+        tv_name.text = "${CommonUtils.getName()}, You are doing great!"
+        tv_total.text = res.totalAmount.toString()
+        tv_credit.setTextColor(ContextCompat.getColor(context, R.color.colorGreen))
+        tv_debit.setTextColor(ContextCompat.getColor(context, R.color.color_red))
+        //colour based on data
+        if (res.credit > 0)
+            tv_credit.text = CommonUtils.getRupeesSymbol(context, res.credit)
+        else
+            tv_credit.text = res.credit.toInt().toString()
+
+        if (res.debit > 0)
+            tv_debit.text = CommonUtils.getMinusRupeesSymbol(context, res.debit)
+        else
+            tv_debit.text = res.debit.toInt().toString()
+
     }
 
     override fun showErrorMsg(throwable: Throwable, apiType: String) {

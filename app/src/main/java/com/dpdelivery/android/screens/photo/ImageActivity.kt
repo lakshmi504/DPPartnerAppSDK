@@ -10,12 +10,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
-import android.net.Uri
+import android.media.MediaScannerConnection
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -110,9 +111,9 @@ class ImageActivity : TechBaseActivity(), View.OnClickListener, ImageContract.Vi
                 }
             }
             R.id.btn_upload -> {
-                if (currentPhotoPath!!.isNotEmpty()) {
+                if (imgpath.isNotEmpty()) {
                     dialog.show()
-                    val file = File(currentPhotoPath!!)
+                    val file = File(imgpath)
                     val compressedImgFile: File = Compressor(this).compressToFile(file)
                     presenter.uploadPhoto(jobId, compressedImgFile)
                 }
@@ -126,42 +127,42 @@ class ImageActivity : TechBaseActivity(), View.OnClickListener, ImageContract.Vi
     }
 
     private fun startCamera() {
-        /* val intent = Intent(
-             MediaStore.ACTION_IMAGE_CAPTURE
-         )
-         val path = mContext.getExternalFilesDir(null)!!.absolutePath
-         val dir = File(path, "DP Partner 2.0/Image")
-         if (!dir.exists())
-             dir.mkdirs()
-         val photoURI = FileProvider.getUriForFile(
-             context, "com.dpdelivery.android.provider",
-             File(dir.absolutePath, PHOTO_FILE_NAME)
-         )
-         intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-         startActivityForResult(intent, CAMERA_REQUEST)*/
+        val intent = Intent(
+            MediaStore.ACTION_IMAGE_CAPTURE
+        )
+        val path = mContext.getExternalFilesDir(null)!!.absolutePath
+        val dir = File(path, "DP Partner 2.0/Image")
+        if (!dir.exists())
+            dir.mkdirs()
+        val photoURI = FileProvider.getUriForFile(
+            context, "com.dpdelivery.android.provider",
+            File(dir.absolutePath, PHOTO_FILE_NAME)
+        )
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+        startActivityForResult(intent, CAMERA_REQUEST)
 
-        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-            // Ensure that there's a camera activity to handle the intent
-            takePictureIntent.resolveActivity(packageManager)?.also {
-                // Create the File where the photo should go
-                val photoFile: File? = try {
-                    createImageFile()
-                } catch (ex: IOException) {
-                    // Error occurred while creating the File
-                    null
-                }
-                // Continue only if the File was successfully created
-                photoFile?.also {
-                    val photoURI: Uri = FileProvider.getUriForFile(
-                        this,
-                        "com.example.android.fileprovider",
-                        it
-                    )
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
-                }
-            }
-        }
+        /* Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+             // Ensure that there's a camera activity to handle the intent
+             takePictureIntent.resolveActivity(packageManager)?.also {
+                 // Create the File where the photo should go
+                 val photoFile: File? = try {
+                     createImageFile()
+                 } catch (ex: IOException) {
+                     // Error occurred while creating the File
+                     null
+                 }
+                 // Continue only if the File was successfully created
+                 photoFile?.also {
+                     val photoURI: Uri = FileProvider.getUriForFile(
+                         this,
+                         "com.example.android.fileprovider",
+                         it
+                     )
+                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                 }
+             }
+         }*/
     }
 
     @Throws(IOException::class)
@@ -181,82 +182,19 @@ class ImageActivity : TechBaseActivity(), View.OnClickListener, ImageContract.Vi
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            if (!currentPhotoPath!!.isNullOrEmpty()) {
-                btn_upload.visibility = View.VISIBLE
-                btn_capture.visibility = View.GONE
-            } else {
-                toast("Problem in Taking Photo..Please try again")
-            }
-            try {
-                bitmap = BitmapFactory.decodeFile(currentPhotoPath)
-                bitmap = Bitmap.createScaledBitmap(bitmap, 400, 400, true)
-                var rotate = 0
-                try {
-                    val exif = ExifInterface(currentPhotoPath)
-                    val orientation = exif.getAttributeInt(
-                        ExifInterface.TAG_ORIENTATION,
-                        ExifInterface.ORIENTATION_NORMAL
-                    )
-
-                    when (orientation) {
-                        ExifInterface.ORIENTATION_ROTATE_270 -> rotate = 270
-                        ExifInterface.ORIENTATION_ROTATE_180 -> rotate = 180
-                        ExifInterface.ORIENTATION_ROTATE_90 -> rotate = 90
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-                val matrix = Matrix()
-                matrix.postRotate(rotate.toFloat())
-                bitmap =
-                    Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-
-                val stream = ByteArrayOutputStream()
-                image!!.setImageBitmap(bitmap)
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
-                CommonUtils.setUserImagebitmap(mContext, image!!, stream)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-        /* if (resultCode == Activity.RESULT_OK && requestCode == CAMERA_REQUEST) {
-
-             val f = File(mContext.getExternalFilesDir(null)!!.absolutePath)
-             var dir = File(f, "DP Partner 2.0/Image")
-             if (!dir.exists())
-                 dir.mkdirs()
-             for (temp in dir.listFiles()!!) {
-                 if (temp.name == PHOTO_FILE_NAME) {
-                     dir = temp
-                     imgpath = dir.absolutePath.toString()
-                     break
-                 }
+        /* if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+             if (!currentPhotoPath!!.isNullOrEmpty()) {
+                 btn_upload.visibility = View.VISIBLE
+                 btn_capture.visibility = View.GONE
+             } else {
+                 toast("Problem in Taking Photo..Please try again")
              }
-             MediaScannerConnection.scanFile(
-                 context,
-                 arrayOf<String>(dir.absolutePath),
-                 null
-             ) { path, uri ->
-                 Log.i("ExternalStorage", "Scanned $path:")
-                 Log.i("ExternalStorage", "-> uri=$uri")
-             }
-
-             if (!dir.exists()) {
-
-                 Toast.makeText(baseContext, "Error while capturing image", Toast.LENGTH_LONG).show()
-
-                 return
-
-             }
-
              try {
-
-                 bitmap = BitmapFactory.decodeFile(dir.absolutePath)
+                 bitmap = BitmapFactory.decodeFile(currentPhotoPath)
                  bitmap = Bitmap.createScaledBitmap(bitmap, 400, 400, true)
                  var rotate = 0
                  try {
-                     val exif = ExifInterface(dir.absolutePath)
+                     val exif = ExifInterface(currentPhotoPath!!)
                      val orientation = exif.getAttributeInt(
                          ExifInterface.TAG_ORIENTATION,
                          ExifInterface.ORIENTATION_NORMAL
@@ -270,24 +208,87 @@ class ImageActivity : TechBaseActivity(), View.OnClickListener, ImageContract.Vi
                  } catch (e: Exception) {
                      e.printStackTrace()
                  }
-
                  val matrix = Matrix()
                  matrix.postRotate(rotate.toFloat())
                  bitmap =
                      Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
 
                  val stream = ByteArrayOutputStream()
+                 image!!.setImageBitmap(bitmap)
                  bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
-                 image.setImageBitmap(bitmap)
-                 if (imgpath.isNotEmpty()) {
-                     btn_upload.visibility = View.VISIBLE
-                     btn_capture.visibility = View.GONE
-                 }
-                 CommonUtils.setUserImagebitmap(mContext, image, stream)
+                 CommonUtils.setUserImagebitmap(mContext, image!!, stream)
              } catch (e: Exception) {
                  e.printStackTrace()
              }
          }*/
+        if (resultCode == Activity.RESULT_OK && requestCode == CAMERA_REQUEST) {
+
+            val f = File(mContext.getExternalFilesDir(null)!!.absolutePath)
+            var dir = File(f, "DP Partner 2.0/Image")
+            if (!dir.exists())
+                dir.mkdirs()
+            for (temp in dir.listFiles()!!) {
+                if (temp.name == PHOTO_FILE_NAME) {
+                    dir = temp
+                    imgpath = dir.absolutePath.toString()
+                    break
+                }
+            }
+            MediaScannerConnection.scanFile(
+                context,
+                arrayOf<String>(dir.absolutePath),
+                null
+            ) { path, uri ->
+                Log.i("ExternalStorage", "Scanned $path:")
+                Log.i("ExternalStorage", "-> uri=$uri")
+            }
+
+            if (!dir.exists()) {
+
+                Toast.makeText(baseContext, "Error while capturing image", Toast.LENGTH_LONG).show()
+
+                return
+
+            }
+
+            try {
+
+                bitmap = BitmapFactory.decodeFile(dir.absolutePath)
+                bitmap = Bitmap.createScaledBitmap(bitmap, 400, 400, true)
+                var rotate = 0
+                try {
+                    val exif = ExifInterface(dir.absolutePath)
+                    val orientation = exif.getAttributeInt(
+                        ExifInterface.TAG_ORIENTATION,
+                        ExifInterface.ORIENTATION_NORMAL
+                    )
+
+                    when (orientation) {
+                        ExifInterface.ORIENTATION_ROTATE_270 -> rotate = 270
+                        ExifInterface.ORIENTATION_ROTATE_180 -> rotate = 180
+                        ExifInterface.ORIENTATION_ROTATE_90 -> rotate = 90
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+                val matrix = Matrix()
+                matrix.postRotate(rotate.toFloat())
+                bitmap =
+                    Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+
+                val stream = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
+                image.setImageBitmap(bitmap)
+                if (imgpath.isNotEmpty()) {
+                    btn_upload.visibility = View.VISIBLE
+                    btn_capture.visibility = View.GONE
+                }
+                CommonUtils.setUserImagebitmap(mContext, image, stream)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     override fun onRequestPermissionsResult(

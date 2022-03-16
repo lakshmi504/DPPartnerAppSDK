@@ -2,11 +2,16 @@ package com.dpdelivery.android
 
 import android.app.Activity
 import android.app.Application
-import android.content.ContentValues
-import android.content.Context
+import android.content.*
+import android.location.LocationManager
+import android.net.wifi.WifiManager
+import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
 import android.util.Log
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.multidex.MultiDex
 import com.dpdelivery.android.api.ApiService
 import com.dpdelivery.android.di.DaggerAppComponent
@@ -14,6 +19,7 @@ import com.facebook.stetho.Stetho
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
+import java.util.HashMap
 import javax.inject.Inject
 
 
@@ -25,9 +31,25 @@ class MyApplication : DaggerApplication(), Application.ActivityLifecycleCallback
 
     companion object {
         lateinit var myApplication: MyApplication
+        lateinit var mInstance: MyApplication
         var mActivity: Activity? = null
         lateinit var context: Context
 
+    }
+
+    private var mBroadcastData: MutableLiveData<String>? = null
+
+    private var mCacheMap: MutableMap<String, Any>? = null
+
+    private val mReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action ?: return
+            when (action) {
+                WifiManager.NETWORK_STATE_CHANGED_ACTION, LocationManager.PROVIDERS_CHANGED_ACTION -> mBroadcastData!!.setValue(
+                    action
+                )
+            }
+        }
     }
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
@@ -43,22 +65,44 @@ class MyApplication : DaggerApplication(), Application.ActivityLifecycleCallback
 
         super.onCreate()
         myApplication = this
+        mInstance = this
         context = this
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)
-            StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
+            StrictMode.setThreadPolicy(
+                StrictMode.ThreadPolicy.Builder()
                     .detectDiskReads()
                     .detectDiskWrites()
                     .detectNetwork()
                     .penaltyLog()
-                    .build())
+                    .build()
+            )
         }
+        mCacheMap = HashMap()
+        mBroadcastData = MutableLiveData()
+        val filter = IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            filter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION)
+        }
+        registerReceiver(mReceiver, filter)
         registerActivityLifecycleCallbacks(this)
         val crashLytics = FirebaseCrashlytics.getInstance()
         crashLytics.log("my message")
 
     }
 
+    override fun onTerminate() {
+        super.onTerminate()
+        unregisterReceiver(mReceiver)
+    }
+
+    fun getInstance(): MyApplication {
+        return mInstance
+    }
+
+    fun observeBroadcast(owner: LifecycleOwner, observer: Observer<String>) {
+        mBroadcastData!!.observe(owner, observer)
+    }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         mActivity = activity

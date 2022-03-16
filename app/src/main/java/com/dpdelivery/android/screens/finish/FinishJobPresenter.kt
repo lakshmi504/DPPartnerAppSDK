@@ -3,6 +3,8 @@ package com.dpdelivery.android.screens.finish
 import android.content.Context
 import com.dpdelivery.android.api.ApiService
 import com.dpdelivery.android.model.techinp.FinishJobIp
+import com.dpdelivery.android.model.techinp.HomeIP
+import com.dpdelivery.android.model.techinp.SyncIP
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.schedulers.BaseScheduler
 import io.reactivex.disposables.CompositeDisposable
@@ -53,10 +55,10 @@ class FinishJobPresenter @Inject constructor(
         )
     }
 
-    override fun getPidDetails(hashMap: HashMap<String, String>) {
+    override fun getPidDetails(homeIP: HomeIP) {
         view?.showProgress()
         subscription.add(
-            apiService.getBLEDetails(purifierid = hashMap)
+            apiService.getBLEDetails(homeIP = homeIP)
                 .subscribeOn(baseScheduler.io())
                 .observeOn(baseScheduler.ui())
                 .subscribe(
@@ -69,10 +71,10 @@ class FinishJobPresenter @Inject constructor(
         )
     }
 
-    override fun updateServerCmds(hashMap: HashMap<String, String>) {
+    override fun updateServerCmds(syncIP: SyncIP) {
         view?.showProgress()
         subscription.add(
-            apiService.updateServerCmds(params = hashMap)
+            apiService.updateServerCmds(syncIP)
                 .subscribeOn(baseScheduler.io())
                 .observeOn(baseScheduler.ui())
                 .subscribe(

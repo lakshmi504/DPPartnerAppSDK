@@ -81,8 +81,8 @@ class LoginActivity : DaggerAppCompatActivity(), View.OnClickListener, LoginCont
 
     override fun showLoginLoader() {
         val loginIp = LoginIp(
-            username = et_email.text.toString(),
-            password = et_password.text.toString()
+            username = et_email.text.toString().trim { it <= ' ' },
+            password = et_password.text.toString().trim { it <= ' ' }
         )
         if (presenter.validate(loginIp))
             presenter.doLogin(loginIp)

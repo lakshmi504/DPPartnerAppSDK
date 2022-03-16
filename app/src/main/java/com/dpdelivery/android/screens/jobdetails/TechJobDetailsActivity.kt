@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -45,6 +47,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_tech_job_details.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
@@ -54,6 +57,7 @@ import kotlinx.android.synthetic.main.layout_type_installation.*
 import okhttp3.Headers
 import org.json.JSONException
 import retrofit2.HttpException
+import java.io.IOException
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -623,6 +627,9 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             cxlat = result[0]
             cxLong = result[1]
         }
+       /* else {
+            getLocationFromAddress(this, address)
+        }*/
     }
 
     override fun showStartJobRes(startJobRes: StartJobRes) {
@@ -727,6 +734,28 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun getLocationFromAddress(context: Context?, strAddress: String?): LatLng? {
+        val coder = Geocoder(context)
+        val address: List<Address>?
+        var p1: LatLng? = null
+        try {
+            // May throw an IOException
+            address = coder.getFromLocationName(strAddress, 5)
+            if (address == null) {
+                return null
+            }
+            val location: Address = address[0]
+            p1 = LatLng(location.latitude, location.longitude)
+            cxLatLong = "${location.latitude},${location.longitude}"
+            cxlat = location.latitude.toString()
+            cxLong = location.longitude.toString()
+
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+        }
+        return p1
     }
 
     override fun showViewState(state: Int) {

@@ -108,6 +108,12 @@ interface ApiService {
         @Url url: String
     ): Observable<InventoryRes>
 
+    @GET
+    fun getApiInputData(
+        @Header("Authorization") token: String,
+        @Url url: String
+    ): Observable<ApiInputRes>
+
     @PUT(ApiConstants.FINISH_JOB + "{jobId}")
     fun finishJob(
         @Header("Authorization") token: String,
@@ -118,13 +124,11 @@ interface ApiService {
     @GET(ApiConstants.SUMMARY)
     fun getSummary(@Header("Authorization") token: String): Observable<SummaryRes>
 
-    @FormUrlEncoded
     @POST(ApiConstants.GET_BLE_DETAILS)
-    fun getBLEDetails(@FieldMap purifierid: HashMap<String, String>): Observable<BLEDetailsRes>
+    fun getBLEDetails(@Body homeIP: HomeIP): Observable<BLEDetailsRes>
 
-    @FormUrlEncoded
     @POST(ApiConstants.SYNC)
-    fun updateServerCmds(@FieldMap params: HashMap<String, String>): Observable<BLEDetailsRes>
+    fun updateServerCmds(@Body syncIP: SyncIP): Observable<AddTextRes>
 
     @GET(ApiConstants.GET_WORK_FLOW_DATA)
     fun getWorkFlowData(
@@ -214,5 +218,11 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("jobId", encoded = true) id: Int
     ): Observable<LastJobsRes>
+
+    @POST(ApiConstants.CONN_CHECK)
+    fun getBotStatus(
+        @Header("Authorization") token: String,
+        @Body bidStatusIp: BIDStatusIp
+    ): Observable<BIDStatusRes>
 
 }
