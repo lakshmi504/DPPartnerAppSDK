@@ -1,4 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/drawable/bg_add_grey_stroke.xml" value="0.18854166666666666" />
+        <entry key="app/src/main/res/drawable/bg_circle_grey.xml" value="0.18854166666666666" />
+        <entry key="app/src/main/res/drawable/bg_edit_text_stroke.xml" value="0.18854166666666666" />
+        <entry key="app/src/main/res/drawable/bg_grey_border.xml" value="0.18854166666666666" />
+        <entry key="app/src/main/res/drawable/bg_grey_stroke.xml" value="0.18854166666666666" />
+        <entry key="app/src/main/res/drawable/bg_grey_stroke_curve.xml" value="0.18854166666666666" />
+        <entry key="app/src/main/res/drawable/bg_orange_stroke.xml" value="0.18854166666666666" />
+        <entry key="app/src/main/res/drawable/bg_outline_curve.xml" value="0.18854166666666666" />
+        <entry key="app/src/main/res/drawable/ic_down_arrow.xml" value="0.18854166666666666" />
+        <entry key="app/src/main/res/drawable/ic_plus.xml" value="0.18854166666666666" />
+        <entry key="app/src/main/res/drawable/ic_refresh.xml" value="0.18854166666666666" />
+        <entry key="app/src/main/res/drawable/ic_remove.xml" value="0.18854166666666666" />
+        <entry key="app/src/main/res/drawable/ic_search_black.xml" value="0.117" />
+        <entry key="app/src/main/res/drawable/ic_search_white.xml" value="0.117" />
+        <entry key="app/src/main/res/drawable/ic_up_arrow.xml" value="0.18854166666666666" />
+        <entry key="app/src/main/res/drawable/tab_background_selected.xml" value="0.18854166666666666" />
+        <entry key="app/src/main/res/drawable/tab_layout_background.xml" value="0.18854166666666666" />
+        <entry key="app/src/main/res/drawable/tab_layout_selector.xml" value="0.18854166666666666" />
+        <entry key="app/src/main/res/layout/activity_assigned_job.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_assigned_jobs_list.xml" value="0.17239583333333333" />
+        <entry key="app/src/main/res/layout/activity_detail_earnings.xml" value="0.17239583333333333" />
+        <entry key="app/src/main/res/layout/activity_image.xml" value="0.15648148148148147" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.17025641025641025" />
+        <entry key="app/src/main/res/layout/activity_service_report.xml" value="0.17239583333333333" />
+        <entry key="app/src/main/res/layout/activity_smart_config.xml" value="0.17239583333333333" />
+        <entry key="app/src/main/res/layout/activity_sync.xml" value="0.17025641025641025" />
+        <entry key="app/src/main/res/layout/activity_tech_job_details.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_work_flow.xml" value="0.14629629629629629" />
+        <entry key="app/src/main/res/layout/app_bar_tech_base.xml" value="0.16974358974358975" />
+        <entry key="app/src/main/res/layout/fragment_jobs.xml" value="0.17239583333333333" />
+        <entry key="app/src/main/res/layout/fragment_spares.xml" value="0.17239583333333333" />
+        <entry key="app/src/main/res/layout/item_asg_jobs_list.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/item_element_list.xml" value="0.18" />
+        <entry key="app/src/main/res/layout/item_jobs.xml" value="0.17239583333333333" />
+        <entry key="app/src/main/res/layout/item_spare_parts.xml" value="0.17239583333333333" />
+        <entry key="app/src/main/res/layout/item_spares.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/item_spares_history.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/item_template_list.xml" value="0.17239583333333333" />
+        <entry key="app/src/main/res/layout/item_timeline.xml" value="0.14629629629629629" />
+        <entry key="app/src/main/res/layout/layout_add_note.xml" value="0.17239583333333333" />
+        <entry key="app/src/main/res/layout/layout_spare_parts.xml" value="0.18849658314350798" />
+        <entry key="app/src/main/res/layout/layout_status_change.xml" value="0.14722222222222223" />
+        <entry key="app/src/main/res/layout/layout_tds.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/layout_type_installation.xml" value="0.14074074074074075" />
+        <entry key="app/src/main/res/menu/search_menu.xml" value="0.17239583333333333" />
+        <entry key="app/src/main/res/menu/tech_bottom_nav_items.xml" value="0.16574074074074074" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>

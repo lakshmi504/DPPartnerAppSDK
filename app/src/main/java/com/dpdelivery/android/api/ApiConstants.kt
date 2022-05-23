@@ -16,8 +16,10 @@ class ApiConstants {
         const val SPARE_PARTS = "inventory/spareParts"
         const val FINISH_JOB = "workforce/job/"
         const val SUMMARY = "employee/monthlyReport"
+
         //const val SYNC = "https://waterwalaprime.com/controller/sync1.php"
         const val SYNC = "https://api.drinkprime.in/payments/command/syncdevice"
+
         //const val GET_BLE_DETAILS = "https://waterwalaprime.com/controller/getdetailsBLE.php"
         const val GET_BLE_DETAILS = "https://api.drinkprime.in/payments/command/getdetails"
         const val GET_WORK_FLOW_DATA = "workflow/getAppData"
@@ -40,5 +42,9 @@ class ApiConstants {
         const val SUBMIT_INVENTORY = "inventory/submitQrDetails"
         const val CANCEL_INVENTORY = "inventory/cancelQr"
         const val SUBMIT_TECH_INVENTORY = "inventory/submitQrDetailsForTechnician"
+
+        //Auto assignment and routing
+        const val GET_NEXT_JOB = "workforce/getNextJob"
+        const val SAVE_JOB_RESPONSE = "workforce/saveResponseToJob"
     }
 }
