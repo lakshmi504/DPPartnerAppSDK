@@ -107,6 +107,11 @@ dependencies {
     implementation 'com.github.EspressifApp:lib-esptouch-android:1.0.0'
     implementation 'com.github.EspressifApp:lib-esptouch-v2-android:2.1.0'
 
+    //for force update
+    dependencies {
+        implementation 'com.google.android.play:core:1.10.3'
+    }
+
     //remove in release build.
     //facebook stetho for debug
     implementation "com.facebook.stetho:stetho:$stethoVer"

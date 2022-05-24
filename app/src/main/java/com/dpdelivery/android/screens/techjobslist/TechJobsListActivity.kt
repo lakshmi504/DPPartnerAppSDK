@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -30,6 +31,11 @@ import com.dpdelivery.android.screens.jobslist.JobsListActivity
 import com.dpdelivery.android.screens.login.LoginActivity
 import com.dpdelivery.android.screens.search.SearchActivity
 import com.dpdelivery.android.utils.*
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallStateUpdatedListener
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.android.synthetic.main.activity_assigned_jobs_list.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
@@ -37,7 +43,6 @@ import kotlinx.android.synthetic.main.empty_view.*
 import kotlinx.android.synthetic.main.error_view.*
 import okhttp3.Headers
 import retrofit2.HttpException
-import java.util.*
 import javax.inject.Inject
 
 
@@ -76,6 +81,8 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
     private var spStatusFilter: Spinner? = null
     private var spReasonsFilter: Spinner? = null
 
+    private var appUpdateManager: AppUpdateManager? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         LayoutInflater.from(context)
@@ -104,7 +111,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         getPartnerDetails()
     }
 
-    private fun forceUpdate() {
+    private fun currentAppVersionCheck() {
         val packageManager = this.packageManager
         var packageInfo: PackageInfo? = null
         try {
@@ -113,8 +120,8 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
             e.printStackTrace()
         }
         val currentVersion = packageInfo?.versionName
-        ForceUpdateAsync(currentVersion!!, this).execute()
-        CommonUtils.setCurrentVersion(currentVersion)
+        // ForceUpdateAsync(currentVersion!!, this).execute()
+        CommonUtils.setCurrentVersion(currentVersion!!)
     }
 
     private fun getAssignedJobsList() {
@@ -209,7 +216,8 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         presenter.takeView(this)
         bottom_navigation.selectedItemId = R.id.action_jobs
         loadDefaultSpinner()
-        forceUpdate()
+        currentAppVersionCheck()
+        checkForAppUpdate()
         getAssignedJobsList()
     }
 
@@ -472,4 +480,37 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         super.onBackPressed()
         finishAffinity()
     }
+
+    //force update
+    private fun checkForAppUpdate() {
+        appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
+        val appUpdateInfo = appUpdateManager!!.appUpdateInfo
+        // Checks that the platform will allow the specified type of update.
+        appUpdateInfo.addOnSuccessListener { appUpdateInfo ->
+            if ((appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE ||
+                        appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) &&
+                appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
+            ) {
+                // Request an immediate update.
+                val pendingTransactionDialog = Dialog(context, R.style.CustomDialogThemeLightBg)
+                pendingTransactionDialog.setContentView(R.layout.dialog_alert_message)
+                pendingTransactionDialog.setCancelable(false)
+                pendingTransactionDialog.setCanceledOnTouchOutside(false)
+
+                (pendingTransactionDialog.findViewById(R.id.btn_update) as AppCompatButton).setOnClickListener {
+                    context.startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("market://details?id=" + context.packageName)
+                        )
+                    )
+                    pendingTransactionDialog.dismiss()
+                }
+                (pendingTransactionDialog.findViewById(R.id.iv_close) as ImageView).visibility =
+                    View.INVISIBLE
+                pendingTransactionDialog.show()
+            }
+        }
+    }
+
 }
