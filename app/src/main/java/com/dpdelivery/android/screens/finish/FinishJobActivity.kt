@@ -190,46 +190,8 @@ class FinishJobActivity : TechBaseActivity(), View.OnClickListener,
     }
 
     private fun updateLatestDetails(deviceCode: String?) {
-        if (CommonUtils.hasUpdates) {
-            updateServerCmds()
-        } else {
-            getPidDetails(deviceCode)
-        }
+        getPidDetails(deviceCode)
     }
-
-    private fun updateServerCmds() {
-        showViewState(MultiStateView.VIEW_STATE_LOADING)
-        try {
-            val list = dbH.allAcks
-            for (i in list.indices) {
-                cmds.add(Cmd(cmdid = list[i].id, cmd = list[i].cmd!!, status = list[i].status!!))
-            }
-        } catch (e: Exception) {
-
-        }
-        val syncIP = SyncIP(
-            purifierid = deviceCode.toString(),
-            currentliters = CommonUtils.current.toString() + "",
-            validity = CommonUtils.validity,
-            flowlimit = CommonUtils.flowlimit.toString() + "",
-            status = CommonUtils.purifierStatus.toString() + "",
-            cmds = cmds
-        )
-        presenter.updateServerCmds(syncIP)
-        Log.d("syncparams", syncIP.toString())
-    }
-
-    override fun showSyncRes(res: AddTextRes) {
-        showViewState(MultiStateView.VIEW_STATE_CONTENT)
-        if (res.success!!) {
-            dbH.clearAcks()
-            getPidDetails(deviceCode)
-            CommonUtils.resetUpdate()
-        } else {
-            toast(res.message!!)
-        }
-    }
-
     private fun getPidDetails(deviceCode: String?) {
         showViewState(MultiStateView.VIEW_STATE_LOADING)
         presenter.getPidDetails(HomeIP(purifierid = deviceCode!!))

@@ -10,7 +10,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import com.dpdelivery.android.R
 import com.dpdelivery.android.model.techinp.LoginIp
-import com.dpdelivery.android.screens.techjobslist.TechJobsListActivity
+import com.dpdelivery.android.screens.getnextjob.GetNextJobActivity
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.toast
 import dagger.android.support.DaggerAppCompatActivity
@@ -91,7 +91,7 @@ class LoginActivity : DaggerAppCompatActivity(), View.OnClickListener, LoginCont
     override fun setLoginRes(res: Headers) {
         val data = res.get("Authorization")
         CommonUtils.saveLoginToken(data)
-        val intent = Intent(this, TechJobsListActivity::class.java)
+        val intent = Intent(this, GetNextJobActivity::class.java)
         startActivity(intent)
         finish()
     }

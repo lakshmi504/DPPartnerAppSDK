@@ -4,6 +4,7 @@ import com.dpdelivery.android.screens.account.AccountActivity
 import com.dpdelivery.android.screens.base.TechBaseActivity
 import com.dpdelivery.android.screens.confirmpickupinventory.ConfirmScanResultsActivity
 import com.dpdelivery.android.screens.finish.FinishJobActivity
+import com.dpdelivery.android.screens.getnextjob.GetNextJobActivity
 import com.dpdelivery.android.screens.inventory.InventoryActivity
 import com.dpdelivery.android.screens.inventoryDetails.InventoryDetailsActivity
 import com.dpdelivery.android.screens.jobdetails.TechJobDetailsActivity
@@ -89,5 +90,8 @@ abstract class MyActivityBuilder {
 
     @ContributesAndroidInjector()
     internal abstract fun smartConfigAbs(): SmartConfigAbs
+
+    @ContributesAndroidInjector()
+    internal abstract fun getNextJobActivity(): GetNextJobActivity
 
 }

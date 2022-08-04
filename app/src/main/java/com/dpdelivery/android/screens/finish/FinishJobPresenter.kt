@@ -71,22 +71,6 @@ class FinishJobPresenter @Inject constructor(
         )
     }
 
-    override fun updateServerCmds(syncIP: SyncIP) {
-        view?.showProgress()
-        subscription.add(
-            apiService.updateServerCmds(syncIP)
-                .subscribeOn(baseScheduler.io())
-                .observeOn(baseScheduler.ui())
-                .subscribe(
-                    { res ->
-                        view?.showSyncRes(res)
-                    },
-                    { throwable ->
-                        view?.showErrorMsg(throwable)
-                    })
-        )
-    }
-
     override fun dropView() {
         subscription.clear()
         this.view = null

@@ -219,15 +219,15 @@ class WorkFlowPresenter @Inject constructor(
         )
     }
 
-    override fun updateServerCmds(syncIP: SyncIP) {
+    override fun getBleCmdDetails(deviceCode: String, onlyPending: Boolean) {
         view?.showProgress()
         subscription.add(
-            apiService.updateServerCmds(syncIP = syncIP)
+            apiService.getCommands(deviceCode, onlyPending)
                 .subscribeOn(baseScheduler.io())
                 .observeOn(baseScheduler.ui())
                 .subscribe(
                     { res ->
-                        view?.showSyncRes(res)
+                        view?.showBleCmdDetailsRes(res)
                     },
                     { throwable ->
                         view?.showErrorMsg(throwable)

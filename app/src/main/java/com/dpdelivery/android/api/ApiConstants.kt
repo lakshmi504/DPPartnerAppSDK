@@ -20,6 +20,15 @@ class ApiConstants {
         //const val SYNC = "https://waterwalaprime.com/controller/sync1.php"
         const val SYNC = "https://api.drinkprime.in/payments/command/syncdevice"
 
+        //get commands
+        const val GET_COMMANDS = "https://api.drinkprime.in/sponsor/device/command"
+
+        //update sync commands to BE
+        const val UPDATE_SYNC_COMMANDS = "https://api.drinkprime.in/sponsor/device/command"
+
+        //update synced purifier data to BE
+        const val UPDATE_SYNC_DATA = "https://api.drinkprime.in/sponsor/device/life/sync"
+
         //const val GET_BLE_DETAILS = "https://waterwalaprime.com/controller/getdetailsBLE.php"
         const val GET_BLE_DETAILS = "https://api.drinkprime.in/payments/command/getdetails"
         const val GET_WORK_FLOW_DATA = "workflow/getAppData"
@@ -45,6 +54,7 @@ class ApiConstants {
 
         //Auto assignment and routing
         const val GET_NEXT_JOB = "workforce/getNextJob"
-        const val SAVE_JOB_RESPONSE = "workforce/saveResponseToJob"
+        const val SAVE_JOB_RESPONSE =
+            "workforce/saveResponseToJob"
     }
 }

@@ -47,7 +47,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-
+        <activity
+            android:name=".screens.getnextjob.GetNextJobActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".screens.servicereport.ServiceReportActivity"
             android:exported="true" />
@@ -208,7 +214,6 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan|adjustResize"
             tools:ignore="LockedOrientationActivity" />
-
         <activity
             android:name=".screens.smartconfig.SmartConfigActivity"
             android:exported="true"

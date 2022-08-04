@@ -15,13 +15,20 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.dpdelivery.android.R
+import com.dpdelivery.android.commonviews.MultiStateView
+import com.dpdelivery.android.model.techres.SyncCommandsUpdatedRes
+import com.dpdelivery.android.model.techinp.SyncCommandIP
+import com.dpdelivery.android.model.techinp.SyncDataIP
 import com.dpdelivery.android.utils.CommonUtils
+import com.dpdelivery.android.utils.toast
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_sync.*
+import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class SyncActivity : DaggerAppCompatActivity() {
+class SyncActivity : DaggerAppCompatActivity(), SyncContract.View {
     private var mBluetoothLeService: BluetoothLeService? = null
     private var botId: String? = "50:65:83:99:CD:31"
     private var mConnected = false
@@ -43,6 +50,8 @@ class SyncActivity : DaggerAppCompatActivity() {
     lateinit var ownerName: String
     internal var prepaid: Int = 0
 
+    @Inject
+    lateinit var presenter: SyncPresenter
 
     private val mServiceConnection = object : ServiceConnection {
 
@@ -89,7 +98,11 @@ class SyncActivity : DaggerAppCompatActivity() {
                 if (output.substring(0, 2) == CommandHandler.READ_LITERS.substring(6, 8)) {
                     currentliters = cmdH.readLiters(output.substring(2))
                     Log.i("reached here", "current liters are $currentliters")
-                } else if (output.substring(0, 2) == CommandHandler.READ_FLOWLIMIT.substring(6, 8)) {
+                } else if (output.substring(0, 2) == CommandHandler.READ_FLOWLIMIT.substring(
+                        6,
+                        8
+                    )
+                ) {
                     flowlimit = cmdH.readFlowlimit(output.substring(2))
                     Log.i("reached here", "flow limit is  $flowlimit")
                 } else if (output.substring(0, 2) == CommandHandler.READ_VALIDITY.substring(6, 8)) {
@@ -108,7 +121,8 @@ class SyncActivity : DaggerAppCompatActivity() {
                     val cmd = dbH.getCmd(currentcmd)
                     if (cmd != null && cmd.status == "ISSUE") {
                         val cmdStr = cmd.cmd
-                        val pieces = cmdStr?.split("-".toRegex())!!.dropLastWhile { it.isEmpty() }.toTypedArray()
+                        val pieces = cmdStr?.split("-".toRegex())!!.dropLastWhile { it.isEmpty() }
+                            .toTypedArray()
                         if (pieces[0] == "101") {
                             var c = Integer.parseInt(pieces[1])
                             c += Integer.parseInt(pieces[2])
@@ -118,7 +132,10 @@ class SyncActivity : DaggerAppCompatActivity() {
                                 dbH.addAck(cm)
                             }
                         } else if (pieces[0] == "102") {
-                            val date1 = pieces[1].substring(0, 4) + "-" + pieces[1].substring(4, 6) + "-" + pieces[1].substring(6, 8)
+                            val date1 = pieces[1].substring(0, 4) + "-" + pieces[1].substring(
+                                4,
+                                6
+                            ) + "-" + pieces[1].substring(6, 8)
                             val OLD_FORMAT = "yyyy-MM-dd"
                             try {
                                 val sdf = SimpleDateFormat(OLD_FORMAT)
@@ -152,12 +169,17 @@ class SyncActivity : DaggerAppCompatActivity() {
                 if (cmd != null) {
                     displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA)!!)
                     val cmdStr = cmd.cmd
-                    val pieces = cmdStr?.split("-".toRegex())!!.dropLastWhile { it.isEmpty() }.toTypedArray()
+                    val pieces =
+                        cmdStr?.split("-".toRegex())!!.dropLastWhile { it.isEmpty() }.toTypedArray()
                     if (pieces[0] == "101") {
-                        val flc = mBluetoothLeService!!.primeService.getCharacteristic(UUID.fromString(SampleGattAttributes.FLOW_LIMIT))
+                        val flc = mBluetoothLeService!!.primeService.getCharacteristic(
+                            UUID.fromString(SampleGattAttributes.FLOW_LIMIT)
+                        )
                         mBluetoothLeService!!.readCharacteristic(flc)
                     } else if (pieces[0] == "102") {
-                        val flc = mBluetoothLeService!!.primeService.getCharacteristic(UUID.fromString(SampleGattAttributes.VALIDITY))
+                        val flc = mBluetoothLeService!!.primeService.getCharacteristic(
+                            UUID.fromString(SampleGattAttributes.VALIDITY)
+                        )
                         mBluetoothLeService!!.readCharacteristic(flc)
                     }
                 }
@@ -167,31 +189,53 @@ class SyncActivity : DaggerAppCompatActivity() {
             } else if (BluetoothLeService.ACTION_DATA_COMMAND == action) {
                 val data = intent.getStringExtra(BluetoothLeService.EXTRA_DATA)!!
                 //Log.i(TAG, "the data written in command is "+data);
-                val flc = mBluetoothLeService!!.primeService.getCharacteristic(UUID.fromString(SampleGattAttributes.COMMAND))
+                val flc = mBluetoothLeService!!.primeService.getCharacteristic(
+                    UUID.fromString(SampleGattAttributes.COMMAND)
+                )
 
                 if (data.substring(0, 2) == "80") {
-                    flc.setValue(Integer.parseInt(CommandHandler.READ_FLOWLIMIT, 16), BluetoothGattCharacteristic.FORMAT_UINT32, 0)
+                    flc.setValue(
+                        Integer.parseInt(CommandHandler.READ_FLOWLIMIT, 16),
+                        BluetoothGattCharacteristic.FORMAT_UINT32,
+                        0
+                    )
                     Log.i(TAG, "inside flowlimit ")
 
                     mBluetoothLeService!!.writeCharacteristic(flc)
 
                 } else if (data.substring(0, 2) == "81") {
-                    flc.setValue(Integer.parseInt(CommandHandler.READ_VALIDITY, 16), BluetoothGattCharacteristic.FORMAT_UINT32, 0)
+                    flc.setValue(
+                        Integer.parseInt(CommandHandler.READ_VALIDITY, 16),
+                        BluetoothGattCharacteristic.FORMAT_UINT32,
+                        0
+                    )
                     Log.i(TAG, "inside validity ")
 
                     mBluetoothLeService!!.writeCharacteristic(flc)
                 } else if (data.substring(0, 2) == "10") {
-                    flc.setValue(Integer.parseInt(CommandHandler.READ_STATUS, 16), BluetoothGattCharacteristic.FORMAT_UINT32, 0)
+                    flc.setValue(
+                        Integer.parseInt(CommandHandler.READ_STATUS, 16),
+                        BluetoothGattCharacteristic.FORMAT_UINT32,
+                        0
+                    )
                     Log.i(TAG, "inside status ")
 
                     mBluetoothLeService!!.writeCharacteristic(flc)
                 } else if (data.substring(0, 2) == "20") {
-                    flc.setValue(Integer.parseInt(CommandHandler.READ_LITERS, 16), BluetoothGattCharacteristic.FORMAT_UINT32, 0)
+                    flc.setValue(
+                        Integer.parseInt(CommandHandler.READ_LITERS, 16),
+                        BluetoothGattCharacteristic.FORMAT_UINT32,
+                        0
+                    )
                     Log.i(TAG, "inside liters ")
 
                     mBluetoothLeService!!.writeCharacteristic(flc)
                 } else if (data.substring(0, 2) == "12") {
-                    flc.setValue(Integer.parseInt(CommandHandler.READ_PREPAID, 16), BluetoothGattCharacteristic.FORMAT_UINT32, 0)
+                    flc.setValue(
+                        Integer.parseInt(CommandHandler.READ_PREPAID, 16),
+                        BluetoothGattCharacteristic.FORMAT_UINT32,
+                        0
+                    )
                     Log.i(TAG, "inside prepaid ")
 
                     mBluetoothLeService!!.writeCharacteristic(flc)
@@ -201,7 +245,9 @@ class SyncActivity : DaggerAppCompatActivity() {
                     mBluetoothLeService!!.readCharacteristic(flc)
                 }
             } else if (BluetoothLeService.ACTION_WRITE_DESCRIPTION == action) {
-                val flc = mBluetoothLeService!!.primeService.getCharacteristic(UUID.fromString(SampleGattAttributes.COMMAND))
+                val flc = mBluetoothLeService!!.primeService.getCharacteristic(
+                    UUID.fromString(SampleGattAttributes.COMMAND)
+                )
                 val `val` = 0x00000011
                 flc.setValue(`val`, BluetoothGattCharacteristic.FORMAT_UINT32, 0)
 
@@ -227,6 +273,10 @@ class SyncActivity : DaggerAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sync)
+        init()
+    }
+
+    override fun init() {
         dbH = DatabaseHandler(this)
         cmdH = CommandHandler()
         if (intent != null) {
@@ -284,7 +334,7 @@ class SyncActivity : DaggerAppCompatActivity() {
     override fun onResume() {
         super.onResume()
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter())
-
+        presenter.takeView(this)
     }
 
     override fun onPause() {
@@ -315,11 +365,67 @@ class SyncActivity : DaggerAppCompatActivity() {
             progress.visibility = View.INVISIBLE
             progress1.visibility = View.INVISIBLE
             progress2.visibility = View.INVISIBLE
-            mHandler.postDelayed({
-                finish()
-            }, 2000)
+            val resultCommands = ArrayList<Int>()
+            val listData = dbH.allAcks
+            for (i in listData.indices) {
+                val cmd = listData[i]
+                resultCommands.add(cmd.id)
+            }
+            if (resultCommands.isNotEmpty()) {
+                updateServerCommands(resultCommands)
+            } else {
+                updateServerPurifierData()
+            }
             enableback = false
         }
+    }
+
+    private fun updateServerCommands(resultCommands: ArrayList<Int>) {
+        presenter.updateSyncCommands(
+            SyncCommandIP(
+                deviceCode = purifierId,
+                sequenceNos = resultCommands
+            )
+        )
+    }
+
+    private fun updateServerPurifierData() {
+        presenter.updateSyncPurifierData(
+            data = SyncDataIP(
+                consumedLiters = CommonUtils.current,
+                deviceCode = purifierId,
+                status = CommonUtils.purifierStatus,
+                inputTDS = 0,
+                outputTDS = 0,
+                latitude = CommonUtils.latitude,
+                longitude = CommonUtils.longitude,
+                totalLiters = CommonUtils.flowlimit,
+                validUpto = CommonUtils.validity
+            )
+        )
+    }
+
+    override fun showErrorMsg(throwable: Throwable, apiType: String) {
+        showViewState(MultiStateView.VIEW_STATE_CONTENT)
+        toast(throwable.toString())
+    }
+
+    override fun showUpdatedSyncCommandsRes(res: SyncCommandsUpdatedRes) {
+        if (res.success) {
+            updateServerPurifierData()
+        }
+    }
+
+    override fun showUpdatedSyncDataRes(res: SyncCommandsUpdatedRes) {
+        if (res.success) {
+            dbH.clearAcks()
+            CommonUtils.resetUpdate()
+            finish()
+        }
+    }
+
+    override fun showViewState(state: Int) {
+        multistateview.viewState = state
     }
 
     private fun issueCommand(): Boolean {
@@ -340,7 +446,9 @@ class SyncActivity : DaggerAppCompatActivity() {
         // Toast.makeText(this, cmd.id.toString() + "," + cmd.cmd.toString(), Toast.LENGTH_LONG).show()
 
         Log.i("waterwala status", cmd.id.toString() + " " + cmd.status + " " + cmd.cmd)
-        val flc = mBluetoothLeService!!.primeService.getCharacteristic(UUID.fromString(SampleGattAttributes.COMMAND))
+        val flc = mBluetoothLeService!!.primeService.getCharacteristic(
+            UUID.fromString(SampleGattAttributes.COMMAND)
+        )
         val cmdH = CommandHandler()
         val c = cmd.cmd
         val slices = c?.split("-".toRegex())!!.dropLastWhile { it.isEmpty() }.toTypedArray()
@@ -368,7 +476,10 @@ class SyncActivity : DaggerAppCompatActivity() {
 
             "102"// add validity
             -> try {
-                val date = slices[1].substring(0, 4) + "-" + slices[1].substring(4, 6) + "-" + slices[1].substring(6, 8)
+                val date = slices[1].substring(0, 4) + "-" + slices[1].substring(
+                    4,
+                    6
+                ) + "-" + slices[1].substring(6, 8)
                 val OLD_FORMAT = "yyyy-MM-dd"
                 val sdf = SimpleDateFormat(OLD_FORMAT)
                 val cmddate = sdf.parse(date)
@@ -423,18 +534,23 @@ class SyncActivity : DaggerAppCompatActivity() {
 
                     "102"// validity
                     -> {
-                        val date = slices[2].substring(0, 4) + "-" + slices[2].substring(4, 6) + "-" + slices[2].substring(6, 8)
+                        val date = slices[2].substring(0, 4) + "-" + slices[2].substring(
+                            4,
+                            6
+                        ) + "-" + slices[2].substring(6, 8)
                         val OLD_FORMAT = "yyyy-MM-dd"
                         val sdf = SimpleDateFormat(OLD_FORMAT)
                         val cmddate = sdf.parse(date)
                         val calender = Calendar.getInstance()
                         calender.time = cmddate
                         val y = calender.get(Calendar.YEAR) % 2000
-                        val year = if (y < 16) "0" + Integer.toHexString(y) else Integer.toHexString(y)
+                        val year =
+                            if (y < 16) "0" + Integer.toHexString(y) else Integer.toHexString(y)
                         val m = calender.get(Calendar.MONTH) + 1
                         val month = "0" + Integer.toHexString(m)
                         val d = calender.get(Calendar.DAY_OF_MONTH)
-                        val day = if (d < 16) "0" + Integer.toHexString(d) else Integer.toHexString(d)
+                        val day =
+                            if (d < 16) "0" + Integer.toHexString(d) else Integer.toHexString(d)
                         Log.i("WaterWala", "the incremented date is 12$day$month$year")
                         val enddate = year + "" + month + "" + day + "81"
                         val validi = Integer.parseInt(enddate, 16)
@@ -451,9 +567,11 @@ class SyncActivity : DaggerAppCompatActivity() {
                         val y1 = now1.get(Calendar.YEAR) % 2000
                         val m1 = now1.get(Calendar.MONTH) + 1 // Note: zero based!
                         val d1 = now1.get(Calendar.DAY_OF_MONTH)
-                        val year1 = if (y1 < 16) "0" + Integer.toHexString(y1) else Integer.toHexString(y1)
+                        val year1 =
+                            if (y1 < 16) "0" + Integer.toHexString(y1) else Integer.toHexString(y1)
                         val month1 = "0" + Integer.toHexString(m1)
-                        val day1 = if (d1 < 16) "0" + Integer.toHexString(d1) else Integer.toHexString(d1)
+                        val day1 =
+                            if (d1 < 16) "0" + Integer.toHexString(d1) else Integer.toHexString(d1)
                         Log.i("WaterWala", "the incremented date is $day1-$month1-20$year1")
                         val enddate1 = year1 + "" + month1 + "" + day1 + "22"
                         val validi1 = Integer.parseInt(enddate1, 16)
@@ -466,11 +584,14 @@ class SyncActivity : DaggerAppCompatActivity() {
                     -> {
                         val now = Calendar.getInstance()
                         val h = now.get(Calendar.HOUR_OF_DAY)
-                        val hrs = if (h < 16) "0" + Integer.toHexString(h) else Integer.toHexString(h)
+                        val hrs =
+                            if (h < 16) "0" + Integer.toHexString(h) else Integer.toHexString(h)
                         val mi = now.get(Calendar.MINUTE)
-                        val mins = if (mi < 16) "0" + Integer.toHexString(mi) else Integer.toHexString(mi)
+                        val mins =
+                            if (mi < 16) "0" + Integer.toHexString(mi) else Integer.toHexString(mi)
                         val s = now.get(Calendar.SECOND)
-                        val secs = if (s < 16) "0" + Integer.toHexString(s) else Integer.toHexString(s)
+                        val secs =
+                            if (s < 16) "0" + Integer.toHexString(s) else Integer.toHexString(s)
                         Log.i("WaterWala", "the time is $hrs:$mins:$secs")
                         val endtime = hrs + "" + mins + "" + secs + "23"
                         val rtctime = Integer.parseInt(endtime, 16)
@@ -523,7 +644,9 @@ class SyncActivity : DaggerAppCompatActivity() {
     }
 
     internal fun readChar() {
-        val flc = mBluetoothLeService!!.primeService.getCharacteristic(UUID.fromString(SampleGattAttributes.COMMAND))
+        val flc = mBluetoothLeService!!.primeService.getCharacteristic(
+            UUID.fromString(SampleGattAttributes.COMMAND)
+        )
         val chars = values[values.size - 1]
         val `val` = Integer.parseInt(chars, 16)
         flc.setValue(`val`, BluetoothGattCharacteristic.FORMAT_UINT32, 0)

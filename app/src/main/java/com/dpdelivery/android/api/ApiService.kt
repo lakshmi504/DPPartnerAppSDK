@@ -1,5 +1,7 @@
 package com.dpdelivery.android.api
 
+import com.dpdelivery.android.model.SyncCommandsRes
+import com.dpdelivery.android.model.techres.SyncCommandsUpdatedRes
 import com.dpdelivery.android.model.techinp.*
 import com.dpdelivery.android.model.techres.*
 import io.reactivex.Observable
@@ -127,8 +129,6 @@ interface ApiService {
     @POST(ApiConstants.GET_BLE_DETAILS)
     fun getBLEDetails(@Body homeIP: HomeIP): Observable<BLEDetailsRes>
 
-    @POST(ApiConstants.SYNC)
-    fun updateServerCmds(@Body syncIP: SyncIP): Observable<AddTextRes>
 
     @GET(ApiConstants.GET_WORK_FLOW_DATA)
     fun getWorkFlowData(
@@ -224,5 +224,31 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body bidStatusIp: BIDStatusIp
     ): Observable<BIDStatusRes>
+
+    @GET(ApiConstants.GET_NEXT_JOB)
+    fun getNextJobs(
+        @Header("Authorization") token: String,
+        @Query("latitude") latitude: String,
+        @Query("longitude") longitude: String
+    ): Observable<GetNextJobRes>
+
+    @GET(ApiConstants.SAVE_JOB_RESPONSE + "/{jobId}")
+    fun saveJobResponse(
+        @Header("Authorization") token: String,
+        @Path("jobId", encoded = true) jobId: Int,
+        @Query("response", encoded = true) response: String
+    ): Observable<GetNextJobRes>
+
+    @GET(ApiConstants.GET_COMMANDS)
+    fun getCommands(
+        @Query("deviceCode") deviceCode: String,
+        @Query("onlyPending") onlyPending: Boolean
+    ): Observable<SyncCommandsRes>
+
+    @PUT(ApiConstants.UPDATE_SYNC_COMMANDS)
+    fun updateSyncCommands(@Body data: SyncCommandIP): Observable<SyncCommandsUpdatedRes>
+
+    @POST(ApiConstants.UPDATE_SYNC_DATA)
+    fun updateSyncPurifierData(@Body data: SyncDataIP): Observable<SyncCommandsUpdatedRes>
 
 }

@@ -16,13 +16,14 @@ buildscript {
     ext.firebase = '17.3.3'
     ext.cropImage = '2.7.0'
     ext.kotlin_version = '1.3.72'
+    ext.okhttp3Ver = '3.10.0'
     repositories {
         google()
         jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.3'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"
         classpath 'com.google.gms:google-services:4.3.4'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.4.1'
 

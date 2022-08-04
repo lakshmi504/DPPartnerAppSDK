@@ -7,6 +7,7 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.dpdelivery.android.R
+import com.dpdelivery.android.screens.getnextjob.GetNextJobActivity
 import com.dpdelivery.android.screens.login.LoginActivity
 import com.dpdelivery.android.screens.techjobslist.TechJobsListActivity
 import com.dpdelivery.android.utils.CommonUtils
@@ -33,9 +34,15 @@ class SplashActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         } else {
-            val intent = Intent(this, TechJobsListActivity::class.java)
-            startActivity(intent)
-            finish()
+            if (CommonUtils.getRole() == "Technician") {
+                val intent = Intent(this, GetNextJobActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                val intent = Intent(this, TechJobsListActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
 
     }

@@ -84,15 +84,20 @@ class TechJobsListViewHolder(
             val text = item.customerPhone
             if (text!!.isNotEmpty()) {
                 try {
-                    if (CommonUtils.getRole() == "Technician")
-                        try {
-                            tv_cust_phn.text = text.replaceRange(5..9, "*****")
-                        } catch (e: Exception) {
+                    try {
+                        tv_cust_phn.text = text.replaceRange(5..9, "*****")
+                    } catch (e: Exception) {
 
-                        }
-                    else {
-                        tv_cust_phn.text = text
                     }
+                    /* if (CommonUtils.getRole() == "Technician")
+                         try {
+                             tv_cust_phn.text = text.replaceRange(5..9, "*****")
+                         } catch (e: Exception) {
+
+                         }
+                     else {
+                         tv_cust_phn.text = text
+                     }*/
                 } catch (e: Exception) {
 
                 }
@@ -100,20 +105,26 @@ class TechJobsListViewHolder(
             tv_cust_phn.paintFlags = tv_cust_phn.paintFlags or Paint.UNDERLINE_TEXT_FLAG
             if (!item.customerPhone.isNullOrEmpty()) {
                 tv_cust_phn.setOnClickListener {
-                    if (CommonUtils.getRole() == "Technician") {
-                        adapterClickListener.onclick(
-                            any = item,
-                            pos = pos,
-                            type = itemView,
-                            op = Constants.CUST_PHONE
-                        )
-                    } else {
-                        val url = "tel:${item.customerPhone}"
-                        val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
-                        intent.putExtra("finish", true)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        context.startActivity(intent)
-                    }
+                    adapterClickListener.onclick(
+                        any = item,
+                        pos = pos,
+                        type = itemView,
+                        op = Constants.CUST_PHONE
+                    )
+                    /* if (CommonUtils.getRole() == "Technician") {
+                         adapterClickListener.onclick(
+                             any = item,
+                             pos = pos,
+                             type = itemView,
+                             op = Constants.CUST_PHONE
+                         )
+                     } else {
+                         val url = "tel:${item.customerPhone}"
+                         val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
+                         intent.putExtra("finish", true)
+                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                         context.startActivity(intent)
+                     }*/
                 }
             }
 
@@ -124,7 +135,12 @@ class TechJobsListViewHolder(
                 tv_alternate_no.paintFlags = tv_alternate_no.paintFlags or Paint.UNDERLINE_TEXT_FLAG
                 tv_alternate_no.visibility = View.VISIBLE
                 alternate_no.visibility = View.VISIBLE
-                if (CommonUtils.getRole() == "Technician")
+                try {
+                    tv_alternate_no.text = (altPhone).replaceRange(5..9, "*****")
+                } catch (e: Exception) {
+
+                }
+                /*if (CommonUtils.getRole() == "Technician")
                     try {
                         tv_alternate_no.text = (altPhone).replaceRange(5..9, "*****")
                     } catch (e: Exception) {
@@ -132,9 +148,9 @@ class TechJobsListViewHolder(
                     }
                 else {
                     tv_alternate_no.text = altPhone
-                }
+                }*/
                 tv_alternate_no.setOnClickListener {
-                    if (CommonUtils.getRole() == "Technician") {
+                   /* if (CommonUtils.getRole() == "Technician") {
                         adapterClickListener.onclick(
                             any = item,
                             pos = pos,
@@ -147,7 +163,13 @@ class TechJobsListViewHolder(
                         intent.putExtra("finish", true)
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         context.startActivity(intent)
-                    }
+                    }*/
+                    adapterClickListener.onclick(
+                        any = item,
+                        pos = pos,
+                        type = itemView,
+                        op = Constants.ALT_CUST_PHONE
+                    )
                 }
             }
             btn_know_more.setOnClickListener {

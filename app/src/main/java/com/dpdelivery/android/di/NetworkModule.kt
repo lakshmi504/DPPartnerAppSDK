@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -26,7 +27,7 @@ class NetworkModule {
             .client(okHttpClient.build())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .baseUrl(ApiConstants.BASE_URL)
+            .baseUrl(ApiConstants.DEV_BASE_URL)
             .build()
             .create(ApiService::class.java)
     }
@@ -39,7 +40,10 @@ class NetworkModule {
         okHttpBuilder.connectTimeout(180, TimeUnit.SECONDS)
             .writeTimeout(180, TimeUnit.SECONDS)
             .readTimeout(180, TimeUnit.SECONDS)
+        val logging: HttpLoggingInterceptor = HttpLoggingInterceptor()
+        logging.level = HttpLoggingInterceptor.Level.BODY
         okHttpBuilder.addNetworkInterceptor(StethoInterceptor())
+        okHttpBuilder.addInterceptor(logging)
         okHttpBuilder.addInterceptor { chain ->
             if (networkMonitor.isConnected())
                 return@addInterceptor chain.proceed(chain.request()) else throw  NoNetworkException()

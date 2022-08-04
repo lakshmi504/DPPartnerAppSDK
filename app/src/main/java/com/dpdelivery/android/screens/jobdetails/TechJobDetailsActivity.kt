@@ -252,7 +252,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             }
             R.id.tv_phone -> { //call function
                 if (phone?.isNotEmpty()!!) {
-
+/*
                     if (CommonUtils.getRole() == "Technician") {
                         dialog!!.show()
                         detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = phone!!)
@@ -260,19 +260,23 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
                         val url = "tel:$phone"
                         val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
                         startActivity(intent)
-                    }
+                    }*/
+                    dialog!!.show()
+                    detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = phone!!)
                 }
             }
             R.id.tv_alt_phone -> {  // for call function(alt number)
                 if (altPhone != null) {
-                    if (CommonUtils.getRole() == "Technician") {
-                        dialog!!.show()
-                        detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = altPhone!!)
-                    } else {
-                        val url = "tel:$altPhone"
-                        val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
-                        startActivity(intent)
-                    }
+                    /* if (CommonUtils.getRole() == "Technician") {
+                         dialog!!.show()
+                         detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = altPhone!!)
+                     } else {
+                         val url = "tel:$altPhone"
+                         val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
+                         startActivity(intent)
+                     }*/
+                    dialog!!.show()
+                    detailsPresenter.getVoipCall(caller = tech_phone!!, receiver = altPhone!!)
                 }
             }
             R.id.btn_activate -> {
@@ -484,14 +488,10 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         if (!res.customerPhone.isNullOrEmpty()) {
             try {
                 phone = res.customerPhone
-                if (CommonUtils.getRole() == "Technician")
-                    try {
-                        tv_phone.text = phone?.replaceRange(5..9, "*****")
-                    } catch (e: Exception) {
+                try {
+                    tv_phone.text = phone?.replaceRange(5..9, "*****")
+                } catch (e: Exception) {
 
-                    }
-                else {
-                    tv_phone.text = phone
                 }
             } catch (e: Exception) {
 
@@ -500,14 +500,10 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         if (!res.customerAltPhone.isNullOrEmpty()) {
             try {
                 altPhone = res.customerAltPhone
-                if (CommonUtils.getRole() == "Technician")
-                    try {
-                        tv_alt_phone.text = altPhone?.replaceRange(5..9, "*****")
-                    } catch (e: Exception) {
+                try {
+                    tv_alt_phone.text = altPhone?.replaceRange(5..9, "*****")
+                } catch (e: Exception) {
 
-                    }
-                else {
-                    tv_alt_phone.text = altPhone
                 }
             } catch (e: Exception) {
 
@@ -627,9 +623,9 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             cxlat = result[0]
             cxLong = result[1]
         }
-       /* else {
-            getLocationFromAddress(this, address)
-        }*/
+        /* else {
+             getLocationFromAddress(this, address)
+         }*/
     }
 
     override fun showStartJobRes(startJobRes: StartJobRes) {

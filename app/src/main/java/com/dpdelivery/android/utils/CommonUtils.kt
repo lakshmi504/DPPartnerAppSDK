@@ -8,7 +8,6 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.location.LocationManager
-import android.net.ConnectivityManager
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.widget.ImageView
@@ -18,7 +17,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.dpdelivery.android.MyApplication
 import com.dpdelivery.android.R
 import com.dpdelivery.android.model.techres.PartnerDetailsRes
 import java.io.ByteArrayOutputStream
@@ -161,6 +159,36 @@ class CommonUtils {
         val version: String
             get() = SharedPreferenceManager.getPrefVal(
                 SharedPreferenceManager.CURRENT_VERSION,
+                "",
+                SharedPreferenceManager.VALUE_TYPE.STRING
+            ) as String
+
+        fun setLatitude(latitude: String) {
+            SharedPreferenceManager.setPrefVal(
+                SharedPreferenceManager.LATITUDE,
+                latitude,
+                SharedPreferenceManager.VALUE_TYPE.STRING
+            )
+        }
+
+        fun setLongitude(longitude: String) {
+            SharedPreferenceManager.setPrefVal(
+                SharedPreferenceManager.LONGITUDE,
+                longitude,
+                SharedPreferenceManager.VALUE_TYPE.STRING
+            )
+        }
+
+        val latitude: String
+            get() = SharedPreferenceManager.getPrefVal(
+                SharedPreferenceManager.LATITUDE,
+                "",
+                SharedPreferenceManager.VALUE_TYPE.STRING
+            ) as String
+
+        val longitude: String
+            get() = SharedPreferenceManager.getPrefVal(
+                SharedPreferenceManager.LONGITUDE,
                 "",
                 SharedPreferenceManager.VALUE_TYPE.STRING
             ) as String

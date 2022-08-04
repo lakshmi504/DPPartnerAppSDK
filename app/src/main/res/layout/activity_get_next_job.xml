@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/ll_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens_10"
+        android:layout_marginTop="@dimen/dimens_5"
+        android:layout_marginEnd="@dimen/dimens_10"
+        android:layout_marginBottom="@dimen/dimens_5"
+        android:background="@drawable/bg_outline_curve"
+        android:orientation="vertical"
+        android:padding="@dimen/dimens_8">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tv_jobtype"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="@string/job_type"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <TextView
+                android:id="@+id/tv_jobtypevalue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_regular"
+                android:textColor="@color/colorBlacklight"
+                android:textSize="@dimen/dimens_12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tv_jobid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="@string/job_id"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <TextView
+                android:id="@+id/tv_jobidvalue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_regular"
+                android:textColor="@color/colorBlacklight"
+                android:textSize="@dimen/dimens_12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="@string/customer_name"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <TextView
+                android:id="@+id/tv_namevalue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_regular"
+                android:textColor="@color/colorBlacklight"
+                android:textSize="@dimen/dimens_12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_mobile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="@string/custphn"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <TextView
+                android:id="@+id/tv_cust_phn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_regular"
+                android:textColor="@color/colorBlacklight"
+                android:textSize="@dimen/dimens_12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_alt_mobile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/alternate_no"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="@string/alternate_no"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <TextView
+                android:id="@+id/tv_alternate_no"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_regular"
+                android:textColor="@color/colorBlacklight"
+                android:textSize="@dimen/dimens_12sp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="@string/appt_date"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <TextView
+                android:id="@+id/tv_appointmentdate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_regular"
+                android:textColor="@color/colorBlacklight"
+                android:textSize="@dimen/dimens_12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="@string/appmt_time"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <TextView
+                android:id="@+id/appointmenttimevalue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_regular"
+                android:textColor="@color/colorBlacklight"
+                android:textSize="@dimen/dimens_12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="@string/address"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dimens_20"
+                android:layout_weight="0.4"
+                android:gravity="end"
+                android:src="@drawable/ic_location_black" />
+
+            <TextView
+                android:id="@+id/tv_address"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1.8"
+                android:fontFamily="@font/stolzl_regular"
+                android:textSize="@dimen/dimens_12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tv_colorCode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="@string/color_code"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_colorCodeValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/stolzl_regular"
+                    android:textColor="@color/colorBlacklight"
+                    android:textSize="@dimen/dimens_12sp" />
+
+                <ImageView
+                    android:id="@+id/iv_color"
+                    android:layout_width="@dimen/dimens_15"
+                    android:layout_height="@dimen/dimens_15"
+                    android:layout_marginStart="@dimen/dimens_5"
+                    android:layout_marginEnd="@dimen/dimens_5"
+                    android:src="@color/colorBlack"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tv_status"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="@string/status"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <TextView
+                android:id="@+id/tv_statusvalue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_regular"
+                android:textColor="@color/colorBlue"
+                android:textSize="@dimen/dimens_12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tv_distance"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="Travel Distance :"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <TextView
+                android:id="@+id/tv_distance_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_regular"
+                android:textColor="@color/colorBlue"
+                android:textSize="@dimen/dimens_12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tv_travel_duration"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="Travel Duration :"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+            <TextView
+                android:id="@+id/tv_travel_duration_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_regular"
+                android:textColor="@color/colorBlue"
+                android:textSize="@dimen/dimens_12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_earning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_5"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tv_earning"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_medium"
+                android:text="Minimum Earning :"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_13sp" />
+
+            <TextView
+                android:id="@+id/tv_earning_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/stolzl_regular"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/dimens_12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimens_10"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/btn_update_status"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_theme_bg"
+                android:ellipsize="end"
+                android:fontFamily="@font/stolzl_regular"
+                android:gravity="center"
+                android:maxLines="1"
+                android:padding="@dimen/dimens_5"
+                android:text="Update status"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/dimens_12sp"
+                android:visibility="invisible" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/btn_know_more"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimens_10"
+                android:layout_weight="1"
+                android:background="@drawable/btn_theme_bg"
+                android:fontFamily="@font/stolzl_regular"
+                android:gravity="center"
+                android:padding="@dimen/dimens_5"
+                android:text="know more"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/dimens_12sp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

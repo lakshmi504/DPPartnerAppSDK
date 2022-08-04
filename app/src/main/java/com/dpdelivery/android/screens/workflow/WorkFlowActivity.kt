@@ -17,6 +17,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Looper
 import android.provider.MediaStore
+import android.provider.Settings
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
@@ -43,13 +44,14 @@ import com.dpdelivery.android.commonadapter.BasicAdapter
 import com.dpdelivery.android.commonviews.MultiStateView
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
+import com.dpdelivery.android.model.SyncCommandsRes
 import com.dpdelivery.android.model.techinp.*
 import com.dpdelivery.android.model.techinp.Cmd
 import com.dpdelivery.android.model.techres.*
 import com.dpdelivery.android.screens.base.TechBaseActivity
+import com.dpdelivery.android.screens.getnextjob.GetNextJobActivity
 import com.dpdelivery.android.screens.login.LoginActivity
 import com.dpdelivery.android.screens.scanner.ScannerActivity
-import com.dpdelivery.android.screens.smartconfig.SmartConfigActivity
 import com.dpdelivery.android.screens.sync.Command
 import com.dpdelivery.android.screens.sync.DatabaseHandler
 import com.dpdelivery.android.screens.sync.SyncActivity
@@ -82,6 +84,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 import javax.inject.Inject
+
 
 class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClickListener,
     IAdapterClickListener {
@@ -381,9 +384,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     override fun onResume() {
         super.onResume()
         workFlowPresenter.takeView(this)
-        if (CommonUtils.hasUpdates) {
-            updateServerCmds()
-        }
     }
 
     override fun showAddTextRes(res: AddTextRes) {
@@ -455,7 +455,11 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             stepsFinished.clear()
             stepMapList.clear()
             CommonUtils.saveBotId("")
-            startActivity(Intent(this, TechJobsListActivity::class.java))
+            if (CommonUtils.getRole() == "Technician") {
+                startActivity(Intent(this, GetNextJobActivity::class.java))
+            } else {
+                startActivity(Intent(this, TechJobsListActivity::class.java))
+            }
             finish()
         } else {
             toast(res.message)
@@ -573,16 +577,21 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                     value = any.value
                     mandatoryIcon = type.iv_mandatory_list
                     spinnerSpares = type.spinner_spares
-                    workFlowPresenter.getApiDataList(any.functionName.toString())
+                    if (value!!.contains("jobId")) {
+                        workFlowPresenter.getApiDataList("${any.functionName}/${jobId}")
+                    } else {
+                        workFlowPresenter.getApiDataList(any.functionName.toString())
+                    }
                 }
                 Constants.SYNC -> {
                     dialog.show()
                     synctext = type.tv_sync
                     elementId = any.id
-                    getPidDetails(deviceCode)
+                    getCmdDetails(deviceCode)
                 }
                 Constants.SET_UP_WIFI -> {
-                    startActivity(Intent(this, SmartConfigActivity::class.java))
+                    //startActivity(Intent(this, SmartConfigActivity::class.java))
+                    startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
                 }
                 Constants.REFRESH_WIFI -> {
                     dialog.show()
@@ -703,36 +712,26 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         }
     }
 
-    private fun getPidDetails(deviceCode: String?) {
-        workFlowPresenter.getPidDetails(homeIP = HomeIP(purifierid = deviceCode!!))
+    private fun getCmdDetails(purifierid: String?) {
+        workFlowPresenter.getBleCmdDetails(deviceCode = purifierid!!, onlyPending = true)
     }
 
-    private fun updateServerCmds() {
-        showViewState(MultiStateView.VIEW_STATE_LOADING)
-        try {
-            val list = dbH.allAcks
-            for (i in list.indices) {
-                cmds.add(Cmd(cmdid = list[i].id, cmd = list[i].cmd!!, status = list[i].status!!))
+    override fun showBleCmdDetailsRes(res: SyncCommandsRes) {
+        dialog.dismiss()
+        val cmds = res.body
+        if (cmds != null) {
+            dbH.deleteAll()
+            for (i in cmds.indices) {
+                val c = Command(cmds[i].sequenceNo, cmds[i].command, cmds[i].status)
+                dbH.addCommand(c)
+                Log.i("SSyyzzzz", "added into table")
             }
-        } catch (e: Exception) {
-
         }
-        val syncIP = SyncIP(
-            purifierid = deviceCode.toString(),
-            currentliters = CommonUtils.current.toString() + "",
-            validity = CommonUtils.validity,
-            flowlimit = CommonUtils.flowlimit.toString() + "",
-            status = CommonUtils.purifierStatus.toString() + "",
-            mode = CommonUtils.purifierStatus.toString() + "",
-            tdsIn = "0.0",
-            tdsOut = "0.0",
-            tempIn = "0",
-            tempOut = "0",
-            latLong = "",
-            cmds = cmds
-        )
-        workFlowPresenter.updateServerCmds(syncIP)
-        Log.d("syncparams", syncIP.toString())
+        getPidDetails(deviceCode)
+    }
+
+    private fun getPidDetails(deviceCode: String?) {
+        workFlowPresenter.getPidDetails(homeIP = HomeIP(purifierid = deviceCode!!))
     }
 
     override fun showPidDetailsRes(res: BLEDetailsRes) {
@@ -772,18 +771,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             }
         } else {
             toast(res.output!!.message!!)
-        }
-    }
-
-    override fun showSyncRes(res: AddTextRes) {
-        showViewState(MultiStateView.VIEW_STATE_CONTENT)
-        if (res.success!!) {
-            dbH.clearAcks()
-            isSync = true
-            getPidDetails(deviceCode)
-            CommonUtils.resetUpdate()
-        } else {
-            toast(res.message!!)
         }
     }
 

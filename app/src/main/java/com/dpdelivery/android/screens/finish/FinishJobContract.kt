@@ -15,13 +15,11 @@ interface FinishJobContract {
         fun showSparePartsRes(res: ArrayList<SparePartsData>)
         fun showFinishJobRes(res: SubmiPidRes)
         fun showPidDetailsRes(res: BLEDetailsRes)
-        fun showSyncRes(res: AddTextRes)
     }
 
     interface Presenter : BasePresenter<View> {
         fun getSparePartsList()
         fun finishJob(jobId: Int, finishJobIp: FinishJobIp)
         fun getPidDetails(homeIP: HomeIP)
-        fun updateServerCmds(syncIP: SyncIP)
     }
 }

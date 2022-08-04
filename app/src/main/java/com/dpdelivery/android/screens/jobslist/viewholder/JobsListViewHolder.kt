@@ -80,8 +80,12 @@ class JobsListViewHolder(
             }
             val text = item.customerPhone
             if (text!!.isNotEmpty()) {
-                try {
-                    if (CommonUtils.getRole() == "Technician")
+                    try {
+                        view.tv_cust_phn.text = text.replaceRange(5..9, "*****")
+                    } catch (e: Exception) {
+
+                    }
+                   /* if (CommonUtils.getRole() == "Technician")
                         try {
                             view.tv_cust_phn.text = text.replaceRange(5..9, "*****")
                         } catch (e: Exception) {
@@ -89,14 +93,18 @@ class JobsListViewHolder(
                         }
                     else {
                         view.tv_cust_phn.text = text
-                    }
-                } catch (e: Exception) {
-                }
+                    }*/
             }
             view.tv_cust_phn.paintFlags = view.tv_cust_phn.paintFlags or Paint.UNDERLINE_TEXT_FLAG
             if (item.customerPhone.isNotEmpty()) {
                 view.tv_cust_phn.setOnClickListener {
-                    if (CommonUtils.getRole() == "Technician") {
+                    adapterClickListener.onclick(
+                        any = item,
+                        pos = pos,
+                        type = itemView,
+                        op = Constants.CUST_PHONE
+                    )
+                   /* if (CommonUtils.getRole() == "Technician") {
                         adapterClickListener.onclick(
                             any = item,
                             pos = pos,
@@ -109,7 +117,7 @@ class JobsListViewHolder(
                         intent.putExtra("finish", true)
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         context.startActivity(intent)
-                    }
+                    }*/
                 }
             }
 
@@ -118,6 +126,11 @@ class JobsListViewHolder(
             } else {
                 val altPhone = item.customerAltPhone
                 try {
+                    view.tv_alternate_no.text = (altPhone).replaceRange(5..9, "*****")
+                } catch (e: Exception) {
+
+                }
+                /*try {
                     if (CommonUtils.getRole() == "Technician")
                         try {
                             view.tv_alternate_no.text = (altPhone).replaceRange(5..9, "*****")
@@ -128,13 +141,19 @@ class JobsListViewHolder(
                         view.tv_alternate_no.text = (altPhone)
                     }
                 } catch (e: Exception) {
-                }
+                }*/
                 view.tv_alternate_no.paintFlags =
                     view.tv_alternate_no.paintFlags or Paint.UNDERLINE_TEXT_FLAG
                 view.tv_alternate_no.visibility = View.VISIBLE
                 view.alternate_no.visibility = View.VISIBLE
                 view.tv_alternate_no.setOnClickListener {
-                    if (CommonUtils.getRole() == "Technician") {
+                    adapterClickListener.onclick(
+                        any = item,
+                        pos = pos,
+                        type = itemView,
+                        op = Constants.ALT_CUST_PHONE
+                    )
+                    /*if (CommonUtils.getRole() == "Technician") {
                         val url = "tel:$altPhone"
                         val intent = Intent(Intent.ACTION_DIAL, Uri.parse(url))
                         intent.putExtra("finish", true)
@@ -147,7 +166,7 @@ class JobsListViewHolder(
                             type = itemView,
                             op = Constants.ALT_CUST_PHONE
                         )
-                    }
+                    }*/
                 }
             }
             view.btn_know_more.setOnClickListener {
