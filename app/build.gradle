@@ -33,7 +33,18 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
 }
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = "com.github.username"
+            artifactId = "DPPartnerAppSDK"
+            version = "1.0.0"
+        }
+    }
+}
+
 androidExtensions {
     experimental = true
 }
