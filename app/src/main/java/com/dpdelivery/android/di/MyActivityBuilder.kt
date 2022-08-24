@@ -15,8 +15,6 @@ import com.dpdelivery.android.screens.photo.ImageActivity
 import com.dpdelivery.android.screens.scanner.ScannerActivity
 import com.dpdelivery.android.screens.search.SearchActivity
 import com.dpdelivery.android.screens.servicereport.ServiceReportActivity
-import com.dpdelivery.android.screens.smartconfig.SmartConfigAbs
-import com.dpdelivery.android.screens.smartconfig.SmartConfigActivity
 import com.dpdelivery.android.screens.splash.SplashActivity
 import com.dpdelivery.android.screens.summary.SummaryActivity
 import com.dpdelivery.android.screens.sync.SyncActivity
@@ -84,12 +82,6 @@ abstract class MyActivityBuilder {
 
     @ContributesAndroidInjector()
     internal abstract fun serviceReportActivity(): ServiceReportActivity
-
-    @ContributesAndroidInjector()
-    internal abstract fun smartConfigActivity(): SmartConfigActivity
-
-    @ContributesAndroidInjector()
-    internal abstract fun smartConfigAbs(): SmartConfigAbs
 
     @ContributesAndroidInjector()
     internal abstract fun getNextJobActivity(): GetNextJobActivity
