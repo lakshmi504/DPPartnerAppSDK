@@ -16,7 +16,6 @@ import androidx.multidex.MultiDex
 import com.dpdelivery.android.api.ApiService
 import com.dpdelivery.android.di.DaggerAppComponent
 import com.facebook.stetho.Stetho
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
 import java.util.HashMap
@@ -86,8 +85,6 @@ class MyApplication : DaggerApplication(), Application.ActivityLifecycleCallback
         }
         registerReceiver(mReceiver, filter)
         registerActivityLifecycleCallbacks(this)
-        val crashLytics = FirebaseCrashlytics.getInstance()
-        crashLytics.log("my message")
 
     }
 

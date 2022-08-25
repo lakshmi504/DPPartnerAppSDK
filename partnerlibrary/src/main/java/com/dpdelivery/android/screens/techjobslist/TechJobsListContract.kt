@@ -15,7 +15,7 @@ interface TechJobsListContract {
         fun showVoipRes(res: Headers)
         fun showUpdateJobRes(res: SubmiPidRes)
         fun showAddNoteRes(res: StartJobRes)
-        fun showUpdateTokenRes(res: CommonRes)
+        //fun showUpdateTokenRes(res: CommonRes)
         fun showPartnerDetails(res: PartnerDetailsRes)
     }
 
@@ -26,7 +26,7 @@ interface TechJobsListContract {
         fun getVoipCall(caller: String, receiver: String)
         fun updateJob(jobId: Int, finishJobIp: FinishJobIp)
         fun addNote(jobId: Int, updateJobIp: UpdateJobIp)
-        fun updateToken(updateTokenIP: UpdateTokenIP)
+        //fun updateToken(updateTokenIP: UpdateTokenIP)
         fun getPartnerDetails()
 
     }

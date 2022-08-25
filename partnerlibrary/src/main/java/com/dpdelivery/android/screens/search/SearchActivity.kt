@@ -165,10 +165,6 @@ class SearchActivity : DaggerAppCompatActivity(), TechJobsListContract.View, IAd
 
     }
 
-    override fun showUpdateTokenRes(res: CommonRes) {
-
-    }
-
     override fun showPartnerDetails(res: PartnerDetailsRes) {
 
     }

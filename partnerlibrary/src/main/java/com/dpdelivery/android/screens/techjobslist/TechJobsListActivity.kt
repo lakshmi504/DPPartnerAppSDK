@@ -35,7 +35,6 @@ import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.android.synthetic.main.activity_assigned_jobs_list.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.empty_view.*
@@ -145,10 +144,10 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
 
     override fun showPartnerDetails(res: PartnerDetailsRes) {
         CommonUtils.saveUserDetails(res)
-        getDeviceToken()
+       // getDeviceToken()
     }
 
-    private fun getDeviceToken() {
+   /* private fun getDeviceToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener {
             if (!it.isSuccessful) {
                 return@addOnCompleteListener
@@ -173,7 +172,7 @@ class TechJobsListActivity : TechBaseActivity(), TechJobsListContract.View, IAda
         if (res.success) {
             Log.d("tag", res.message)
         }
-    }
+    }*/
 
     private fun loadDefaultSpinner() {
         if (CommonUtils.getRole() == "Technician") {

@@ -133,7 +133,7 @@ class TechJobsListPresenter @Inject constructor(
     }
 
     //update notification token
-    override fun updateToken(updateTokenIP: UpdateTokenIP) {
+   /* override fun updateToken(updateTokenIP: UpdateTokenIP) {
         view?.showProgress()
         subscription.add(
             apiService.updateDeviceToken(
@@ -150,7 +150,7 @@ class TechJobsListPresenter @Inject constructor(
                         view?.showErrorMsg(throwable)
                     })
         )
-    }
+    }*/
 
     override fun getPartnerDetails() {
         view?.showProgress()
