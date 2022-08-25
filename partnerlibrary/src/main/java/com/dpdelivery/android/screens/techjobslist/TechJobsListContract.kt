@@ -4,7 +4,6 @@ import com.dpdelivery.android.BasePresenter
 import com.dpdelivery.android.BaseView
 import com.dpdelivery.android.model.techinp.FinishJobIp
 import com.dpdelivery.android.model.techinp.UpdateJobIp
-import com.dpdelivery.android.model.techinp.UpdateTokenIP
 import com.dpdelivery.android.model.techres.*
 import okhttp3.Headers
 

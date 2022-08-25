@@ -3,7 +3,6 @@ package com.dpdelivery.android.screens.getnextjob
 import android.content.Context
 import com.dpdelivery.android.R
 import com.dpdelivery.android.api.ApiService
-import com.dpdelivery.android.model.techinp.SaveJobResponseIP
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.schedulers.BaseScheduler
 import io.reactivex.disposables.CompositeDisposable

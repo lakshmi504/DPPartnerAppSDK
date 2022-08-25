@@ -5,7 +5,6 @@ import com.dpdelivery.android.R
 import com.dpdelivery.android.api.ApiService
 import com.dpdelivery.android.model.techinp.FinishJobIp
 import com.dpdelivery.android.model.techinp.UpdateJobIp
-import com.dpdelivery.android.model.techinp.UpdateTokenIP
 import com.dpdelivery.android.utils.CommonUtils
 import com.dpdelivery.android.utils.schedulers.BaseScheduler
 import io.reactivex.disposables.CompositeDisposable

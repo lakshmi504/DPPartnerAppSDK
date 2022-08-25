@@ -4,8 +4,6 @@ import com.dpdelivery.android.BasePresenter
 import com.dpdelivery.android.BaseView
 import com.dpdelivery.android.model.techinp.FinishJobIp
 import com.dpdelivery.android.model.techinp.HomeIP
-import com.dpdelivery.android.model.techinp.SyncIP
-import com.dpdelivery.android.model.techres.AddTextRes
 import com.dpdelivery.android.model.techres.BLEDetailsRes
 import com.dpdelivery.android.model.techres.SparePartsData
 import com.dpdelivery.android.model.techres.SubmiPidRes

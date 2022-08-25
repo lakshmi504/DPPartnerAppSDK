@@ -2,10 +2,8 @@ package com.dpdelivery.android.screens.jobslist.viewholder
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
-import android.net.Uri
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.dpdelivery.android.R
@@ -13,7 +11,6 @@ import com.dpdelivery.android.commonadapter.BaseViewholder
 import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.interfaces.IAdapterClickListener
 import com.dpdelivery.android.model.techres.Job
-import com.dpdelivery.android.utils.CommonUtils
 import kotlinx.android.synthetic.main.item_asg_jobs_list.view.*
 import java.text.ParseException
 import java.text.SimpleDateFormat

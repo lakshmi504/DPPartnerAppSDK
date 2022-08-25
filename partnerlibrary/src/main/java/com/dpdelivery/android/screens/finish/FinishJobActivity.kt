@@ -29,8 +29,6 @@ import com.dpdelivery.android.constants.Constants
 import com.dpdelivery.android.model.techinp.Cmd
 import com.dpdelivery.android.model.techinp.FinishJobIp
 import com.dpdelivery.android.model.techinp.HomeIP
-import com.dpdelivery.android.model.techinp.SyncIP
-import com.dpdelivery.android.model.techres.AddTextRes
 import com.dpdelivery.android.model.techres.BLEDetailsRes
 import com.dpdelivery.android.model.techres.SparePartsData
 import com.dpdelivery.android.model.techres.SubmiPidRes
@@ -51,8 +49,6 @@ import com.google.android.gms.location.LocationServices
 import kotlinx.android.synthetic.main.activity_finish_job.*
 import kotlinx.android.synthetic.main.app_bar_tech_base.*
 import kotlinx.android.synthetic.main.error_view.*
-import org.json.JSONArray
-import org.json.JSONObject
 import retrofit2.HttpException
 import java.text.SimpleDateFormat
 import java.util.*
