@@ -24,6 +24,7 @@
         <entry key="app/src/main/res/layout/activity_assigned_job.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_assigned_jobs_list.xml" value="0.17239583333333333" />
         <entry key="app/src/main/res/layout/activity_detail_earnings.xml" value="0.17239583333333333" />
+        <entry key="app/src/main/res/layout/activity_get_next_job.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_image.xml" value="0.15648148148148147" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.17025641025641025" />
         <entry key="app/src/main/res/layout/activity_service_report.xml" value="0.17239583333333333" />
@@ -32,6 +33,7 @@
         <entry key="app/src/main/res/layout/activity_tech_job_details.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_work_flow.xml" value="0.14629629629629629" />
         <entry key="app/src/main/res/layout/app_bar_tech_base.xml" value="0.16974358974358975" />
+        <entry key="app/src/main/res/layout/error_view.xml" value="0.17291666666666666" />
         <entry key="app/src/main/res/layout/fragment_jobs.xml" value="0.17239583333333333" />
         <entry key="app/src/main/res/layout/fragment_spares.xml" value="0.17239583333333333" />
         <entry key="app/src/main/res/layout/item_asg_jobs_list.xml" value="0.1" />

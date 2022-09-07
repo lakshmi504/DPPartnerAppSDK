@@ -23,11 +23,11 @@ import retrofit2.converter.gson.GsonConverterFactory
  */
 class PartnerApp {
     companion object {
-        fun navigateToDPPartnerApp(context: Context?, jobId: Int) {
+        fun navigateToDPPartnerApp(context: Context?, jobId: String) {
             loginUser(context, jobId)
         }
 
-        fun loginUser(context: Context?, jobId: Int) {
+        fun loginUser(context: Context?, jobId: String) {
             if (context != null) {
                 val login = LoginIp(
                     username = "dptech",
