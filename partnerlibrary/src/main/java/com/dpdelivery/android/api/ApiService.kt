@@ -1,20 +1,24 @@
 package com.dpdelivery.android.api
 
 import com.dpdelivery.android.model.SyncCommandsRes
-import com.dpdelivery.android.model.techres.SyncCommandsUpdatedRes
 import com.dpdelivery.android.model.techinp.*
 import com.dpdelivery.android.model.techres.*
 import io.reactivex.Observable
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 import retrofit2.http.Body
+
 
 interface ApiService {
 
     @POST(ApiConstants.LOGIN)
     fun login(@Body loginIp: LoginIp): Observable<Response<Void>>
+
+    @GET(ApiConstants.LOGIN)
+    fun doLogin(@Body login: LoginIp):  Observable<Response<Void?>?>?
 
     @GET(ApiConstants.JOBS_LIST)
     fun getAssignedJobs(
