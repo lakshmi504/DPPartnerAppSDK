@@ -111,7 +111,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
         mContext = this
         setTitle("Job Details")
         showBack()
-        setUpBottomNavView(true)
+        setUpBottomNavView(false)
         if (intent != null) {
             val data = intent.getStringExtra(Constants.ID)
             jobId = Integer.parseInt(data!!)

@@ -455,11 +455,11 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             stepsFinished.clear()
             stepMapList.clear()
             CommonUtils.saveBotId("")
-            if (CommonUtils.getRole() == "Technician") {
+           /* if (CommonUtils.getRole() == "Technician") {
                 startActivity(Intent(this, GetNextJobActivity::class.java))
             } else {
                 startActivity(Intent(this, TechJobsListActivity::class.java))
-            }
+            }*/
             finish()
         } else {
             toast(res.message)
