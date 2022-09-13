@@ -31,8 +31,8 @@ class PartnerApp {
         fun loginUser(context: Context?, jobId: String) {
             if (context != null) {
                 val login = LoginIp(
-                    username = context.getString(R.string.username),
-                    password = context.getString(R.string.login_password)
+                    username = "dptech",
+                    password = "drinkPrime123"
                 )
                 val gson = GsonBuilder()
                     .setLenient()
