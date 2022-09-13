@@ -456,15 +456,15 @@ class ElementListAdapter(
                                     tv_name.visibility = View.VISIBLE
                                     tv_name.text = item.name
                                     if (!item.optional!!) {
-                                        iv_mandatory.visibility = View.VISIBLE
+                                        //iv_mandatory.visibility = View.VISIBLE
                                         stepsFinished[item.id.toString()] = false
                                     } else {
-                                        iv_mandatory.visibility = View.INVISIBLE
+                                        // iv_mandatory.visibility = View.INVISIBLE
                                         stepMap[item.id.toString()] = ""
                                         stepsFinished[item.id.toString()] = true
                                     }
                                     if (!item.optional && !item.value.isNullOrEmpty()) {
-                                        iv_mandatory.visibility = View.INVISIBLE
+                                        //iv_mandatory.visibility = View.INVISIBLE
                                         stepsFinished[item.id.toString()] = true
                                     }
 
@@ -479,17 +479,18 @@ class ElementListAdapter(
                                     tv_name.visibility = View.VISIBLE
                                     tv_name.text = item.name
                                     if (!item.optional!!) {
-                                        iv_mandatory_list.visibility = View.VISIBLE
-                                        stepsFinished[item.id.toString()] = false
+                                        if (!item.value.isNullOrEmpty()) {
+                                            iv_mandatory_list.visibility = View.INVISIBLE
+                                            stepsFinished[item.id.toString()] = true
+                                        } else {
+                                            iv_mandatory_list.visibility = View.VISIBLE
+                                            stepsFinished[item.id.toString()] = false
+                                        }
                                     } else {
                                         iv_mandatory_list.visibility = View.INVISIBLE
                                         stepMap[item.id.toString()] = ""
                                         stepsFinished[item.id.toString()] = true
                                     }
-                                    /* if (!item.optional && !item.value.isNullOrEmpty()) {
-                                         iv_mandatory.visibility = View.INVISIBLE
-                                         stepsFinished[item.id.toString()] = true
-                                     }*/
                                     adapterClickListener?.onclick(
                                         any = item,
                                         pos = pos,

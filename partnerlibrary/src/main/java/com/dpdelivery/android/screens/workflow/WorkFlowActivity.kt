@@ -150,6 +150,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
     private var itemsMap: MutableMap<Int, String> = mutableMapOf()
     private var currentPhotoPath: String? = null
     private val cmds = ArrayList<Cmd>()
+    private var apiElementId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -573,12 +574,14 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                 }
                 Constants.API_INPUT -> {
                     dialog.show()
-                    elementId = any.id
+                    apiElementId = any.id
                     value = any.value
                     mandatoryIcon = type.iv_mandatory_list
                     spinnerSpares = type.spinner_spares
-                    if (value!!.contains("jobId")) {
-                        workFlowPresenter.getApiDataList("${any.functionName}/${jobId}")
+                    val functionName = any.functionName.toString()
+                    if (functionName.contains("jobId")) {
+                        val data = functionName.replace("{jobId}", jobId.toString())
+                        workFlowPresenter.getApiDataList(data)
                     } else {
                         workFlowPresenter.getApiDataList(any.functionName.toString())
                     }
@@ -921,8 +924,8 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
                             ) {
                                 if (position > 0) {
                                     val selectedString = spinnerSpares!!.selectedItem.toString()
-                                    stepMap[elementId.toString()] = selectedString
-                                    stepsFinished[elementId.toString()] = true
+                                    stepMap[apiElementId.toString()] = selectedString
+                                    stepsFinished[apiElementId.toString()] = true
                                     mandatoryIcon!!.visibility = View.INVISIBLE
                                 }
                             }

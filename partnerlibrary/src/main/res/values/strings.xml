@@ -151,4 +151,6 @@
     <string name="setup_wifi">Setup Wifi</string>
     <string name="restart">Restart</string>
     <string name="update_downloaded">Update Downloaded</string>
+    <string name="username">dptech</string>
+    <string name="login_password">drinkPrme123</string>
 </resources>
