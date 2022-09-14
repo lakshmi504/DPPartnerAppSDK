@@ -24,6 +24,7 @@ interface WorkFlowContract {
         fun showJobRes(res: Job)
         fun showBidStatus(res: BIDStatusRes)
         fun showApiInputRes(res: ApiInputRes)
+        fun showPartnerDetails(res: PartnerDetailsRes)
     }
 
     interface Presenter : BasePresenter<View> {
@@ -41,5 +42,6 @@ interface WorkFlowContract {
         fun getJob(jobId: Int)
         fun getBidStatus(data: BIDStatusIp)
         fun getApiDataList(functionName: String?)
+        fun getPartnerDetails()
     }
 }

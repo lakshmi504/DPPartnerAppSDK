@@ -49,7 +49,6 @@ import com.dpdelivery.android.model.techinp.*
 import com.dpdelivery.android.model.techinp.Cmd
 import com.dpdelivery.android.model.techres.*
 import com.dpdelivery.android.screens.base.TechBaseActivity
-import com.dpdelivery.android.screens.getnextjob.GetNextJobActivity
 import com.dpdelivery.android.screens.login.LoginActivity
 import com.dpdelivery.android.screens.scanner.ScannerActivity
 import com.dpdelivery.android.screens.sync.Command
@@ -180,6 +179,15 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
         tv_view_notes.setOnClickListener(this)
         error_button.setOnClickListener(this)
         dbH = DatabaseHandler(this)
+        getPartnerDetails()
+    }
+
+    private fun getPartnerDetails() {
+        workFlowPresenter.getPartnerDetails()
+    }
+
+    override fun showPartnerDetails(res: PartnerDetailsRes) {
+        CommonUtils.saveUserDetails(res)
         getWorkFlowData(jobId)
     }
 
@@ -456,11 +464,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             stepsFinished.clear()
             stepMapList.clear()
             CommonUtils.saveBotId("")
-           /* if (CommonUtils.getRole() == "Technician") {
-                startActivity(Intent(this, GetNextJobActivity::class.java))
-            } else {
-                startActivity(Intent(this, TechJobsListActivity::class.java))
-            }*/
             finish()
         } else {
             toast(res.message)
@@ -475,7 +478,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             when (throwable.code()) {
                 403 -> {
                     SharedPreferenceManager.clearPreferences()
-                    startActivity(Intent(this, LoginActivity::class.java))
+                    toast("Session expired..reopen app again")
                     finishAffinity()
                 }
                 else -> {

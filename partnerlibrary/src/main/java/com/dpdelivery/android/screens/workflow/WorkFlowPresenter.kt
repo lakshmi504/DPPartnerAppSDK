@@ -279,6 +279,25 @@ class WorkFlowPresenter @Inject constructor(
         }
     }
 
+    override fun getPartnerDetails() {
+        view?.showProgress()
+        subscription.add(
+            apiService.getPartnerDetails(
+                CommonUtils.getLoginToken()
+            )
+                .subscribeOn(baseScheduler.io())
+                .observeOn(baseScheduler.ui())
+                .subscribe(
+                    { res ->
+                        view?.showPartnerDetails(res)
+                    },
+                    { throwable ->
+                        view?.showErrorMsg(throwable)
+                    })
+        )
+    }
+
+
     override fun dropView() {
         subscription.clear()
         this.view = null

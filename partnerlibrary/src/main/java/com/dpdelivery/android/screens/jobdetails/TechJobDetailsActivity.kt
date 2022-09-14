@@ -686,7 +686,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             when (throwable.code()) {
                 403 -> {
                     SharedPreferenceManager.clearPreferences()
-                    startActivity(Intent(this, LoginActivity::class.java))
+                    toast("Session expired..reopen app again")
                     finishAffinity()
                 }
                 else -> {
