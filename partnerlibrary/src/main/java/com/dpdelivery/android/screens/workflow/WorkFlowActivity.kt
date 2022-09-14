@@ -428,7 +428,6 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             stepMap.clear()
             stepsFinished.clear()
             stepMapList.clear()
-            startActivity(Intent(this, TechJobsListActivity::class.java))
             finish()
         } else {
             toast(res.message!!)
@@ -463,7 +462,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             stepsFinished.clear()
             stepMapList.clear()
             CommonUtils.saveBotId("")
-            finishAffinity()
+            finish()
         } else {
             toast(res.message)
             btn_Finish.isEnabled = true

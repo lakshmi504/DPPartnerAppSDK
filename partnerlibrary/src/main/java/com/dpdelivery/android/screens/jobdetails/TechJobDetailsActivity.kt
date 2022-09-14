@@ -355,7 +355,9 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
                 intent.putExtra(Constants.CONNECTIVITY, connectivity)
                 intent.putExtra(Constants.JOB_TYPE, jobType)
                 intent.putParcelableArrayListExtra(Constants.NOTES, noteList)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                 startActivity(intent)
+                finish()
             }
             R.id.tv_address -> {
                 if (cxLatLong.isEmpty() || cxLatLong == "null" || cxLatLong == "0") {
