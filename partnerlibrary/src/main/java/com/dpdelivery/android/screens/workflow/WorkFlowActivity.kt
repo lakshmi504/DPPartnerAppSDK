@@ -49,7 +49,6 @@ import com.dpdelivery.android.model.techinp.*
 import com.dpdelivery.android.model.techinp.Cmd
 import com.dpdelivery.android.model.techres.*
 import com.dpdelivery.android.screens.base.TechBaseActivity
-import com.dpdelivery.android.screens.login.LoginActivity
 import com.dpdelivery.android.screens.scanner.ScannerActivity
 import com.dpdelivery.android.screens.sync.Command
 import com.dpdelivery.android.screens.sync.DatabaseHandler
@@ -464,7 +463,7 @@ class WorkFlowActivity : TechBaseActivity(), WorkFlowContract.View, View.OnClick
             stepsFinished.clear()
             stepMapList.clear()
             CommonUtils.saveBotId("")
-            finish()
+            finishAffinity()
         } else {
             toast(res.message)
             btn_Finish.isEnabled = true

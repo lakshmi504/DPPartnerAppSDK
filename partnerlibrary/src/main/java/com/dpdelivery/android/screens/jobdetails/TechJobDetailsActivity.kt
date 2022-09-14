@@ -8,7 +8,6 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
-import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -35,7 +34,6 @@ import com.dpdelivery.android.model.techinp.UpdateJobIp
 import com.dpdelivery.android.model.techres.*
 import com.dpdelivery.android.screens.base.TechBaseActivity
 import com.dpdelivery.android.screens.finish.FinishJobActivity
-import com.dpdelivery.android.screens.login.LoginActivity
 import com.dpdelivery.android.screens.scanner.ScannerActivity
 import com.dpdelivery.android.screens.servicereport.ServiceReportActivity
 import com.dpdelivery.android.screens.workflow.WorkFlowActivity
@@ -284,7 +282,7 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
             }
             R.id.btn_start_job -> {
                 if (btn_start_job.visibility == View.VISIBLE) {
-                    if (CommonUtils.getRole() == "DeliveryPerson") {
+                    /*if (CommonUtils.getRole() == "DeliveryPerson") {
                         startJob()
                     } else {
                         if (cxLatLong.isEmpty() || cxLatLong == "null" || cxLatLong == "0") {
@@ -308,7 +306,8 @@ class TechJobDetailsActivity : TechBaseActivity(), TechJobDetailsContract.View,
                                 startJob()
                             }
                         }
-                    }
+                    }*/
+                    startJob()
                 }
             }
             R.id.finish_job -> {
