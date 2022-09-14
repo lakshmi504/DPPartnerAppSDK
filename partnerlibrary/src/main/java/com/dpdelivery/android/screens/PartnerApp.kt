@@ -3,7 +3,6 @@ package com.dpdelivery.android.screens
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.dpdelivery.android.R
 import com.dpdelivery.android.api.ApiConstants
 import com.dpdelivery.android.api.ApiService
 import com.dpdelivery.android.constants.Constants
@@ -29,6 +28,8 @@ class PartnerApp {
         }
 
         fun loginUser(context: Context?, jobId: String) {
+            val progress = CommonUtils.progressDialog(context!!)
+            progress.show()
             if (context != null) {
                 val login = LoginIp(
                     username = "dptech",
@@ -51,6 +52,7 @@ class PartnerApp {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                             { res ->
+                                progress.dismiss()
                                 val token = res.headers()
                                 val data = token.get("Authorization")
                                 CommonUtils.saveLoginToken(data)
